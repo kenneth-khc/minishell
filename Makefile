@@ -1,17 +1,50 @@
-NAME = minishell
-CC = cc
+MAKEFLAGS += --warn-undefined-variables
+NAME := minishell
+CC ?= cc
+CFLAGS := -Wall -Werror -Wextra
+LDFLAGS := -L libft
+LDLIBS := -lreadline -lft
 
-GREEN = \e[0;32m
-CRESET = \e[0m
+fsan := -fsanitize=address
+debug := -g3
+green := \e[0;32m
+c_reset := \e[0m
 
-LIBFT_DIR = libft
-LIBFT = $(LIBFT_DIR)/libft.a
+libft_dir := libft
+libft := $(libft_dir)/libft.a
 
-$(NAME): $(LIBFT)
+srcs_dir := sources
+sources := $(wildcard $(srcs_dir)/*.c)
+objects := $(patsubst $(srcs_dir)/%.c, %.o, $(sources))
+obj_dir := objects
+objects := $(addprefix $(obj_dir)/, $(objects))
 
-$(LIBFT):
+all: $(NAME)
+
+$(NAME): $(libft) $(obj_dir) $(objects)
+	$(CC) $(objects) $(CFLAGS) $(LDFLAGS) $(LDLIBS) -o $@
+
+$(libft):
 	@if git submodule status | grep '^[+-]' ; then \
-		echo "$(GREEN)Initializing libft submodule $(CRESET)" ; \
+		echo "$(green)Initializing libft submodule $(c_reset)" ; \
 		git submodule update --init ; \
 	fi
-	make -C $(LIBFT_DIR)
+	make -C $(libft_dir)
+
+vpath %.c sources
+$(obj_dir)/%.o: %.c
+	$(CC) $(CFLAGS) -I includes $< -c -o $@
+ 
+$(obj_dir):
+	mkdir -p $(obj_dir)
+
+.PHONY: clean
+clean:
+	rm -rf $(obj_dir)
+
+.PHONY: fclean
+fclean: clean
+	rm -rf $(NAME)
+
+.PHONY: re
+re: fclean all
