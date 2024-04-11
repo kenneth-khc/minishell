@@ -1,24 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   debug.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/11 05:29:11 by kecheong          #+#    #+#             */
-/*   Updated: 2024/04/11 09:50:08 by kecheong         ###   ########.fr       */
+/*   Created: 2024/04/11 11:20:48 by kecheong          #+#    #+#             */
+/*   Updated: 2024/04/11 11:54:59 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
+#ifndef DEBUG_H
+# define DEBUG_H
 
+# include <assert.h>
+# include <stdarg.h>
 # include <stdio.h>
-# include <readline/readline.h>
-# include <readline/history.h>
-# include <unistd.h>
-# include <stdlib.h>
 
-# include "lexer.h"
+#define cout(msg) _log(stdout, __FILE__, __FUNCTION__, __LINE__, msg)
+#define cerr(msg) _log(stderr, __FILE__, __FUNCTION__, __LINE__, msg)
+
+void	_log(FILE *FILE, const char *FILENAME, const char *FUNC, int LINE, char *msg)
+{
+	fprintf(FILE, "%s:%s:%d: %s\n", FILENAME, FUNC, LINE, msg);
+}
+
+void	print_tokens(t_Token_list *tokens);
 
 #endif

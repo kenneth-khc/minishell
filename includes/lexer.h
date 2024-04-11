@@ -1,32 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   lexer.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/11 05:13:16 by kecheong          #+#    #+#             */
-/*   Updated: 2024/04/11 11:54:20 by kecheong         ###   ########.fr       */
+/*   Created: 2024/04/11 09:44:52 by kecheong          #+#    #+#             */
+/*   Updated: 2024/04/11 11:54:34 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
-#include "debug.h"
+#ifndef LEXER_H
+# define LEXER_H
 
-int	main(int argc, char **argv, char **envp)
-{
-	(void)argc;(void)argv;(void)envp;
-	char	*line;
-	t_Token_list	tokens;
+# include "tokens.h"
 
-	while (1)
-	{
-		line = readline("bish> ");
-		if (line == NULL)
-			printf("handle eof!\n"), exit(EXIT_FAILURE);
-		tokens = scan(line);
-		print_tokens(&tokens);
-		printf("%s\n", line);
-		free(line);
-	}
-}
+t_Token_list	scan(const char *line);
+t_Token	*create_token(int type, const char *lexeme);
+void	add_to_list(t_Token_list *tokens, t_Token *token);
+
+#endif

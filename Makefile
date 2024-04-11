@@ -12,6 +12,7 @@ c_reset := \e[0m
 
 libft_dir := libft
 libft := $(libft_dir)/libft.a
+includes := -I includes -I libft/includes
 
 srcs_dir := sources
 sources := $(wildcard $(srcs_dir)/*.c)
@@ -19,10 +20,14 @@ objects := $(patsubst $(srcs_dir)/%.c, %.o, $(sources))
 obj_dir := objects
 objects := $(addprefix $(obj_dir)/, $(objects))
 
+test: all
+	@printf "$(green)Running minishell...\n$(c_reset)"
+	./$(NAME)
+
 all: $(NAME)
 
 $(NAME): $(libft) $(obj_dir) $(objects)
-	$(CC) $(objects) $(CFLAGS) $(LDFLAGS) $(LDLIBS) -o $@
+	$(CC) $(fsan) $(debug) $(objects) $(CFLAGS) $(LDFLAGS) $(LDLIBS) -o $@
 
 $(libft):
 	@if git submodule status | grep '^[+-]' ; then \
@@ -33,7 +38,7 @@ $(libft):
 
 vpath %.c sources
 $(obj_dir)/%.o: %.c
-	$(CC) $(CFLAGS) -I includes $< -c -o $@
+	$(CC) $(CFLAGS) $(includes) $< -c -o $@
  
 $(obj_dir):
 	mkdir -p $(obj_dir)
