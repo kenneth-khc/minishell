@@ -6,7 +6,7 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 09:43:38 by kecheong          #+#    #+#             */
-/*   Updated: 2024/04/11 11:14:58 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/04/12 10:42:42 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,16 +16,22 @@
 
 t_Token_list	scan(const char *line)
 {
-	t_Token_list	tokens = {.head = NULL, .tail = NULL};
-	t_Token			*token;
-	char	**splitted;
+	t_Token_list	tokens;
 
-	splitted = ft_split(line, ' ');
-	while (*splitted)
+	tokens = (t_Token_list){.head = NULL, .tail = NULL};
+	while (*line != '\0')
 	{
-		token = create_token(WORD, "test");
-		add_to_list(&tokens, token);
-		splitted++;
+		while (*line == ' ')
+			line++;
+		if (*line == '|')
+			scan_bar(&line, &tokens);
+		else if (*line == '<')
+			scan_lesser(&line, &tokens);
+		else if (*line == '>')
+			scan_greater(&line, &tokens);
+		else
+			scan_word(&line, &tokens);
+		line++;
 	}
 	return (tokens);
 }
@@ -38,12 +44,10 @@ t_Token	*create_token(int type, const char *lexeme)
 	new_token->type = type;
 	new_token->lexeme = lexeme;
 	new_token->next = NULL;
-	static int i = 1;
-	new_token->num = i++;
 	return (new_token);
 }
 
-void	add_to_list(t_Token_list *tokens, t_Token *token)
+void	add_token(t_Token_list *tokens, t_Token *token)
 {
 	t_Token	**curr;
 
@@ -58,17 +62,27 @@ void	add_to_list(t_Token_list *tokens, t_Token *token)
 
 void	print_tokens(t_Token_list *tokens)
 {
-	static int	i = 0;
-	t_Token	*curr;
-
+	int	i = 0;
+	t_Token		*curr;
+	const char *types[] = {
+		"WORD",
+		"PIPE",
+		"AND_AND",
+		"OR_OR",
+		"LESSER",
+		"LESSER_LESSER",
+		"GREATER",
+		"GREATER_GREATER",
+		"STAR"
+	};
 	curr = tokens->head;
 	while (curr != NULL)
 	{
 		printf("Token %d:\n", ++i);
-		printf("ID: %d\n", curr->num);
-		printf("%d\n", curr->type);
+		printf("%s\n", types[curr->type - 256]);
 		printf("%s\n", curr->lexeme);
 		printf("\n");
 		curr = curr->next;
 	}
+	printf("\n\n");
 }

@@ -15,10 +15,12 @@ libft := $(libft_dir)/libft.a
 includes := -I includes -I libft/includes
 
 srcs_dir := sources
-sources := $(wildcard $(srcs_dir)/*.c)
-objects := $(patsubst $(srcs_dir)/%.c, %.o, $(sources))
+lexer_dir := $(srcs_dir)/lexer
+sources := $(wildcard $(srcs_dir)/*.c) $(wildcard $(lexer_dir)/*.c)
 obj_dir := objects
-objects := $(addprefix $(obj_dir)/, $(objects))
+objects := $(patsubst $(srcs_dir)/%.c, $(obj_dir)/%.o, $(sources))
+objects := $(patsubst objects/lexer/%.o, $(obj_dir)/%.o, $(objects))
+# objects := $(addprefix $(obj_dir)/, $(objects))
 
 test: all
 	@printf "$(green)Running minishell...\n$(c_reset)"
@@ -31,12 +33,12 @@ $(NAME): $(libft) $(obj_dir) $(objects)
 
 $(libft):
 	@if git submodule status | grep '^[+-]' ; then \
-		echo "$(green)Initializing libft submodule $(c_reset)" ; \
+		printf "$(green)Initializing libft submodule...\n $(c_reset)" ; \
 		git submodule update --init ; \
 	fi
 	make -C $(libft_dir)
 
-vpath %.c sources
+vpath %.c sources sources/lexer
 $(obj_dir)/%.o: %.c
 	$(CC) $(CFLAGS) $(includes) $< -c -o $@
  
