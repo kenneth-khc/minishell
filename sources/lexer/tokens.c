@@ -1,40 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   lexer.c                                            :+:      :+:    :+:   */
+/*   tokens.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 09:43:38 by kecheong          #+#    #+#             */
-/*   Updated: 2024/04/12 10:42:42 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/04/15 21:05:26 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lexer.h"
 #include <stdio.h>
 #include "libft.h"
-
-t_Token_list	scan(const char *line)
-{
-	t_Token_list	tokens;
-
-	tokens = (t_Token_list){.head = NULL, .tail = NULL};
-	while (*line != '\0')
-	{
-		while (*line == ' ')
-			line++;
-		if (*line == '|')
-			scan_bar(&line, &tokens);
-		else if (*line == '<')
-			scan_lesser(&line, &tokens);
-		else if (*line == '>')
-			scan_greater(&line, &tokens);
-		else
-			scan_word(&line, &tokens);
-		line++;
-	}
-	return (tokens);
-}
 
 t_Token	*create_token(int type, const char *lexeme)
 {
@@ -58,6 +36,7 @@ void	add_token(t_Token_list *tokens, t_Token *token)
 	}
 	*curr = token;
 	token->next = NULL;
+	tokens->tail = token;
 }
 
 void	print_tokens(t_Token_list *tokens)
@@ -67,13 +46,16 @@ void	print_tokens(t_Token_list *tokens)
 	const char *types[] = {
 		"WORD",
 		"PIPE",
-		"AND_AND",
 		"OR_OR",
+		"AND_AND",
 		"LESSER",
 		"LESSER_LESSER",
 		"GREATER",
 		"GREATER_GREATER",
-		"STAR"
+		"STAR",
+		"OPEN_PARAN",
+		"CLOSE_PARAN",
+		"END_OF_LINE"
 	};
 	curr = tokens->head;
 	while (curr != NULL)

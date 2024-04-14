@@ -1,30 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   token_matching3.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/11 05:29:11 by kecheong          #+#    #+#             */
-/*   Updated: 2024/04/14 13:16:36 by kecheong         ###   ########.fr       */
+/*   Created: 2024/04/15 21:02:27 by kecheong          #+#    #+#             */
+/*   Updated: 2024/04/15 21:09:58 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
+#include "lexer.h"
+#include "tokens.h"
+#include <stdio.h>
 
-# include <stdio.h>
-# include <readline/readline.h>
-# include <readline/history.h>
-# include <unistd.h>
-# include <stdlib.h>
-
-# include "lexer.h"
-
-typedef struct s_Minishell
+void	match_end_of_line(t_Lexer *scanner, t_Token_list *tokens)
 {
-		
-}	t_Minishell;
-
-
-#endif
+	(void)scanner;
+	add_token(tokens, create_token(END_OF_LINE, NULL));
+}

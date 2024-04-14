@@ -6,7 +6,7 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 09:25:32 by kecheong          #+#    #+#             */
-/*   Updated: 2024/04/12 08:38:43 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/04/15 16:35:19 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,13 +17,16 @@ enum e_Token_types
 {
 	WORD = 256,
 	PIPE,				// |
-	AND_AND,			// &&
 	OR_OR,				// ||
+	AND_AND,			// &&
 	LESSER,				// <
 	LESSER_LESSER,		// <<
 	GREATER,			// >
 	GREATER_GREATER,	// >>
-	STAR
+	STAR,				// *
+	OPEN_PARAN,			// (
+	CLOSE_PARAN,		// )
+	END_OF_LINE,		// \0
 };
 
 typedef struct s_Token

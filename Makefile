@@ -40,7 +40,7 @@ $(libft):
 
 vpath %.c sources sources/lexer
 $(obj_dir)/%.o: %.c
-	$(CC) $(CFLAGS) $(includes) $< -c -o $@
+	$(CC) $(CFLAGS) $(fsan) $(debug) $(includes) $< -c -o $@
  
 $(obj_dir):
 	mkdir -p $(obj_dir)

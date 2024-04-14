@@ -1,30 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   errors.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/11 05:29:11 by kecheong          #+#    #+#             */
-/*   Updated: 2024/04/14 13:16:36 by kecheong         ###   ########.fr       */
+/*   Created: 2024/04/14 12:57:43 by kecheong          #+#    #+#             */
+/*   Updated: 2024/04/14 12:58:22 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
+#include <stdio.h>
+#include <stdlib.h>
 
-# include <stdio.h>
-# include <readline/readline.h>
-# include <readline/history.h>
-# include <unistd.h>
-# include <stdlib.h>
-
-# include "lexer.h"
-
-typedef struct s_Minishell
+void	error(const char *str)
 {
-		
-}	t_Minishell;
-
-
-#endif
+	printf("%s\n", str);
+	exit(EXIT_FAILURE);
+}
