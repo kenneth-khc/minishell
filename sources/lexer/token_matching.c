@@ -6,7 +6,7 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/14 13:06:35 by kecheong          #+#    #+#             */
-/*   Updated: 2024/04/15 21:11:58 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/04/17 18:02:21 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,8 @@ t_Matcher	*init_matchers(void)
 	matchers[3].match_function = match_and;
 	matchers[4].start = '\0';
 	matchers[4].match_function = match_end_of_line;
+	matchers[5].start = '#';
+	matchers[5].match_function = skip_comment;
 	// matchers[4].start = '\'';
 	// matchers[4].match_function = match_quotes;
 	// matchers[5].start = '\'';

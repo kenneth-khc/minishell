@@ -6,7 +6,7 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 09:44:52 by kecheong          #+#    #+#             */
-/*   Updated: 2024/04/15 21:15:28 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/04/17 18:02:33 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ typedef struct s_Lexer
 	char	**history;
 }	t_Lexer;
 
-#define TOKEN_MATCHERS 5
+#define TOKEN_MATCHERS 6
 typedef struct s_Matcher
 {
 	char	start;
@@ -35,6 +35,7 @@ t_Matcher		*init_matchers(void);
 t_Token_list	scan(char **line);
 bool			end_of_line(t_Token *token);
 void			skip_whitespaces(t_Lexer *scanner);
+void			skip_comment(t_Lexer *scanner);
 void			match(t_Lexer *scanner, t_Matcher *matchers, t_Token_list *tokens);
 void			match_bar(t_Lexer *scanner, t_Token_list *tokens);
 void			match_lesser(t_Lexer *scanner, t_Token_list *tokens);

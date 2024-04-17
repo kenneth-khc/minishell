@@ -6,7 +6,7 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 05:13:16 by kecheong          #+#    #+#             */
-/*   Updated: 2024/04/15 21:24:58 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/04/17 18:00:35 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,9 @@ bool	end_of_line(t_Token *token)
 
 void	skip_whitespaces(t_Lexer *scanner)
 {
-	while (*scanner->lookahead == ' ' || *scanner->lookahead == '\n' || *scanner->lookahead == '\t')
+	while (*scanner->lookahead == ' '
+		|| *scanner->lookahead == '\n'
+		|| *scanner->lookahead == '\t')
 		scanner->lookahead++;
 	scanner->start = scanner->lookahead;
 }
