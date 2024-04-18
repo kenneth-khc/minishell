@@ -1,33 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   word_matching.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/11 05:29:11 by kecheong          #+#    #+#             */
-/*   Updated: 2024/04/18 21:39:24 by kecheong         ###   ########.fr       */
+/*   Created: 2024/04/18 21:47:29 by kecheong          #+#    #+#             */
+/*   Updated: 2024/04/18 21:53:28 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
+#include "tokens.h"
+#include "lexer.h"
+#include "libft.h"
 
-# include <stdio.h>
-# include <readline/readline.h>
-# include <readline/history.h>
-# include <unistd.h>
-# include <stdlib.h>
+/* 	I WILL READ THE DOCUMENTATION AND HANDLE QUOTES PROPERLY THIS TIME */
 
-# include "lexer.h"
-
-typedef struct s_Minishell
+void	match_word(t_Lexer *scanner, t_Token_list *tokens)
 {
+	while (!is_metacharacter(*scanner->lookahead))
+		scanner->lookahead++;
+	add_token(tokens, create_token(WORD,
+		extract_substring(scanner->start, scanner->lookahead)));
 		
-}	t_Minishell;
-
-char			*get_line(void);
-t_Token_list	scan(char **line);
-
-
-#endif
+}

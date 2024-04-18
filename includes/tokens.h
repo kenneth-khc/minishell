@@ -6,13 +6,19 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 09:25:32 by kecheong          #+#    #+#             */
-/*   Updated: 2024/04/15 16:35:19 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/04/18 21:38:14 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef TOKENS_H
 # define TOKENS_H
 
+/**
+ * Types of tokens the shell recognizes. They are either a word, or an
+ * operator that performs special functions. 
+ * A word is defined as a sequence of characters that is delimited by blanks
+ * and metacharacters, unless the blanks and metacharacters are quoted.
+ **/
 enum e_Token_types
 {
 	WORD = 256,
@@ -26,9 +32,15 @@ enum e_Token_types
 	STAR,				// *
 	OPEN_PARAN,			// (
 	CLOSE_PARAN,		// )
-	END_OF_LINE,		// \0
+	SEMICOLON,			// ;
+	END_OF_LINE,		// \n
 };
 
+/**
+ * Representing a token.
+ * Stores the type of the token and its lexeme in cases of word.
+ * Points to the next token in the list.
+ */
 typedef struct s_Token
 {
 	struct s_Token	*next;

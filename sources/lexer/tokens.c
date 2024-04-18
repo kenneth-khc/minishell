@@ -6,7 +6,7 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 09:43:38 by kecheong          #+#    #+#             */
-/*   Updated: 2024/04/15 21:05:26 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/04/18 21:35:16 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ void	print_tokens(t_Token_list *tokens)
 		"STAR",
 		"OPEN_PARAN",
 		"CLOSE_PARAN",
+		"SEMICOLON",
 		"END_OF_LINE"
 	};
 	curr = tokens->head;

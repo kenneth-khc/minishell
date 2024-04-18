@@ -6,37 +6,13 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/14 13:06:35 by kecheong          #+#    #+#             */
-/*   Updated: 2024/04/17 18:02:21 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/04/18 21:40:30 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "lexer.h"
 #include <stdlib.h>
 #include "errors.h"
-
-t_Matcher	*init_matchers(void)
-{
-	t_Matcher	*matchers;
-
-	matchers = malloc(sizeof(*matchers) * TOKEN_MATCHERS);
-	matchers[0].start = '|';
-	matchers[0].match_function = match_bar;
-	matchers[1].start = '<';
-	matchers[1].match_function = match_lesser;
-	matchers[2].start = '>';
-	matchers[2].match_function = match_greater;
-	matchers[3].start = '&';
-	matchers[3].match_function = match_and;
-	matchers[4].start = '\0';
-	matchers[4].match_function = match_end_of_line;
-	matchers[5].start = '#';
-	matchers[5].match_function = skip_comment;
-	// matchers[4].start = '\'';
-	// matchers[4].match_function = match_quotes;
-	// matchers[5].start = '\'';
-	// matchers[5].match_function = match_quotes;
-	return (matchers);
-}
 
 void	match_bar(t_Lexer *scanner, t_Token_list *tokens)
 {

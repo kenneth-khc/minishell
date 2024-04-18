@@ -6,7 +6,7 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/15 20:53:28 by kecheong          #+#    #+#             */
-/*   Updated: 2024/04/15 20:54:38 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/04/18 21:47:22 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "lexer.h"
 #include "libft.h"
 
-void	match_word(t_Lexer *scanner, t_Token_list *tokens)
+void	match_word1(t_Lexer *scanner, t_Token_list *tokens)
 {
 	char	*word;
 
@@ -22,15 +22,36 @@ void	match_word(t_Lexer *scanner, t_Token_list *tokens)
 		match_quotes(scanner, tokens);
 	else
 	{
-		while (*scanner->lookahead != ' ' && *scanner->lookahead != '\0')
+		while (!is_metacharacter(*scanner->lookahead))
 			scanner->lookahead++;
 		word = ft_substr(scanner->start, 0, scanner->lookahead - scanner->start);
+		// word = extract_substring(scanner->start, scanner->lookahead);
 		add_token(tokens, create_token(WORD, word));
 		scanner->start = scanner->lookahead;
 	}
 }
 
-bool	is_word_terminated(t_Lexer *scanner)
+void	match_quotes(t_Lexer *scanner, t_Token_list *tokens)
+{
+	t_Token	*token;
+	bool	terminated;
+
+	terminated = is_quote_terminated(scanner);
+	if (!terminated)
+	{
+		prompt_until_terminated(scanner, terminated);
+	}
+	// while (!is_metacharacter(*scanner->lookahead))
+	// 	scanner->lookahead++;
+	token = create_token(WORD, NULL);
+	token->lexeme = get_quoted_word(scanner);
+	// token->lexeme = extract_substring(scanner->start, scanner->lookahead);
+	add_token(tokens, token);
+	scanner->lookahead++;
+	scanner->start = scanner->lookahead;
+}
+
+bool	is_quote_terminated(t_Lexer *scanner)
 {
 	const char	*ptr = scanner->start;
 	const char	quote = *ptr;
@@ -44,19 +65,7 @@ bool	is_word_terminated(t_Lexer *scanner)
 	return (false);
 }
 
-char	*get_quoted_word(t_Lexer *scanner)
-{
-	const char	quote = *scanner->start;
-
-	scanner->lookahead++;
-	while (*scanner->lookahead != quote && *scanner->lookahead != '\0')
-		scanner->lookahead++;
-	scanner->lookahead++;
-	return (ft_substr(scanner->start, 0, scanner->lookahead - scanner->start));
-}
-
 #include <stddef.h>
-#include <readline/readline.h>
 void	prompt_until_terminated(t_Lexer *scanner, bool terminated)
 {
 	char		*next_line;
@@ -79,18 +88,15 @@ void	prompt_until_terminated(t_Lexer *scanner, bool terminated)
 	scanner->start = scanner->line + start_offset;
 	scanner->lookahead = scanner->start;
 }
-
-void	match_quotes(t_Lexer *scanner, t_Token_list *tokens)
+#include <stdio.h>
+char	*get_quoted_word(t_Lexer *scanner)
 {
-	t_Token	*token;
-	bool	terminated;
+	const char	quote = *scanner->start;
 
-	terminated = is_word_terminated(scanner);
-	if (!terminated)
-	{
-		prompt_until_terminated(scanner, terminated);
-	}
-	token = create_token(WORD, NULL);
-	token->lexeme = get_quoted_word(scanner);
-	add_token(tokens, token);
+	scanner->lookahead++;
+	while (*scanner->lookahead != quote && *scanner->lookahead !='\0')
+		scanner->lookahead++;
+	printf("substring: %s\n", extract_substring(scanner->start, scanner->lookahead));
+	// return (ft_substr(scanner->start, 0, scanner->lookahead - scanner->start));
+	return (extract_substring(scanner->start, scanner->lookahead));
 }
