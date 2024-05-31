@@ -20,32 +20,23 @@ typedef struct s_Lexer
 {
 	char	*line;
 	char	*start;
-	char	*lookahead;
 	char	**history;
 }	t_Lexer;
 
-#define TOKEN_MATCHERS 7
-typedef struct s_Matcher
+typedef struct s_Match_Table
 {
-	char	start;
-	void	(*match_function)();
-}	t_Matcher;
+	const char			*lexeme;
+	enum e_Token_Types	type;
+}	t_Match_Table;
 
 bool	is_metacharacter(const char c);
 bool	is_blank(const char c);
 char			*extract_substring(const char *start, const char *end);
-
-t_Matcher		*init_matchers(void);
 bool			end_of_line(t_Token *token);
 void			skip_whitespaces(t_Lexer *scanner);
 void			skip_comment(t_Lexer *scanner);
-void			match(t_Lexer *scanner, t_Matcher *matchers, t_Token_list *tokens);
-void			match_bar(t_Lexer *scanner, t_Token_list *tokens);
-void			match_lesser(t_Lexer *scanner, t_Token_list *tokens);
-void			match_greater(t_Lexer *scanner, t_Token_list *tokens);
-void			match_and(t_Lexer *scanner, t_Token_list *tokens);
+void			match(t_Lexer *scanner, t_Token_list *tokens);
 void			match_word(t_Lexer *scanner, t_Token_list *tokens);
-void			match_end_of_line(t_Lexer *scanner, t_Token_list *tokens);
 
 void			match_quotes(t_Lexer *scanner, t_Token_list *tokens);
 bool			is_quote_terminated(t_Lexer *scanner);

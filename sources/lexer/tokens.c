@@ -56,7 +56,8 @@ void	print_tokens(t_Token_list *tokens)
 		"OPEN_PARAN",
 		"CLOSE_PARAN",
 		"SEMICOLON",
-		"END_OF_LINE"
+		"END_OF_LINE",
+		"HASH"
 	};
 	curr = tokens->head;
 	while (curr != NULL)

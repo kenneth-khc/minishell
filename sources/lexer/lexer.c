@@ -14,66 +14,62 @@
 #include "lexer.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include "libft.h"
 
+/*
+ * With the line read from the prompt, start scanning through it to tokenize.
+ * Returns a list of all the tokens.
+ */
 t_Token_list	scan(char **line)
 {
-	t_Token_list	tokens;
 	t_Lexer			scanner;
+	t_Token_list	tokens;
 
+	scanner = (t_Lexer){.line = *line,
+		.start = *line,
+		// .lookahead = *line,
+		.history = line};
 	tokens = (t_Token_list){.head = NULL, .tail = NULL};
-	scanner.line = *line;
-	scanner.start = *line;
-	scanner.lookahead = *line;
-	scanner.history = line;
-	t_Matcher *matchers = init_matchers();
 	while (!end_of_line(tokens.tail))
 	{
 		skip_whitespaces(&scanner);
-		match(&scanner, matchers, &tokens);
+		match(&scanner, &tokens);
 	}
 	return (tokens);
 }
 
-void	match(t_Lexer *scanner, t_Matcher *matchers, t_Token_list *tokens)
+void	match(t_Lexer *lexer, t_Token_list *tokens)
 {
-	int	i;
+	int	i = 0;
+	t_Match_Table const *ptr;
+	static t_Match_Table	matches[TOKEN_TYPES] = {
+		{"\n", END_OF_LINE},
+		{"||", OR_OR},
+		{"|", PIPE},
+		{"&&", AND_AND},
+		{"<<", LESSER_LESSER},
+		{"<", LESSER},
+		{">>", GREATER_GREATER},
+		{">", GREATER},
+		{"*", STAR},
+		{"(", OPEN_PARAN},
+		{")", CLOSE_PARAN},
+		{";", SEMICOLON},
+		{"#", HASH}
+	};
 
-	i = 0;
-	while (i < TOKEN_MATCHERS)
+	while (i < TOKEN_TYPES)
 	{
-		if (*scanner->start == matchers[i].start)
+		ptr = &matches[i];
+		if (ft_strncmp(lexer->start, ptr->lexeme, ft_strlen(ptr->lexeme)) == 0)
 		{
-			matchers[i].match_function(scanner, tokens);
-			break ;
+			add_token(tokens, create_token(ptr->type, ptr->lexeme));
+			lexer->start += ft_strlen(ptr->lexeme);
+			return ;
 		}
 		i++;
-		if (i == TOKEN_MATCHERS - 1)
-			match_word(scanner, tokens);
 	}
-}
-
-t_Matcher	*init_matchers(void)
-{
-	t_Matcher	*matchers;
-
-	matchers = malloc(sizeof(*matchers) * TOKEN_MATCHERS);
-	matchers[0].start = '|';
-	matchers[0].match_function = match_bar;
-	matchers[1].start = '<';
-	matchers[1].match_function = match_lesser;
-	matchers[2].start = '>';
-	matchers[2].match_function = match_greater;
-	matchers[3].start = '&';
-	matchers[3].match_function = match_and;
-	matchers[4].start = '\n';
-	matchers[4].match_function = match_end_of_line;
-	matchers[5].start = '#';
-	matchers[5].match_function = skip_comment;
-	// matchers[4].start = '\'';
-	// matchers[4].match_function = match_quotes;
-	// matchers[5].start = '\'';
-	// matchers[5].match_function = match_quotes;
-	return (matchers);
+	match_word(lexer, tokens);
 }
 
 bool	end_of_line(t_Token *token)
@@ -83,8 +79,7 @@ bool	end_of_line(t_Token *token)
 
 void	skip_whitespaces(t_Lexer *scanner)
 {
-	while (is_blank(*scanner->lookahead))
-		scanner->lookahead++;
-	scanner->start = scanner->lookahead;
+	while (is_blank(*scanner->start))
+		scanner->start++;
 }
 

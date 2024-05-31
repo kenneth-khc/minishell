@@ -19,7 +19,9 @@
  * A word is defined as a sequence of characters that is delimited by blanks
  * and metacharacters, unless the blanks and metacharacters are quoted.
  **/
-enum e_Token_types
+
+#define TOKEN_TYPES 13
+enum e_Token_Types
 {
 	WORD = 256,
 	PIPE,				// |
@@ -34,6 +36,7 @@ enum e_Token_types
 	CLOSE_PARAN,		// )
 	SEMICOLON,			// ;
 	END_OF_LINE,		// \n
+	HASH				// #
 };
 
 /**
@@ -48,6 +51,10 @@ typedef struct s_Token
 	const char		*lexeme;
 }	t_Token;
 
+/**
+ * A list of all the tokens.
+ * Terminated by an END_OF_LINE token when end of input is reached.
+ */
 typedef struct s_Token_list
 {
 	struct s_Token	*head;
