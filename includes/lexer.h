@@ -16,9 +16,17 @@
 # include "tokens.h"
 # include <stdbool.h>
 
+typedef struct	s_Line
+{
+	char		*start;
+	int			len;
+	struct s_Line	*next;
+}	t_Line;
+
 typedef struct s_Lexer
 {
-	char	*line;
+	// char	*line;
+	t_Line	*line;
 	char	*start;
 	char	**history;
 }	t_Lexer;

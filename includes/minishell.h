@@ -26,8 +26,8 @@ typedef struct s_Minishell
 		
 }	t_Minishell;
 
-char			*get_line(void);
-t_Token_list	scan(char **line);
+t_Line			*get_line(void);
+t_Token_list	scan(t_Line	*line);
 
 
 #endif

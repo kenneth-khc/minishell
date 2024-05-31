@@ -15,7 +15,8 @@
 
 int	main(int argc, char **argv, char **envp)
 {
-	char			*line;
+	// char			*line;
+	t_Line			*line;
 	t_Token_list	tokens;
 
 	(void)argc;
@@ -24,14 +25,14 @@ int	main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		line = get_line();
-		tokens = scan(&line);
-		add_history(line);
+		tokens = scan(line);
+		add_history(line->start);
 		print_tokens(&tokens);
 		free(line);
 	}
 }
 
-char	*get_line(void)
+t_Line	*get_line(void)
 {
 	char	*line;
 	char	*append;
@@ -41,5 +42,9 @@ char	*get_line(void)
 		printf("handle eof!\n"), exit(EXIT_FAILURE);
 	append = ft_strjoin(line, "\n");
 	free(line);
-	return (append);
+	t_Line	*node = ft_calloc(1, sizeof(*node));
+	node->start = append;
+	node->next = NULL;
+	return (node);
 }
+

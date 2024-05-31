@@ -20,20 +20,21 @@
  * With the line read from the prompt, start scanning through it to tokenize.
  * Returns a list of all the tokens.
  */
-t_Token_list	scan(char **line)
+// t_Token_list	scan(char **line)
+t_Token_list	scan(t_Line	*line)
 {
-	t_Lexer			scanner;
+	t_Lexer			lexer;
 	t_Token_list	tokens;
 
-	scanner = (t_Lexer){.line = *line,
-		.start = *line,
+	lexer = (t_Lexer){.line = line,
+		.start = line->start,
 		// .lookahead = *line,
-		.history = line};
+		.history = &line->start};
 	tokens = (t_Token_list){.head = NULL, .tail = NULL};
 	while (!end_of_line(tokens.tail))
 	{
-		skip_whitespaces(&scanner);
-		match(&scanner, &tokens);
+		skip_whitespaces(&lexer);
+		match(&lexer, &tokens);
 	}
 	return (tokens);
 }
@@ -77,9 +78,14 @@ bool	end_of_line(t_Token *token)
 	return (token && token->type == END_OF_LINE);
 }
 
-void	skip_whitespaces(t_Lexer *scanner)
+void	skip_whitespaces(t_Lexer *lexer)
 {
-	while (is_blank(*scanner->start))
-		scanner->start++;
+	while (is_blank(*lexer->start))
+		lexer->start++;
 }
+
+// void	advance_lexer(t_Lexer *lexer, const char *lexeme)
+// {
+// 	lexer->start += ft_strlen(lexeme);
+// }
 
