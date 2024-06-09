@@ -6,13 +6,17 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 05:13:16 by kecheong          #+#    #+#             */
-/*   Updated: 2024/06/10 02:13:41 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/06/10 06:04:15 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 #include "libft.h"
 #include "input.h"
+#include "tokens.h"
+
+void	free_tokens(t_Token_list *tokens);
+char	*get_history(t_Input *input);
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -26,10 +30,42 @@ int	main(int argc, char **argv, char **envp)
 	while (1)
 	{
 		get_input(&input);
-		tokens = scan(&input);
-		add_history(input.lines[0]->start);
+		tokens = scan(&input);	
+		add_history(get_history(&input));
 		print_tokens(&tokens);
 		clear_input(&input);
+		free_tokens(&tokens);
+	}
+}
+
+char	*get_history(t_Input *input)
+{
+	int		i;
+	char	*buffer;
+
+	i = 0;
+	buffer = "";
+	while (i < input->count)
+	{
+		buffer = ft_strjoin(buffer, input->lines[i]->start);
+		i++;
+	}
+	return (buffer);
+}
+
+void	free_tokens(t_Token_list *tokens)
+{
+	t_Token	*curr;
+	t_Token	*prev;
+
+	curr = tokens->head;
+	while (curr != NULL)
+	{
+		free((void *)curr->lexeme);
+		curr->lexeme = NULL;
+		prev = curr;
+		curr = curr->next;
+		free(prev);
 	}
 }
 

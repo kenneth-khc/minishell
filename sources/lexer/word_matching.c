@@ -6,7 +6,7 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 21:47:29 by kecheong          #+#    #+#             */
-/*   Updated: 2024/06/10 04:31:46 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/06/10 05:28:03 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,61 +30,59 @@
 
 #include <stdio.h>
 
-bool	is_delimiter(const char c, const char *delims)
-{
-	while (*delims != '\0')
-	{
-		if (c == *delims)
-			return (true);
-		delims++;
-	}
-	return (false);
-}
-
-void	update_lexer_state(t_Lexer *lexer);
-t_Line	*get_input_line(int fd);
-void	handle_unterminated_input(t_Lexer *lexer);
-
-#define DELIMITERS " \t\n|&;()<>"
-
 /**
 * At this point, all operators have been checked for. The remaining token
 * can only be a word, where quotes and escapes have to be handled carefully.
 */
-void	match_word(t_Lexer *lexer, t_Token_list *tokens)
+void	match_word(t_Lexer *lexer, t_Token_list *tokens, t_Input *input)
+{
+	t_Token	*word;
+	char	*lexeme;
+	t_Line	*next_line;
+
+	advance_word(lexer);
+	if (lexer->terminated)
+	{
+		lexeme = extract_substring(lexer->start_char, lexer->end_char);
+		word = create_token(WORD, lexeme);
+		add_token(tokens, word);
+		lexer->start_char = lexer->end_char + 1;
+		lexer->end_char = lexer->start_char;
+	}
+	else if (lexer->terminated == false)
+	{
+		write(STDERR_FILENO, "> ", 2);
+		next_line = get_input_line(STDIN_FILENO);
+		store_input(input, next_line);
+		join_input_lines(lexer, input);
+		match_word(lexer, tokens, input);
+	}
+}
+
+void	advance_word(t_Lexer *lexer)
 {
 	while (*lexer->end_char != '\0')
 	{
 		update_lexer_state(lexer);
 		if (lexer->state == UNQUOTED)
 		{
-			if (!is_delimiter(*lexer->end_char, DELIMITERS))
+			if (!is_metacharacter(*lexer->end_char))
 			{
 				lexer->end_char++;
 				continue ;
 			}
-			else if (is_delimiter(*lexer->end_char, DELIMITERS))
+			else if (is_metacharacter(*lexer->end_char))
 			{
 				lexer->end_char--;
 				break ;
 			}
 		}
 		else if (lexer->state == WEAK_QUOTE)
-		{
 			while (*lexer->end_char && *lexer->end_char != '"')
 				lexer->end_char++;
-		}
-	}
-	if (lexer->terminated)
-	{
-		add_token(tokens, create_token(WORD, extract_substring(lexer->start_char, lexer->end_char)));
-		lexer->start_char = lexer->end_char + 1;
-		lexer->end_char = lexer->start_char;
-	}
-	else if (lexer->terminated == false)
-	{
-		handle_unterminated_input(lexer);
-		match_word(lexer, tokens);
+		else if (lexer->state == STRONG_QUOTE)
+			while (*lexer->end_char && *lexer->end_char != '\'')
+				lexer->end_char++;
 	}
 }
 
@@ -94,26 +92,22 @@ void	join_input_lines(t_Lexer *lexer, t_Input *input)
 	char	*joined;
 
 	offset = lexer->end_char - lexer->line->start;
-	joined = ft_strjoin(lexer->line->start, input->lines[input->count - 1]->start);
+	joined = ft_strjoin(lexer->line->start,
+			input->lines[input->count - 1]->start);
 	lexer->line = make_line(joined);
-	// lexer->start_char = &joined[offset];
 	lexer->start_char = lexer->line->start;
 	lexer->end_char = &joined[offset];
 }
 
-void	handle_unterminated_input(t_Lexer *lexer)
-{
-	t_Line	*next_line; (void)lexer;
-
-	write(STDERR_FILENO, "> ", 2);
-	next_line = get_input_line(STDIN_FILENO);
-	store_input(&lexer->input, next_line);
-	join_input_lines(lexer, &lexer->input);
-}
-
+/**
+ * Transition into different states based on the current character.
+ * When word is unquoted, metacharacters delimit it.
+ * When word is quoted, its corresponding end quote delimits it.
+*/
 void	update_lexer_state(t_Lexer *lexer)
 {
 	const char	*curr = lexer->end_char;
+	static char	terminator;
 
 	if (lexer->state == UNQUOTED)
 	{
@@ -122,19 +116,22 @@ void	update_lexer_state(t_Lexer *lexer)
 			lexer->state = WEAK_QUOTE;
 			lexer->terminated = false;
 			lexer->end_char++;
-			curr++;
 		}
+		else if (*curr == '\'')
+		{
+			lexer->state = STRONG_QUOTE;
+			lexer->terminated = false;
+			lexer->end_char++;
+		}
+		terminator = *curr;
 	}
-	else if (lexer->state == WEAK_QUOTE)
+	else if (lexer->state == WEAK_QUOTE
+		|| lexer->state == STRONG_QUOTE)
 	{
-		if (*curr == '"')
+		if (*curr == terminator)
 		{
 			lexer->state = UNQUOTED;
 			lexer->terminated = true;
 		}
 	}
-	else if (lexer->state == STRONG_QUOTE)
-		;
-
 }
-

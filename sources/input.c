@@ -6,7 +6,7 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/09 21:04:33 by kecheong          #+#    #+#             */
-/*   Updated: 2024/06/10 04:09:27 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/06/10 05:50:02 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@ t_Line	*get_input_line(int	fd)
 	t_Line	*line;
 
 	line = ft_calloc(1, sizeof(*line));
+	if (line == NULL)
+		error("calloc failed");
 	line->start = get_next_line(fd);
 	line->len = ft_strlen(line->start);
 	return (line);
@@ -64,6 +66,7 @@ void	store_input(t_Input *input, t_Line *new_line)
 
 	i = 0;
 	input->count++;
+	printf("INCREMENTING: %d\n", input->count);
 	arr = ft_calloc(1, sizeof(t_Line **) * input->count);
 	if (arr == NULL)
 		error("calloc failed\n");
