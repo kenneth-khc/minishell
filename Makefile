@@ -29,7 +29,7 @@ test: all
 all: $(NAME)
 
 $(NAME): $(libft) $(obj_dir) $(objects)
-	$(CC) $(fsan) $(debug) $(objects) $(CFLAGS) $(LDFLAGS) $(LDLIBS) -o $@
+	$(CC) $(debug) $(objects) $(CFLAGS) $(LDFLAGS) $(LDLIBS) -o $@
 
 $(libft):
 	@if git submodule status | grep '^[+-]' ; then \
@@ -40,7 +40,7 @@ $(libft):
 
 vpath %.c sources sources/lexer
 $(obj_dir)/%.o: %.c
-	$(CC) $(CFLAGS) $(fsan) $(debug) $(includes) $< -c -o $@
+	$(CC) $(CFLAGS)  $(debug) $(includes) $< -c -o $@
  
 $(obj_dir):
 	mkdir -p $(obj_dir)

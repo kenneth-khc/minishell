@@ -20,7 +20,6 @@ typedef struct	s_Line
 {
 	char			*start;
 	size_t			len;
-	struct s_Line	*next;
 }	t_Line;
 
 typedef struct s_Input
@@ -29,9 +28,10 @@ typedef struct s_Input
 	int		count; // size of the array
 }	t_Input;
 
+t_Line	*make_line(char *str);
 void	get_input(t_Input *input);
-t_Line	*get_line(void);
 t_Line	*get_input_line(int	fd);
 void	store_input(t_Input *input, t_Line *new_line);
+void	clear_input(t_Input *input);
 
 #endif

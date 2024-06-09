@@ -13,21 +13,30 @@
 #ifndef LEXER_H
 # define LEXER_H
 
-# include "tokens.h"
 # include <stdbool.h>
+# include <stddef.h>
+# include "tokens.h"
+# include "input.h"
 
-typedef struct	s_Line
+
+typedef enum e_Word_State
 {
-	char		*start;
-	int			len;
-	struct s_Line	*next;
-}	t_Line;
+	UNQUOTED,
+	WEAK_QUOTE,
+	STRONG_QUOTE,
+	ESCAPE
+} t_Word_State;
 
 typedef struct s_Lexer
 {
+	t_Input	input;
 	// char	*line;
 	t_Line	*line;
-	char	*start;
+	// char	*start;
+	char	*start_char;
+	char	*end_char;
+	t_Word_State	state;
+	bool	terminated;
 	char	**history;
 }	t_Lexer;
 
@@ -41,15 +50,15 @@ bool	is_metacharacter(const char c);
 bool	is_blank(const char c);
 char			*extract_substring(const char *start, const char *end);
 bool			end_of_line(t_Token *token);
-void			skip_whitespaces(t_Lexer *scanner);
-void			skip_comment(t_Lexer *scanner);
-void			match(t_Lexer *scanner, t_Token_list *tokens);
-void			match_word(t_Lexer *scanner, t_Token_list *tokens);
+void			skip_whitespaces(t_Lexer *lexer);
+void			skip_comment(t_Lexer *lexer);
+void			match(t_Lexer *lexer, t_Token_list *tokens);
+void			match_word(t_Lexer *lexer, t_Token_list *tokens);
 
-void			match_quotes(t_Lexer *scanner, t_Token_list *tokens);
-bool			is_quote_terminated(t_Lexer *scanner);
-void			prompt_until_terminated(t_Lexer *scanner, bool terminated);
-char			*get_quoted_word(t_Lexer *scanner);
+void			match_quotes(t_Lexer *lexer, t_Token_list *tokens);
+bool			is_quote_terminated(t_Lexer *lexer);
+void			prompt_until_terminated(t_Lexer *lexer, bool terminated);
+char			*get_quoted_word(t_Lexer *lexer);
 
 
 #endif
