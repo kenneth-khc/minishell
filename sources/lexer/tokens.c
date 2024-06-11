@@ -70,3 +70,20 @@ void	print_tokens(t_Token_List *tokens)
 	}
 	printf("\n\n");
 }
+
+void	free_tokens(t_Token_List *tokens)
+{
+	t_Token	*curr;
+	t_Token	*prev;
+
+	curr = tokens->head;
+	while (curr != NULL)
+	{
+		free((void *)curr->lexeme);
+		curr->lexeme = NULL;
+		prev = curr;
+		curr = curr->next;
+		free(prev);
+	}
+}
+
