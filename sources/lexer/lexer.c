@@ -21,18 +21,18 @@
  * With the line read from the prompt, start scanning through it to tokenize.
  * Returns a list of all the tokens.
  */
-t_Token_list	scan(t_Input *input)
+t_Token_List	scan(t_Input *input)
 {
 	t_Line	*line = input->lines[0];
 	t_Lexer			lexer;
-	t_Token_list	tokens;
+	t_Token_List	tokens;
 
 	lexer = (t_Lexer){.line = line,
 		.start_char = line->start,
 		.end_char = line->start,
 		.state = UNQUOTED,
 		.terminated = true};
-	tokens = (t_Token_list){.head = NULL, .tail = NULL};
+	tokens = (t_Token_List){.head = NULL, .tail = NULL};
 	while (!end_of_line(tokens.tail))
 	{
 		while (is_blank(*lexer.start_char))
@@ -45,7 +45,7 @@ t_Token_list	scan(t_Input *input)
 	return (tokens);
 }
 
-void	match(t_Input *input, t_Lexer *lexer, t_Token_list *tokens)
+void	match(t_Input *input, t_Lexer *lexer, t_Token_List *tokens)
 {
 	int	i = 0;
 	t_Match_Table const *ptr;

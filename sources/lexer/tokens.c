@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "lexer.h"
 #include <stdio.h>
-#include "libft.h"
+#include "tokens.h"
+#include <stdlib.h>
 
 t_Token	*create_token(int type, const char *lexeme)
 {
@@ -25,7 +25,7 @@ t_Token	*create_token(int type, const char *lexeme)
 	return (new_token);
 }
 
-void	add_token(t_Token_list *tokens, t_Token *token)
+void	add_token(t_Token_List *tokens, t_Token *token)
 {
 	t_Token	**curr;
 
@@ -39,7 +39,7 @@ void	add_token(t_Token_list *tokens, t_Token *token)
 	tokens->tail = token;
 }
 
-void	print_tokens(t_Token_list *tokens)
+void	print_tokens(t_Token_List *tokens)
 {
 	int	i = 0;
 	t_Token		*curr;

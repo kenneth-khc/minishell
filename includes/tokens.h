@@ -19,7 +19,6 @@
  * A word is defined as a sequence of characters that is delimited by blanks
  * and metacharacters, unless the blanks and metacharacters are quoted.
  **/
-
 #define TOKEN_TYPES 13
 enum e_Token_Types
 {
@@ -41,7 +40,7 @@ enum e_Token_Types
 
 /**
  * Representing a token.
- * Stores the type of the token and its lexeme in cases of word.
+ * Stores the type of the token and its lexeme.
  * Points to the next token in the list.
  */
 typedef struct s_Token
@@ -55,14 +54,14 @@ typedef struct s_Token
  * A list of all the tokens.
  * Terminated by an END_OF_LINE token when end of input is reached.
  */
-typedef struct s_Token_list
+typedef struct s_Token_List
 {
 	struct s_Token	*head;
 	struct s_Token	*tail;
-}	t_Token_list;
+}	t_Token_List;
 
 t_Token	*create_token(int type, const char *lexeme);
-void	add_token(t_Token_list *tokens, t_Token *token);
-void	print_tokens(t_Token_list *tokens);
+void	add_token(t_Token_List *tokens, t_Token *token);
+void	print_tokens(t_Token_List *tokens);
 
 #endif

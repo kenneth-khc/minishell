@@ -15,12 +15,12 @@
 #include "input.h"
 #include "tokens.h"
 
-void	free_tokens(t_Token_list *tokens);
+void	free_tokens(t_Token_List *tokens);
 char	*get_history(t_Input *input);
 
 int	main(int argc, char **argv, char **envp)
 {
-	t_Token_list	tokens;
+	t_Token_List	tokens;
 	t_Input			input;
 
 	(void)argc;
@@ -53,7 +53,7 @@ char	*get_history(t_Input *input)
 	return (buffer);
 }
 
-void	free_tokens(t_Token_list *tokens)
+void	free_tokens(t_Token_List *tokens)
 {
 	t_Token	*curr;
 	t_Token	*prev;

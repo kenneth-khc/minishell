@@ -10,14 +10,11 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line_bonus.h"
 #include "tokens.h"
 #include "lexer.h"
 #include "libft.h"
 #include <stddef.h>
 #include <unistd.h>
-
-/* 	I WILL READ THE DOCUMENTATION AND HANDLE QUOTES PROPERLY THIS TIME */
 
 /**
  * \ - An unquoted backslash escapes the next character, preserving its
@@ -28,13 +25,11 @@
  *			dollar signs, backslashes and backticks.
  **/
 
-#include <stdio.h>
-
 /**
 * At this point, all operators have been checked for. The remaining token
 * can only be a word, where quotes and escapes have to be handled carefully.
-*/
-void	match_word(t_Lexer *lexer, t_Token_list *tokens, t_Input *input)
+**/
+void	match_word(t_Lexer *lexer, t_Token_List *tokens, t_Input *input)
 {
 	t_Token	*word;
 	char	*lexeme;
@@ -103,7 +98,7 @@ void	join_input_lines(t_Lexer *lexer, t_Input *input)
  * Transition into different states based on the current character.
  * When word is unquoted, metacharacters delimit it.
  * When word is quoted, its corresponding end quote delimits it.
-*/
+**/
 void	update_lexer_state(t_Lexer *lexer)
 {
 	const char	*curr = lexer->end_char;
