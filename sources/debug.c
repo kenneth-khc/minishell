@@ -1,29 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   debug.h                                            :+:      :+:    :+:   */
+/*   debug.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/11 11:20:48 by kecheong          #+#    #+#             */
-/*   Updated: 2024/06/20 21:43:30 by kecheong         ###   ########.fr       */
+/*   Created: 2024/06/20 21:42:07 by kecheong          #+#    #+#             */
+/*   Updated: 2024/06/20 21:43:21 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef DEBUG_H
-# define DEBUG_H
-
-# include <assert.h>
-# include <stdarg.h>
-# include <stdio.h>
-
-# define cout(...) _log(stdout, __FILE__, __FUNCTION__, __LINE__, __VA_ARGS__)
-# define cerr(...) _log(stderr, __FILE__, __FUNCTION__, __LINE__, __VA_ARGS__)
+#include <stdarg.h>
+#include <stdio.h>
 
 void	_log(FILE *FILE,
 			const char *FILENAME,
 			const char *FUNC,
 			int LINE,
-			char *format, ...);
+			char *format, ...)
+{
+	fprintf(FILE, "%s:%s:%d: ", FILENAME, FUNC, LINE);
+	va_list args;
+	va_start(args, format);
+	vfprintf(FILE, format, args);
+	va_end(args);
+	fprintf(FILE, "\n");
+}
 
-#endif

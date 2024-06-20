@@ -16,10 +16,12 @@ includes := -I includes -I libft/includes
 
 srcs_dir := sources
 lexer_dir := $(srcs_dir)/lexer
-sources := $(wildcard $(srcs_dir)/*.c) $(wildcard $(lexer_dir)/*.c)
+parser_dir := $(srcs_dir)/parser
+sources := $(wildcard $(srcs_dir)/*.c) $(wildcard $(lexer_dir)/*.c) $(wildcard $(parser_dir)/*.c)
 obj_dir := objects
 objects := $(patsubst $(srcs_dir)/%.c, $(obj_dir)/%.o, $(sources))
 objects := $(patsubst objects/lexer/%.o, $(obj_dir)/%.o, $(objects))
+objects := $(patsubst objects/parser/%.o, $(obj_dir)/%.o, $(objects))
 # objects := $(addprefix $(obj_dir)/, $(objects))
 
 test: all
@@ -29,7 +31,7 @@ test: all
 all: $(NAME)
 
 $(NAME): $(libft) $(obj_dir) $(objects)
-	$(CC) $(debug) $(objects) $(CFLAGS) $(LDFLAGS) $(LDLIBS) -o $@
+	$(CC) $(debug) $(objects) $(CFLAGS) $(LDFLAGS) $(LDLIBS) $(fsan) -o $@
 
 $(libft):
 	@if git submodule status | grep '^[+-]' ; then \
@@ -38,7 +40,7 @@ $(libft):
 	fi
 	make -C $(libft_dir)
 
-vpath %.c sources sources/lexer
+vpath %.c sources sources/lexer sources/parser
 $(obj_dir)/%.o: %.c
 	$(CC) $(CFLAGS)  $(debug) $(includes) $< -c -o $@
  

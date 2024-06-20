@@ -6,13 +6,14 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 09:43:38 by kecheong          #+#    #+#             */
-/*   Updated: 2024/06/19 17:57:59 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/06/20 18:09:52 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
 #include "tokens.h"
 #include <stdlib.h>
+#include "libft.h"
 
 t_Token	*create_token(int type, const char *lexeme)
 {
@@ -41,8 +42,25 @@ void	add_token(t_Token_List *tokens, t_Token *token)
 
 void	print_tokens(t_Token_List *tokens)
 {
-	int	i = 0;
+	int			i;
 	t_Token		*curr;
+
+	i = 0;
+	curr = tokens->head;
+	while (curr != NULL)
+	{
+		printf("Token %d:\n", ++i);
+		printf("%s\n", token_enum_to_str(curr));
+		printf("%s\n", curr->lexeme);
+		printf("\n");
+		printf("↓\n\n");
+		curr = curr->next;
+	}
+	printf("\n\n");
+}
+
+char	*token_enum_to_str(t_Token *token)
+{
 	const char *types[] = {
 		"WORD",
 		"PIPE",
@@ -59,15 +77,7 @@ void	print_tokens(t_Token_List *tokens)
 		"END_OF_LINE",
 		"HASH"
 	};
-	curr = tokens->head;
-	while (curr != NULL)
-	{
-		printf("Token %d:\n", ++i);
-		printf("%s\n", types[curr->type - 256]);
-		printf("%s\n", curr->lexeme);
-		printf("\n");
-		printf("↓\n\n");
-		curr = curr->next;
-	}
-	printf("\n\n");
+
+	return (ft_strdup(types[token->type - 256]));
 }
+
