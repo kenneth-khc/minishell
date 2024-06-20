@@ -6,7 +6,7 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 09:43:38 by kecheong          #+#    #+#             */
-/*   Updated: 2024/04/18 21:35:16 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/06/19 17:57:59 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ void	print_tokens(t_Token_List *tokens)
 		printf("%s\n", types[curr->type - 256]);
 		printf("%s\n", curr->lexeme);
 		printf("\n");
+		printf("↓\n\n");
 		curr = curr->next;
 	}
 	printf("\n\n");

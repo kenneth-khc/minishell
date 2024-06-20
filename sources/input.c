@@ -6,7 +6,7 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/09 21:04:33 by kecheong          #+#    #+#             */
-/*   Updated: 2024/06/10 05:50:02 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/06/19 17:58:28 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,6 @@ void	store_input(t_Input *input, t_Line *new_line)
 
 	i = 0;
 	input->count++;
-	printf("INCREMENTING: %d\n", input->count);
 	arr = ft_calloc(1, sizeof(t_Line **) * input->count);
 	if (arr == NULL)
 		error("calloc failed\n");
