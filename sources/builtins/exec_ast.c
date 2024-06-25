@@ -5,7 +5,7 @@ void	exec_ast(t_general *node);
 void	exec(t_exec *node)
 {
 	execve(node->args[0], node->args, NULL);
-	printf("execve failed\n");
+	dprintf(STDERR_FILENO, "execve failed\n");
 }
 
 void	paip(t_pipe *node)
@@ -14,38 +14,43 @@ void	paip(t_pipe *node)
 
 	if (pipe(fd) == -1)
 	{
-		printf("error");
+		dprintf(STDERR_FILENO, "error");
 		return ;
 	}
 	int	pid1 = fork();
 	if (pid1 < 0)
 	{
-		printf("error");
+		dprintf(STDERR_FILENO, "error");
 		return ;
 	}
 	if (pid1 == 0)
 	{
-		close(STDOUT_FILENO);
+		// close(STDOUT_FILENO);	HERE
 		// dup(fd[1]);
+		// dup2(STDOUT_FILENO, fd[1]);
+		// printf("LEFT NODE\n");
 		dup2(fd[1], STDOUT_FILENO);
 		close(fd[0]);
-		close(fd[1]);
 		exec_ast((t_general *)node->left);
+		exit(0);
 	}
 	int	pid2 = fork();
 	if (pid2 < 0)
 	{
-		printf("error");
+		dprintf(STDERR_FILENO, "error");
 		return ;
 	}
 	if (pid2 == 0)
 	{
-		close(STDIN_FILENO);
+		// close(STDIN_FILENO);		HERE
 		// dup(fd[0]);
+		// dup2(STDIN_FILENO, fd[0]);
+		// printf("RIGHT NODE\n");
 		dup2(fd[0], STDIN_FILENO);
 		close(fd[0]);
 		close(fd[1]);
 		exec_ast((t_general *)node->right);
+		// exit(0);
 	}
 	close(fd[0]);
 	close(fd[1]);
@@ -62,7 +67,7 @@ void	redir(t_redir *node)
 		printf("error");
 		return ;
 	}
-	printf("hello from %d\n", pid1);
+	dprintf(STDERR_FILENO, "hello from %d\n", pid1);
 	if (pid1 == 0)
 	{
 		if (node->args[1][0] == '<')
@@ -86,7 +91,26 @@ void	redir(t_redir *node)
 void	exec_ast(t_general *node)
 {
 	if (node->type == EXEC) 
-		exec((t_exec *)node);
+	{
+		int pid1 = fork();
+		int estat;
+		estat = 0;
+		if(pid1 < 0)
+		{
+			printf("error");
+			exit(0);
+		}
+		if (pid1 == 0)
+		{
+			exec((t_exec *)node);
+		}
+		waitpid(pid1, &estat, 0);
+		if (estat)
+		{
+			printf("exit status%d", estat);
+			exit(0);
+		}
+	}
 	else if (node->type == REDIR)
 		redir((t_redir *)node);
 	else if (node->type == PIPE)
@@ -109,26 +133,26 @@ int	main(int ac, char **av, char **env)
 	ast->left = NULL;
 	ast->right = NULL;
 
-	redir_node = malloc(sizeof(t_redir));
-	redir_node->type = REDIR;
-	redir_node->args = (char *[]){"0", ">", "/Users/qang/42/minishell/sources/builtins/a", NULL};
-	general = (t_general *) ast;
-	general->type = ast->type;
-	redir_node->left = general;
-	redir_node->right = NULL;
-	general = (t_general *) redir_node;
-	general->type = redir_node->type;
+	// redir_node = malloc(sizeof(t_redir));
+	// redir_node->type = REDIR;
+	// redir_node->args = (char *[]){"0", ">", "/Users/qang/42/minishell/sources/builtins/a", NULL};
+	// general = (t_general *) ast;
+	// general->type = ast->type;
+	// redir_node->left = general;
+	// redir_node->right = NULL;
+	// general = (t_general *) redir_node;
+	// general->type = redir_node->type;
 
 	t_exec *temp;
 	temp = malloc(sizeof(t_exec));
 	temp->type = EXEC;
-	temp->args = (char *[]){"/usr/bin/grep", "test", NULL};
+	temp->args = (char *[]){"/usr/bin/grep", "exec", NULL};
 	temp->left = NULL;
 	temp->right = NULL;
 
 	t_pipe	*pipe_node = malloc(sizeof(t_pipe));
 	pipe_node->type = PIPE;
-	pipe_node->args = (char *[]){"/bin/ls -la", "|", "/usr/bin/grep", "test", NULL};
+	pipe_node->args = (char *[]){"/bin/ls -la", "|", "/usr/bin/grep exec", NULL};
 
 	t_general	*general1 = (t_general *) ast;
 	general1->type = ast->type;
@@ -156,7 +180,7 @@ int	main(int ac, char **av, char **env)
 	general->type = temp1->type;
 	pip->right = general;
 
-	general = (t_general *)pip;
+	general = (t_general *) pip;
 	general->type = pip->type;
 
 	exec_ast(general);

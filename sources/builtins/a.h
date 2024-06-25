@@ -47,6 +47,7 @@ typedef struct s_exec
 	char	**args;
 	t_general	*left;
 	t_general	*right;
+	int		ret_status;
 }	t_exec;
 
 typedef struct s_pipe

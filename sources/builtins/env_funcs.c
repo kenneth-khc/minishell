@@ -40,7 +40,8 @@ void	del_var(char *key, t_entab *table)
 				node->prev->next = node->next;
 			if (node != table->tail)
 				node->next->prev = node->prev;
-			free(node->val);
+			if (node->val)
+				free(node->val);
 			free(node->key);
 			free(node);
 		}
