@@ -32,6 +32,23 @@ t_Exec_Node	*create_exec_node(const char *cmd_name, const char **envp)
 	node->type = Exec_Node;
 	node->command = cmd_name;
 	node->envp = envp;
+	add_exec_arguments(node, node->command);
+	return (node);
+}
+
+t_Redir_Node	*create_redir_node(int oldfd, const char *filename,
+int flags, mode_t mode)
+{
+	t_Redir_Node	*node;
+	
+	node = ft_calloc(1, sizeof(*node));
+	node->type = Redir_Node;
+	node->next_node = NULL;
+	node->oldfd = oldfd;
+	node->file = (char *)filename;
+	node->flags = flags;
+	node->mode = mode;
+
 	return (node);
 }
 

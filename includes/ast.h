@@ -12,12 +12,14 @@
 
 #ifndef AST_H
 # define AST_H
+# include <sys/types.h>
 
 typedef enum e_Node_Type
 {
 	_,
 	Exec_Node,
 	Argument_Node,
+	Redir_Node
 
 }	t_Node_Type;
 
@@ -49,11 +51,13 @@ typedef struct s_Exec_Node
 
 typedef struct s_Redir_Node
 {
-/* redir node
- * - filename
- * - mode
- * - fd
- */
+	enum e_Node_Type	type;
+	struct s_Node		*next_node;
+	int					oldfd; // the fd to be replaced
+	int					flags; // O_CREAT, O_APPEND etc
+	mode_t				mode; // permission bits for READ WRITE EXECUTE
+	const char			*file; // name of the file to open
+	int					newfd; // fd of the file opened
 }	t_Redir_Node;
 
 typedef struct	s_Pipe_Node
@@ -69,5 +73,6 @@ typedef struct	s_Pipe_Node
 // void		print_children(t_AST_Node *parent);
 t_Exec_Node	*create_exec_node(const char *cmd_name, const char **envp);
 void		add_exec_arguments(t_Exec_Node *exec_node, const char *arg);
+t_Redir_Node	*create_redir_node(int oldfd, const char *filename, int flags, mode_t mode);
 
 #endif

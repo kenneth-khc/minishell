@@ -16,50 +16,65 @@
 #include <stdlib.h>
 #include "debug.h"
 #include <stdbool.h>
+#include <fcntl.h>
+#include <stdio.h>
+#include <unistd.h>
 
 int	times_expected = 0;
 int times_consumed = 0;
 
-void	parse(t_Parser *parser, t_Token_List *tokens)
+t_Node	*parse(t_Parser *parser, t_Token_List *tokens)
 {(void)parser;(void)tokens;
 	cout("start parser");
-	parser->current_token = tokens->head;
+	t_Node	*root;
 
-	while (parser->current_token->type != END_OF_LINE
-			&& parse_command(parser))
+	parser->current = tokens->head;
+	parser->lookahead = parser->current->next;
+	while (parser->current->type != END_OF_LINE)
 	{
-		;
+		root = parse_command(parser);
 	}
-	
+
 	// cout("Root: %s", parser->root->value);
-	cout("Root: %s", ((t_Exec_Node *)parser->root)->command);
-	cout("Args1: %s", ((t_Exec_Node *)parser->root)->args[0]);
-	cout("Args2: %s", ((t_Exec_Node *)parser->root)->args[1]);
 	cout("end parser");
+	cout(">>> %s\n", ((t_Redir_Node *)root->left)->file);
+	cout(">>> %d\n", ((t_Redir_Node *)root->left)->oldfd);
+	t_Redir_Node *temp = (t_Redir_Node *)root->left;
+	t_Redir_Node *this = (t_Redir_Node *)temp->next_node;
+	cout(">>> %s\n", this->file);
+	cout(">>> %d\n", this->oldfd);
 	cout("times expected: %d", times_expected);
 	cout("times consumed: %d", times_consumed);
 	exit(EXIT_SUCCESS);
+	return (root);
 }
 
-bool	parse_command(t_Parser *parser)
+t_Node	*parse_command(t_Parser *parser)
 {
-	return (parse_simple_command(parser));
+	t_Node	*node;
+
+	node = parse_simple_command(parser);
+	return (node);
 }
 
-bool	parse_simple_command(t_Parser *parser)
+t_Node	*parse_simple_command(t_Parser *parser)
 {
+	t_Node	*node;
+
 	if (parse_command_prefix(parser))
 	{
 		if (parse_command_word(parser))
 		{
 			parse_command_suffix(parser, NULL);
 		}
-		return (PARSE_SUCCESS); // todo: fix return
+		return (NULL);
 	}
-	else if (parse_command_name(parser)) // "echo hello world" goes here
-		return (PARSE_SUCCESS);
-	else
-		return (PARSE_SUCCESS); // todo: add more expressions
+	node = (t_Node *)parse_command_name(parser);
+	return (node);
+	// else if (parse_command_name(parser)) // "echo hello world" goes here
+	// 	return (PARSE_SUCCESS);
+	// else
+	return (NULL); // todo: add more expressions
 }
 
 bool	parse_command_word(t_Parser *parser)
@@ -76,10 +91,10 @@ t_Exec_Node	*parse_command_name(t_Parser *parser)
 	t_Exec_Node	*exec_node;
 
 	exec_node = NULL;
-	if (expect(parser->current_token, WORD))
+	if (expect(parser->current, WORD))
 	{
 		// exec_node = create_ast_node(Command_Node);
-		exec_node = create_exec_node(parser->current_token->lexeme, NULL);
+		exec_node = create_exec_node(parser->current->lexeme, NULL);
 		consume(parser);
 		while (parse_command_suffix(parser, exec_node))
 			;
@@ -89,29 +104,92 @@ t_Exec_Node	*parse_command_name(t_Parser *parser)
 }
 
 bool	parse_command_suffix(t_Parser *parser, t_Exec_Node *exec_node)
-{(void)exec_node;
-	if (expect(parser->current_token, WORD))
+{
+	t_Redir_Node	*top;
+
+	top = parse_io_redirect(parser);
+	if (top)
 	{
-		add_exec_arguments(exec_node, parser->current_token->lexeme);
+		//top->next_node = (t_Node *)exec_node;
+		exec_node->left = (t_Node *)top;
+		return (top);
+	}
+	if (expect(parser->current, WORD))
+	{
+		add_exec_arguments(exec_node, parser->current->lexeme);
 		consume(parser);
 		return (PARSE_SUCCESS);
 	}
 	return (PARSE_FAIL);
 }
 
-bool	parse_io_redirect(t_Parser *parser)
+t_Redir_Node	*parse_io_redirect(t_Parser *parser)
 {
-	// parse_io_file(parser);
-	return parse_io_here(parser);
+	t_Redir_Node	*node;
+	node = parse_io_file(parser);
+	if (node)
+		return (node);
+	// else // todo: fix heredoc
+	// 	return parse_io_here(parser);
+	else
+		return (NULL);
+}
+
+t_Redir_Node	*parse_io_file(t_Parser *parser)
+{
+	t_Redir_Node	*node;
+
+	node = NULL;
+	if (expect(parser->current, LESSER))
+	{
+		node = input_redir(parser);
+	}
+	else if (expect(parser->current, GREATER))
+	{
+		node = output_redir(parser);
+	}
+	return (node);
+}
+
+t_Redir_Node	*input_redir(t_Parser *parser)
+{
+	t_Redir_Node	*node;
+
+	consume(parser);
+	if (expect(parser->current, WORD))
+	{
+		consume(parser);
+		node = create_redir_node(STDIN_FILENO, parser->current->lexeme,
+				O_CREAT, 0666);
+	}
+	else
+		node = NULL;
+	return (node);
+}
+
+t_Redir_Node	*output_redir(t_Parser *parser)
+{
+	t_Redir_Node	*node;
+
+	consume(parser);
+	if (expect(parser->current, WORD))
+	{
+		node = create_redir_node(STDOUT_FILENO, parser->current->lexeme,
+				O_CREAT, 0666);
+		consume(parser);
+	}
+	else
+		node = NULL;
+	return (node);
 }
 
 bool	parse_io_here(t_Parser *parser)
 {
-	if (expect(parser->current_token, LESSER_LESSER))
+	if (expect(parser->current, LESSER_LESSER))
 	{
 		consume(parser);
 		// search for here_end
-		if (expect(parser->current_token, WORD))
+		if (expect(parser->current, WORD))
 		{
 			consume(parser);
 			return (PARSE_SUCCESS);
@@ -147,6 +225,8 @@ bool	expect(t_Token *token, enum e_Token_Types expected_type)
 void	consume(t_Parser *parser)
 {
 	times_consumed++;
-	cout("Consumed %s", token_enum_to_str(parser->current_token));
-	parser->current_token = parser->current_token->next;
+	cout("Consumed %s", token_enum_to_str(parser->current));
+	parser->current = parser->current->next;
+	parser->lookahead = parser->current->next;
 }
+
