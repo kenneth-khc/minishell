@@ -26,4 +26,58 @@ void	del_var(char *key, t_entab *table);
 t_envar	*get_var(char *key, t_entab *table);
 t_entab	*init_env_table(char **env);
 void	free_env(t_entab *table);
+
+typedef enum e_types
+{
+	EXEC,
+	REDIR,
+	PIPE,
+	LIST,
+	BACK
+}	t_type;
+
+typedef struct s_general
+{
+	t_type	type;
+}	t_general;
+
+typedef struct s_exec
+{
+	t_type	type;
+	char	**args;
+	t_general	*left;
+	t_general	*right;
+}	t_exec;
+
+typedef struct s_pipe
+{
+	t_type	type;
+	char	**args;
+	t_general	*left;
+	t_general	*right;
+}	t_pipe;
+
+typedef struct s_redir
+{
+	t_type	type;
+	char	**args;
+	t_general	*left;
+	t_general	*right;
+}	t_redir;
+
+typedef struct s_temp
+{
+	t_type	type;
+	char	**args;
+	t_general	*left;
+	t_general	*right;
+}	t_temp;
+
+typedef struct s_back
+{
+	t_type	type;
+	char	**args;
+	t_general	*left;
+	t_general	*right;
+}	t_back;
 #endif
