@@ -33,27 +33,52 @@ int	echo(char **args)
 int	cd(char **args, t_entab *table)
 {
 	int		errno;
+	t_envar	*path_node;
+	char	*temp;
 
 	errno = 0;
 	if (length(args) == 1)
 	{
-		if (get_var("HOME", table) == NULL)
-			return (0);
-		errno = chdir(get_var("HOME", table)->val);
+		path_node = get_var("HOME", table);
+		if (path_node == NULL)
+		{
+			printf("cd: HOME not set\n");
+			errno = 1;
+		}
+		else
+		{
+			temp = ft_strjoin(get_var("PATH",table)->val, path_node->val);
+			if (ft_strlen(temp) > PATH_MAX - 1)
+			{
+				printf("cd: %s: File name too long\n", path_node->val);
+				errno = 1;
+			}
+			else
+				errno = chdir(get_var("HOME", table)->val)
+			free(temp);
+		}
 	}
 	else if (length(args) == 2)
-	{
-		if (ft_strlen(args[1]) > 255)
-			return (printf("cd: %s: File name too long\n", args[1]));
 		errno = chdir(args[1]);
+	else if (length(args) > 2)
+	{
+		errno = 2;
+		printf("cd: too many arguments\n");
+		return (*errno);
 	}
-	else
-		printf("cd: too many arguments\n"); 
 	if (errno)
-		printf("cd: %s: No such file or directory\n", args[1]);
-	/*if (errno)
-		printf("cd: %s: %s\n", args[1], strerror(errno));*/
-	return (0);
+	{
+		errno = 1;
+		if (args[1] && ft_strlen(args[1]) > 255)
+			printf("cd: %s: File name too long\n", args[1]);
+		else
+			printf("cd: %s: No such file or directory\n", args[1]);
+		return (errno);
+	}
+	path_node = get_var("PATH", table);
+	if (path_node != NULL && ft_strlen(path_node->val) > PATH_MAX - 1)
+		printf("cd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory");
+	return (errno);
 }
 
 int	pwd(void)
@@ -61,7 +86,10 @@ int	pwd(void)
 	char	cwd[PATH_MAX];
 
 	if (getcwd(cwd, PATH_MAX - 1))
-		return (printf("%s\n", cwd));
+	{
+		printf("%s\n", cwd);
+		return (0);
+	}
 	return (1);
 }
 
