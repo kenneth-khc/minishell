@@ -9,76 +9,25 @@ int	echo(char **args)
 	newline = 10;
 	i = 1;
 	if (length(args) == 1)
-		return (printf("\n"));
-	else
 	{
-		while (args[i] && ft_strcmp(args[i], "-n") == 0)
-		{
-			i++;
-			newline = 0;
-		}
-		while (args[i])
-		{
-			printf("%s", args[i]);
-			if (args[i + 1])
-				printf(" ");
-			i++;	
-		}
-		if (newline)
-			printf("%c", newline);
+		printf("\n");
+		return (0);
 	}
+	while (args[i] && ft_strcmp(args[i], "-n") == 0)
+	{
+		i++;
+		newline = 0;
+	}
+	while (args[i])
+	{
+		printf("%s", args[i]);
+		if (args[i + 1])
+			printf(" ");
+		i++;	
+	}
+	if (newline)
+		printf("%c", newline);
 	return (0);
-}
-
-int	cd(char **args, t_entab *table)
-{
-	int		errno;
-	t_envar	*path_node;
-	char	*temp;
-
-	errno = 0;
-	if (length(args) == 1)
-	{
-		path_node = get_var("HOME", table);
-		if (path_node == NULL)
-		{
-			printf("cd: HOME not set\n");
-			errno = 1;
-		}
-		else
-		{
-			temp = ft_strjoin(get_var("PATH",table)->val, path_node->val);
-			if (ft_strlen(temp) > PATH_MAX - 1)
-			{
-				printf("cd: %s: File name too long\n", path_node->val);
-				errno = 1;
-			}
-			else
-				errno = chdir(get_var("HOME", table)->val)
-			free(temp);
-		}
-	}
-	else if (length(args) == 2)
-		errno = chdir(args[1]);
-	else if (length(args) > 2)
-	{
-		errno = 2;
-		printf("cd: too many arguments\n");
-		return (*errno);
-	}
-	if (errno)
-	{
-		errno = 1;
-		if (args[1] && ft_strlen(args[1]) > 255)
-			printf("cd: %s: File name too long\n", args[1]);
-		else
-			printf("cd: %s: No such file or directory\n", args[1]);
-		return (errno);
-	}
-	path_node = get_var("PATH", table);
-	if (path_node != NULL && ft_strlen(path_node->val) > PATH_MAX - 1)
-		printf("cd: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory");
-	return (errno);
 }
 
 int	pwd(void)
@@ -187,6 +136,9 @@ int	main(int ac, char **av, char **env)
 	{
 		t_entab	*table;
 
+		char	cwd[PATH_MAX];
+
+		// printf("minishell: %s\n", getcwd(cwd, PATH_MAX - 1));
 		table = init_env_table(env);
 		if (ft_strcmp("echo", av[1]) == 0)
 			echo(&av[1]);
@@ -202,6 +154,8 @@ int	main(int ac, char **av, char **env)
 			print_env(&av[1], table);
 		else if (ft_strcmp("exit", av[1]) == 0)
 			exit_sh(&av[1], table);
+		// printf("%s\n", get_var("PWD", table)->val);
+		// printf("minishell: %s\n", getcwd(cwd, PATH_MAX - 1));
 	}
 	return (0);
 }

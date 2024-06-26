@@ -53,6 +53,7 @@ void	add_var(char *str, t_entab *table)
 {
 	t_envar	*node;
 	t_envar	*new;
+	char		*temp;
 
 	node = table->head;
 	new = new_env_var(str);
@@ -65,9 +66,11 @@ void	add_var(char *str, t_entab *table)
 	{
 		if (ft_strcmp(new->key, node->key) == 0)
 		{
+			temp = node->val;
 			node->val = new->val;
 			free(new->key);
-			free(new->val);
+			if (temp)
+				free(temp);
 			free(new);
 			return ;
 		}
@@ -98,6 +101,7 @@ t_envar	*new_env_var(const char *str)
 	new->val = val;
 	new->prev = NULL;
 	new->next = NULL;
+	new->display = true;
 	return (new);
 }
 
@@ -121,7 +125,7 @@ void	free_env(t_entab *table)
 
 t_entab	*init_env_table(char **env)
 {
-	int		i;
+	int			i;
 	t_envar	*prev;
 	t_envar	*temp;
 	t_entab	*table;
