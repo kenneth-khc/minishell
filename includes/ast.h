@@ -52,7 +52,8 @@ typedef struct s_Exec_Node
 typedef struct s_Redir_Node
 {
 	enum e_Node_Type	type;
-	struct s_Node		*next_node;
+	struct s_Node		*left;
+	struct s_Node		*right;
 	int					oldfd; // the fd to be replaced
 	int					flags; // O_CREAT, O_APPEND etc
 	mode_t				mode; // permission bits for READ WRITE EXECUTE
@@ -68,11 +69,10 @@ typedef struct	s_Pipe_Node
  */
 }	t_Pipe_Node;
 
-// t_AST_Node	*create_ast_node(enum e_Node_Type type);
-// t_AST_Node	*create_child_node(t_AST_Node *parent, enum e_Node_Type type);
-// void		print_children(t_AST_Node *parent);
 t_Exec_Node	*create_exec_node(const char *cmd_name, const char **envp);
 void		add_exec_arguments(t_Exec_Node *exec_node, const char *arg);
 t_Redir_Node	*create_redir_node(int oldfd, const char *filename, int flags, mode_t mode);
+t_Node	*get_tail(t_Node *node);
+void	print_nodes(t_Node *node);
 
 #endif

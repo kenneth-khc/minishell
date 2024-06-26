@@ -30,9 +30,10 @@ t_Exec_Node	*create_exec_node(const char *cmd_name, const char **envp)
 
 	node = ft_calloc(1, sizeof(*node));
 	node->type = Exec_Node;
+	node->left = NULL;
 	node->command = cmd_name;
 	node->envp = envp;
-	add_exec_arguments(node, node->command);
+	// add_exec_arguments(node, node->command);
 	return (node);
 }
 
@@ -43,7 +44,7 @@ int flags, mode_t mode)
 	
 	node = ft_calloc(1, sizeof(*node));
 	node->type = Redir_Node;
-	node->next_node = NULL;
+	node->left = NULL;
 	node->oldfd = oldfd;
 	node->file = (char *)filename;
 	node->flags = flags;
@@ -70,5 +71,14 @@ void	add_exec_arguments(t_Exec_Node *exec_node, const char *arg)
 	free(exec_node->args);
 	temp[i] = arg;
 	exec_node->args = temp;
+}
+
+t_Node	*get_tail(t_Node *node)
+{
+	while (node->left != NULL)
+	{
+		node = node->left;
+	}
+	return (node);
 }
 
