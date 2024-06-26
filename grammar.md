@@ -1,7 +1,11 @@
 # Grammar
 
 ```bnf
-command		: simple_command
+command		: and_or
+
+and_or		: pipe_sequence
+		| and_or AND_AND pipe_sequence
+		| and_or OR_OR pipe_sequence
 
 pipe_sequence	: simple_command
 		| pipe-sequence PIPE simple_command
@@ -23,15 +27,11 @@ command_suffix	: io_redirect
 		| command_suffix WORD
 
 io_redirect	: io_file
-		| IO_NUMBER io_file
 		| io_here
-		| IO_NUMBER io_here
 	
 io_file		: LESS filename
-		| LESS_AND filename
 		| GREAT filename
 		| GREAT_GREAT filename
-		| GREAT_AND filename
 
 io_here		: LESS_LESS here_end
 
