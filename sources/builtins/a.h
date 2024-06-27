@@ -1,21 +1,34 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   a.h                                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/06/27 22:27:01 by qang              #+#    #+#             */
+/*   Updated: 2024/06/27 22:37:57 by qang             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef A_H
 # define A_H
 
-#include "libft/libft.h"
-#include <stdbool.h>
+# include "libft/libft.h"
+# include <stdbool.h>
+# include <limits.h>
 /*envar = env variable*/
 typedef struct s_envar
 {
-	char						*key;
-	char						*val;
-	bool						display;
+	char			*key;
+	char			*val;
+	bool			diplay;
 	struct s_envar	*prev;
 	struct s_envar	*next;
 }	t_envar;
 
 typedef struct s_entab
 {
-	int					size;
+	int				size;
 	t_envar			*head;
 	t_envar			*tail;
 }	t_entab;
@@ -24,7 +37,7 @@ typedef struct s_entab
 int			ft_strcmp(char *s1, char *s2);
 
 /*prints sorted env (for export)*/
-t_envar	*print_sorted_env(t_entab *table);
+t_envar		*print_sorted_env(t_entab *table);
 
 /*get length of args*/
 int			length(char **arg);
@@ -32,12 +45,25 @@ int			length(char **arg);
 /*env functions*/
 void		add_var(char *str, t_entab *table);
 void		del_var(char *key, t_entab *table);
-t_envar	*get_var(char *key, t_entab *table);
-t_entab	*init_env_table(char **env);
+t_envar		*get_var(char *key, t_entab *table);
+t_entab		*init_env_table(char **env);
 void		free_env(t_entab *table);
+t_envar		*copy_env(t_envar *src);
 
-int	cd(char **args, t_entab *table);
-void	update_pwd(char **args, t_entab *table);
+/*builtin funcs*/
+int			cd(char **args, t_entab *table);
+void		update_pwd(char **args, t_entab *table);
+int			echo(char **args);
+int			print_env(char **args, t_entab *table);
+int			exit_sh(char **arg, t_entab *table);
+int			export(char **args, t_entab *table);
+int			pwd(char **args, t_entab *table);
+int			unset(char **args, t_entab *table);
+
+bool		ft_isbuiltin(char **av);
+int			run_builtin(char **av, t_entab *table);
+
+int			execvepromax(char *file, char **args, t_envar *path_node);
 
 typedef enum e_types
 {
@@ -55,41 +81,42 @@ typedef struct s_general
 
 typedef struct s_exec
 {
-	t_type	type;
-	char	**args;
+	t_type		type;
 	t_general	*left;
 	t_general	*right;
-	int		ret_status;
+	t_entab		*table;
+	char		**args;
+	int			ret_status;
 }	t_exec;
 
 typedef struct s_pipe
 {
-	t_type	type;
-	char	**args;
+	t_type		type;
+	char		**args;
 	t_general	*left;
 	t_general	*right;
 }	t_pipe;
 
 typedef struct s_redir
 {
-	t_type	type;
-	char	**args;
+	t_type		type;
+	char		**args;
 	t_general	*left;
 	t_general	*right;
 }	t_redir;
 
 typedef struct s_temp
 {
-	t_type	type;
-	char	**args;
+	t_type		type;
+	char		**args;
 	t_general	*left;
 	t_general	*right;
 }	t_temp;
 
 typedef struct s_back
 {
-	t_type	type;
-	char	**args;
+	t_type		type;
+	char		**args;
 	t_general	*left;
 	t_general	*right;
 }	t_back;

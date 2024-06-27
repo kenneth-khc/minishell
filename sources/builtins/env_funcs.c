@@ -1,59 +1,24 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env_funcs.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/06/27 21:24:13 by qang              #+#    #+#             */
+/*   Updated: 2024/06/27 22:28:30 by qang             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "a.h"
-#include "libft/libft.h"
 
 t_envar	*new_env_var(const char *str);
-
-int	length(char **arg)
-{
-	int	i;
-
-	i = 0;
-	while (arg[i])
-		i++;
-	return (i);
-}
-
-t_envar	*get_var(char *key, t_entab *table)
-{
-	t_envar	*node;
-
-	node = table->head;
-	while (node)
-	{
-		if (ft_strcmp(key, node->key) == 0)
-			return (node);
-		node = node->next;
-	}
-	return (NULL);
-}
-
-void	del_var(char *key, t_entab *table)
-{
-	t_envar	*node;
-
-	node = table->head;
-	while (node)
-	{
-		if (ft_strcmp(key, node->key) == 0)
-		{
-			if (node != table->head)
-				node->prev->next = node->next;
-			if (node != table->tail)
-				node->next->prev = node->prev;
-			if (node->val)
-				free(node->val);
-			free(node->key);
-			free(node);
-		}
-		node = node->next;
-	}
-}
 
 void	add_var(char *str, t_entab *table)
 {
 	t_envar	*node;
 	t_envar	*new;
-	char		*temp;
+	char	*temp;
 
 	node = table->head;
 	new = new_env_var(str);
@@ -67,10 +32,14 @@ void	add_var(char *str, t_entab *table)
 		if (ft_strcmp(new->key, node->key) == 0)
 		{
 			temp = node->val;
-			node->val = new->val;
+			if (new->val)
+			{
+				node->val = new->val;
+				if (temp)
+					free(temp);
+			}
+			node->display = new->display;
 			free(new->key);
-			if (temp)
-				free(temp);
 			free(new);
 			return ;
 		}
@@ -107,8 +76,8 @@ t_envar	*new_env_var(const char *str)
 
 void	free_env(t_entab *table)
 {
-	t_envar *node;
-	t_envar *temp;
+	t_envar	*node;
+	t_envar	*temp;
 
 	node = table->head;
 	while (node)
@@ -125,7 +94,7 @@ void	free_env(t_entab *table)
 
 t_entab	*init_env_table(char **env)
 {
-	int			i;
+	int		i;
 	t_envar	*prev;
 	t_envar	*temp;
 	t_entab	*table;
@@ -136,7 +105,7 @@ t_entab	*init_env_table(char **env)
 	temp = NULL;
 	while (env[++i])
 	{
-		temp = new_env_var(env[i]);	
+		temp = new_env_var(env[i]);
 		if (prev == NULL)
 			table->head = temp;
 		else
@@ -149,19 +118,3 @@ t_entab	*init_env_table(char **env)
 	table->tail = temp;
 	return (table);
 }
-
-/*int	main(int ac, char **av, char **env)
-{
-	t_entab	*table;
-
-	table = init_env_table(env);
-	t_envar	*node;
-	node = table->head;
-	while (node)
-	{
-		printf("%s=\"%s\"\n", node->key, node->val);
-		node = node->next;
-	}
-	sort_env(table);
-	return (0);
-}*/

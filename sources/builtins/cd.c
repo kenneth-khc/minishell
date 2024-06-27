@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/26 23:12:37 by qang              #+#    #+#             */
-/*   Updated: 2024/06/26 23:35:11 by qang             ###   ########.fr       */
+/*   Updated: 2024/06/27 01:45:12 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,13 +40,13 @@ static int	cd_home(t_entab *table)
 
 	errno = 0;
 	path_node = get_var("HOME", table);
-	printf("path to home: %s\n", path_node->val);
 	if (path_node == NULL || (path_node != NULL && !path_node->display))
 	{
 		printf("cd: HOME not set\n");
 		return (1);
 	}
-	if (path_node->val[0] != '/')
+	if (path_node->val[0] != '/' && !ft_strcmp(path_node->val, ".")
+		&& !ft_strcmp(path_node->val, ".."))
 		return (cd_home2(table, path_node->val));
 	return (chdir(path_node->val));
 }

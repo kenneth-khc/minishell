@@ -1,11 +1,36 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   exec_ast.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2024/06/27 22:15:03 by qang              #+#    #+#             */
+/*   Updated: 2024/06/27 22:24:07 by qang             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "a.h"
 
 void	exec_ast(t_general *node);
 
 void	exec(t_exec *node)
 {
-	execve(node->args[0], node->args, NULL);
-	dprintf(STDERR_FILENO, "execve failed\n");
+	int	pid;
+
+	pid = fork();
+	if (pid < 0)
+	{
+		dprintf(STDERR_FILENO, "error");
+		return ;
+	}
+	if (ft_isbuiltin(node->args) && pid != 0)
+		node->ret_status = run_builtin(node->args, node->table);
+	else if (pid == 0)
+	{
+		execvepromax(node->args[0], node->args, get_var("PATH", node->table));
+		dprintf(STDERR_FILENO, "execve failed\n");
+	}
 }
 
 void	paip(t_pipe *node)
@@ -25,12 +50,7 @@ void	paip(t_pipe *node)
 	}
 	if (pid1 == 0)
 	{
-		// close(STDOUT_FILENO);	HERE
-		// dup(fd[1]);
-		// dup2(STDOUT_FILENO, fd[1]);
-		// printf("LEFT NODE\n");
 		dup2(fd[1], STDOUT_FILENO);
-		close(fd[0]);
 		exec_ast((t_general *)node->left);
 		exit(0);
 	}
@@ -42,15 +62,10 @@ void	paip(t_pipe *node)
 	}
 	if (pid2 == 0)
 	{
-		// close(STDIN_FILENO);		HERE
-		// dup(fd[0]);
-		// dup2(STDIN_FILENO, fd[0]);
-		// printf("RIGHT NODE\n");
 		dup2(fd[0], STDIN_FILENO);
 		close(fd[0]);
 		close(fd[1]);
 		exec_ast((t_general *)node->right);
-		// exit(0);
 	}
 	close(fd[0]);
 	close(fd[1]);
@@ -90,27 +105,8 @@ void	redir(t_redir *node)
 
 void	exec_ast(t_general *node)
 {
-	if (node->type == EXEC) 
-	{
-		int pid1 = fork();
-		int estat;
-		estat = 0;
-		if(pid1 < 0)
-		{
-			printf("error");
-			exit(0);
-		}
-		if (pid1 == 0)
-		{
-			exec((t_exec *)node);
-		}
-		waitpid(pid1, &estat, 0);
-		if (estat)
-		{
-			printf("exit status%d", estat);
-			exit(0);
-		}
-	}
+	if (node->type == EXEC)
+		exec((t_exec *)node);
 	else if (node->type == REDIR)
 		redir((t_redir *)node);
 	else if (node->type == PIPE)
@@ -123,66 +119,83 @@ void	exec_ast(t_general *node)
 
 int	main(int ac, char **av, char **env)
 {
-	t_redir	*redir_node;
-	t_exec	*ast;
+	t_entab	*table = init_env_table(env);
 	t_general	*general;
 
-	ast = malloc(sizeof(t_exec));
-	ast->type = EXEC;
-	ast->args = (char *[]){"/bin/ls", "-la", NULL};
-	ast->left = NULL;
-	ast->right = NULL;
+	t_exec	*ls_la;
+	ls_la = malloc(sizeof(t_exec));
+	ls_la->type = EXEC;
+	ls_la->args = (char *[]){"ls", "-la", NULL};
+	ls_la->left = NULL;
+	ls_la->right = NULL;
+	ls_la->table = table;
 
-	// redir_node = malloc(sizeof(t_redir));
-	// redir_node->type = REDIR;
-	// redir_node->args = (char *[]){"0", ">", "/Users/qang/42/minishell/sources/builtins/a", NULL};
-	// general = (t_general *) ast;
-	// general->type = ast->type;
-	// redir_node->left = general;
-	// redir_node->right = NULL;
-	// general = (t_general *) redir_node;
-	// general->type = redir_node->type;
+	t_exec	*grep_exec;
+	grep_exec = malloc(sizeof(t_exec));
+	grep_exec->type = EXEC;
+	grep_exec->args = (char *[]){"grep", "exec", NULL};
+	grep_exec->left = NULL;
+	grep_exec->right = NULL;
+	grep_exec->table = table;
 
-	t_exec *temp;
-	temp = malloc(sizeof(t_exec));
-	temp->type = EXEC;
-	temp->args = (char *[]){"/usr/bin/grep", "exec", NULL};
-	temp->left = NULL;
-	temp->right = NULL;
+	t_exec	*wc;
+	wc = malloc(sizeof(t_exec));
+	wc->type = EXEC;
+	wc->args = (char *[]){"wc", NULL};
+	wc->left = NULL;
+	wc->right = NULL;
+	wc->table = table;
 
-	t_pipe	*pipe_node = malloc(sizeof(t_pipe));
-	pipe_node->type = PIPE;
-	pipe_node->args = (char *[]){"/bin/ls -la", "|", "/usr/bin/grep exec", NULL};
+	t_exec	*bro;
+	bro = malloc(sizeof(t_exec));
+	bro->type = EXEC;
+	bro->args = (char *[]){"/Users/qang/42/minishell/sources/builtins/bro", NULL};
+	bro->left = NULL;
+	bro->right = NULL;
+	bro->table = table;
 
-	t_general	*general1 = (t_general *) ast;
-	general1->type = ast->type;
-	pipe_node->left = general1;
+	t_pipe	*pip1 = malloc(sizeof(t_pipe));
+	pip1->type = PIPE;
+	pip1->args = (char *[]){"ls -la", "|", "grep exec", NULL};
 
-	t_general	*general2 = (t_general *) temp;
-	general2->type = temp->type;
-	pipe_node->right = general2;
+	t_general	*general1 = (t_general *) ls_la;
+	general1->type = ls_la->type;
+	pip1->left = general1;
 
-	t_pipe	*pip = malloc(sizeof(t_pipe));
-	pip->type = PIPE;
-	pip->args = (char *[]){"/usr/bin/grep", "|", "/usr/bin/wc", NULL};
-	general = (t_general *) pipe_node;
-	general->type = pipe_node->type;
-	pip->left = general;
+	t_general	*general2 = (t_general *) grep_exec;
+	general2->type = grep_exec->type;
+	pip1->right = general2;
 
-	t_exec *temp1;
-	temp1 = malloc(sizeof(t_exec));
-	temp1->type = EXEC;
-	temp1->args = (char *[]){"/usr/bin/wc", NULL};
-	temp1->left = NULL;
-	temp1->right = NULL;
+	t_pipe	*pip2 = malloc(sizeof(t_pipe));
+	pip2->type = PIPE;
+	pip2->args = (char *[]){"ls -la", "|", "grep exec", "|", "./bro", NULL};
 
-	general = (t_general *) temp1;
-	general->type = temp1->type;
-	pip->right = general;
+	general = (t_general *) bro;
+	general->type = bro->type;
+	pip2->right = general;
 
-	general = (t_general *) pip;
-	general->type = pip->type;
+	general = (t_general *) pip1;
+	general->type = pip1->type;
+	pip2->left = general;
 
+	t_pipe	*pip3 = malloc(sizeof(t_pipe));
+	pip3->type = PIPE;
+	pip3->args = (char *[]){"ls -la", "|", "grep exec", "|", "/Users/qang/42/minishell/sources/builtins/bro", "|", "wc", NULL};
+
+	general = (t_general *) pip2;
+	general->type = pip2->type;
+	pip3->left = general;
+
+	general = (t_general *) wc;
+	general->type = wc->type;
+	pip3->right = general;
+
+	general = (t_general *) pip3;
+	general->type = pip3->type;
+
+	general = (t_general *) pip1;
+	general->type = pip1->type;
+	
 	exec_ast(general);
 	return (0);
 }

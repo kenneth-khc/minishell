@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/26 00:30:17 by qang              #+#    #+#             */
-/*   Updated: 2024/06/27 00:27:04 by qang             ###   ########.fr       */
+/*   Updated: 2024/06/27 01:44:03 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ static void	update_pwd_args(t_envar *path_node, char *arg, t_entab *table)
 			temp2 = ft_strrchr(temp, '/');
 			path_node->val = ft_substr(temp, 0, temp2 - temp);
 		}
-		else if (arg[0] != '.')
+		else if (ft_strcmp(arg, ".") != 0)
 		{
 			temp2 = ft_strjoin(temp, "/");
 			path_node->val = ft_strjoin(temp2, get_var("HOME", table)->val);
