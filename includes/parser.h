@@ -22,10 +22,8 @@
 
 typedef struct s_Parser
 {
-	t_Token		*token;
-	t_Token		*lookahead;
-	t_Node		*root;
-
+	t_Token		*token; // current token the parser is looking at
+	t_Token		*lookahead; // 1 token after current token
 }	t_Parser;
 
 t_Node	*parse(t_Parser *parser, t_Token_List *tokens);
@@ -36,8 +34,8 @@ t_Node	*parse_pipe_sequence(t_Parser *parser);
 t_Node	*parse_simple_command(t_Parser *parser);
 t_Node	*parse_command_prefix(t_Parser *parser);
 t_Node	*parse_command_suffix(t_Parser *parser, t_Exec_Node *exec_node);
-t_Exec_Node	*parse_command_name(t_Parser *parser);
-bool	parse_command_word(t_Parser *parser);
+t_Exec_Node	*parse_command_name(t_Parser *parser); // what is the difference
+bool	parse_command_word(t_Parser *parser); // between a name and a word?
 t_Node	*parse_io_redirect(t_Parser *parser);
 t_Node	*parse_io_here(t_Parser *parser);
 t_Node	*parse_io_file(t_Parser *parser);

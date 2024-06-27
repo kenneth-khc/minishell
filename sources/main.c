@@ -34,7 +34,7 @@ int	main(int argc, char **argv, char **envp)
 		get_input(&input);
 		tokens = scan(&input);	
 		add_history(get_history(&input));
-		print_tokens(&tokens);
+		// print_tokens(&tokens);
 		parse(&parser, &tokens);
 		clear_input(&input);
 		free_tokens(&tokens);

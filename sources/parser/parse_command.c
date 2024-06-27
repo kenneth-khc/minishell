@@ -87,11 +87,6 @@ t_Node	*parse_command_prefix(t_Parser *parser)
 	return (root);
 }
 
-bool	parse_command_word(t_Parser *parser)
-{ (void)parser;return(PARSE_FAIL);
-	;
-}
-
 t_Node	*parse_command_suffix(t_Parser *parser, t_Exec_Node *exec_node)
 {
 	t_Node	*root;
@@ -123,21 +118,26 @@ t_Node	*parse_command_suffix(t_Parser *parser, t_Exec_Node *exec_node)
 	return (root);
 }
 
+// TODO: fix
 t_Exec_Node	*parse_command_name(t_Parser *parser)
 {
 	t_Exec_Node	*exec_node;
 
 	exec_node = NULL;
-	if (expect(parser->token, WORD))
+	if (peek_token(parser->token) == WORD)
 	{
-		// exec_node = create_ast_node(Command_Node);
 		exec_node = create_exec_node(parser->token->lexeme, NULL);
 		consume(parser);
 		while (parse_command_suffix(parser, exec_node))
 			;
 	}
-	parser->root = (t_Node *)exec_node; // temp
+	// parser->root = (t_Node *)exec_node; // temp
 	return (exec_node);
 }
 
+// TODO: fix
+bool	parse_command_word(t_Parser *parser)
+{ (void)parser;return(PARSE_FAIL);
+	;
+}
 

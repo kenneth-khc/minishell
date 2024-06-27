@@ -20,12 +20,9 @@
 #include <stdio.h>
 #include <unistd.h>
 
-int	times_expected = 0;
-int times_consumed = 0;
-
 t_Node	*parse(t_Parser *parser, t_Token_List *tokens)
 {(void)parser;(void)tokens;
-	cout("start parser");
+	// cout("start parser");
 	t_Node	*root;
 
 	parser->token = tokens->head;
@@ -34,11 +31,9 @@ t_Node	*parse(t_Parser *parser, t_Token_List *tokens)
 	root = parse_complete_command(parser);
 
 	// cout("Root: %s", parser->root->value);
-	cout("end parser");
-	print_nodes(root);
-	cout("times expected: %d", times_expected);
-	cout("times consumed: %d", times_consumed);
-	exit(EXIT_SUCCESS);
+	// cout("end parser");
+	// print_nodes(root);
+	// exit(EXIT_SUCCESS);
 	return (root);
 }
 
@@ -46,6 +41,7 @@ void	print_nodes(t_Node *node)
 {
 	t_Redir_Node	*redir;
 	t_Exec_Node		*exec;
+	t_Pipe_Node		*pipe;
 
 	while (node)
 	{
@@ -66,6 +62,14 @@ void	print_nodes(t_Node *node)
 					cerr("%s ", exec->args[i]);
 			}
 		}
+		else if (node->type == Pipe_Node)
+		{
+			pipe = (t_Pipe_Node *)node;
+			cerr("Piping\n");
+			print_nodes(pipe->left);
+			print_nodes(pipe->right);
+			break ;
+		}
 		else
 		{
 			cerr("Missing node type");
@@ -74,30 +78,13 @@ void	print_nodes(t_Node *node)
 	}
 }
 
-bool	expect(t_Token *token, enum e_Token_Types expected_type)
-{
-	times_expected++;
-	if (token->type == expected_type)
-	{
-		cout("Expected %s", token_enum_to_str(token));
-		return (PARSE_SUCCESS);
-	}
-	else
-	{
-		cout("Unexpected %s", token_enum_to_str(token));
-		return (PARSE_FAIL);
-	}
-}
-
 void	consume(t_Parser *parser)
 {
 	if (parser->token)
 	{
-		times_consumed++;
-		cout("Consumed %s", token_enum_to_str(parser->token));
 		parser->token = parser->token->next;
 		if (parser->token)
-		parser->lookahead = parser->token->next;
+			parser->lookahead = parser->token->next;
 	}
 }
 

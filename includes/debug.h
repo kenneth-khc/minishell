@@ -16,6 +16,8 @@
 # include <assert.h>
 # include <stdarg.h>
 # include <stdio.h>
+# include "tokens.h"
+# include <stdbool.h>
 
 # define cout(...) _log(stdout, __FILE__, __FUNCTION__, __LINE__, __VA_ARGS__)
 # define cerr(...) _log(stderr, __FILE__, __FUNCTION__, __LINE__, __VA_ARGS__)
@@ -25,5 +27,7 @@ void	_log(FILE *FILE,
 			const char *FUNC,
 			int LINE,
 			char *format, ...);
+
+bool	expect(t_Token *token, enum e_Token_Types expected_type);
 
 #endif

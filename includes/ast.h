@@ -19,7 +19,8 @@ typedef enum e_Node_Type
 	_,
 	Exec_Node,
 	Argument_Node,
-	Redir_Node
+	Redir_Node,
+	Pipe_Node
 
 }	t_Node_Type;
 
@@ -63,6 +64,9 @@ typedef struct s_Redir_Node
 
 typedef struct	s_Pipe_Node
 {
+	enum e_Node_Type	type;
+	struct s_Node		*left; // Left command to execute
+	struct s_Node		*right; // Right command to execute
 /* pipe node
  * - left exec
  * - right exec
