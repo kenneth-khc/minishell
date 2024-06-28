@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 22:15:03 by qang              #+#    #+#             */
-/*   Updated: 2024/06/27 22:24:07 by qang             ###   ########.fr       */
+/*   Updated: 2024/06/28 14:56:54 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,9 +63,10 @@ void	paip(t_pipe *node)
 	if (pid2 == 0)
 	{
 		dup2(fd[0], STDIN_FILENO);
-		close(fd[0]);
-		close(fd[1]);
+		// close(fd[0]);
+		// close(fd[1]);
 		exec_ast((t_general *)node->right);
+		exit(0);
 	}
 	close(fd[0]);
 	close(fd[1]);
@@ -73,7 +74,7 @@ void	paip(t_pipe *node)
 	waitpid(pid2, NULL, 0);
 }
 
-void	redir(t_redir *node)
+void	redir(t_Redir_Node *node)
 {
 	int	pid1 = fork();
 
@@ -82,33 +83,38 @@ void	redir(t_redir *node)
 		printf("error");
 		return ;
 	}
-	dprintf(STDERR_FILENO, "hello from %d\n", pid1);
 	if (pid1 == 0)
 	{
 		if (node->args[1][0] == '<')
 		{
-			int	fd = open(node->args[2], O_RDONLY);
-			dup2(fd, STDIN_FILENO);
-			close(fd);
+			node->newfd = open(node->args[2], node->flags);
+			dup2(node->newfd, node->oldfd);
+			close(node->newfd);
 			exec_ast(node->left);
 		}
 		else if (node->args[1][0] == '>')
 		{
-			int	fd = open(node->args[2], O_WRONLY);
-			dup2(fd, STDOUT_FILENO);
-			close(fd);
+			node->newfd = open(node->args[2], node->flags);
+			dup2(node->newfd, node->oldfd);
+			close(node->newfd);
 			exec_ast(node->left);
 		}
 	}
 	waitpid(pid1, NULL, 0);
 }
 
+// void	andand(t_andand *node)
+// {
+// 	exec_ast(node->left);
+// 	if ()
+// }
+
 void	exec_ast(t_general *node)
 {
 	if (node->type == EXEC)
 		exec((t_exec *)node);
 	else if (node->type == REDIR)
-		redir((t_redir *)node);
+		redir((t_Redir_Node *)node);
 	else if (node->type == PIPE)
 		paip((t_pipe *)node);
 	else if (node->type == BACK)

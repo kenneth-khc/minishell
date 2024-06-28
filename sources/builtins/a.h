@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 22:27:01 by qang              #+#    #+#             */
-/*   Updated: 2024/06/27 22:37:57 by qang             ###   ########.fr       */
+/*   Updated: 2024/06/28 14:56:15 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ typedef struct s_envar
 {
 	char			*key;
 	char			*val;
-	bool			diplay;
+	bool			display;
 	struct s_envar	*prev;
 	struct s_envar	*next;
 }	t_envar;
@@ -101,9 +101,13 @@ typedef struct s_redir
 {
 	t_type		type;
 	char		**args;
+	int				oldfd;
+	int				newfd;
+	int				flags;
+	mode_t		mode;
 	t_general	*left;
 	t_general	*right;
-}	t_redir;
+}	t_Redir_Node;
 
 typedef struct s_temp
 {
@@ -120,4 +124,20 @@ typedef struct s_back
 	t_general	*left;
 	t_general	*right;
 }	t_back;
+
+typedef struct s_andand
+{
+	t_type		type;
+	char		**args;
+	t_general	*left;
+	t_general	*right;
+}	t_andand;
+
+typedef struct s_oror
+{
+	t_type		type;
+	char		**args;
+	t_general	*left;
+	t_general	*right;
+}	t_oror;
 #endif
