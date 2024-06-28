@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 21:44:44 by qang              #+#    #+#             */
-/*   Updated: 2024/06/27 22:31:40 by qang             ###   ########.fr       */
+/*   Updated: 2024/06/28 15:03:31 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,6 @@ int	execvepromax(char *file, char **args, t_envar *path_node)
 		{
 			if (ft_strcmp(entry->d_name, file) == 0)
 			{
-				fflush(stdout);
 				temp = ft_strjoin(path, "/");
 				ret = ft_strjoin(temp, file);
 				execve(ret, args, NULL);
