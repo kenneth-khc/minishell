@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ast.h"
+#include "tree.h"
 #include "parser.h"
 #include <stdio.h>
 #include <fcntl.h>
@@ -42,7 +42,7 @@ t_Node	*parse_io_file(t_Parser *parser)
 	node = NULL;
 	if (peek_token(parser->token) == LESSER)
 	{
-		node = input_redir(parser);
+		node = input_redir(parser, O_RDONLY);
 	}
 	else if (peek_token(parser->token) == GREATER)
 	{
@@ -55,7 +55,7 @@ t_Node	*parse_io_file(t_Parser *parser)
 	return ((t_Node *)node);
 }
 
-t_Redir_Node	*input_redir(t_Parser *parser)
+t_Redir_Node	*input_redir(t_Parser *parser, int flags)
 {
 	t_Redir_Node	*node;
 
@@ -63,7 +63,7 @@ t_Redir_Node	*input_redir(t_Parser *parser)
 	{
 		consume(parser);
 		node = create_redir_node(STDIN_FILENO, parser->token->lexeme,
-				O_CREAT, 0666);
+				flags, 0666);
 		consume(parser);
 	}
 	else

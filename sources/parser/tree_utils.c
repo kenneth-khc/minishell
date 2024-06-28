@@ -10,10 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ast.h"
-#include "parser.h"
+#include "tree.h"
 #include "libft.h"
-#include "debug.h"
 
 t_Node	*create_node(enum e_Node_Type type)
 {
@@ -33,7 +31,6 @@ t_Exec_Node	*create_exec_node(const char *cmd_name, const char **envp)
 	node->left = NULL;
 	node->command = cmd_name;
 	node->envp = envp;
-	// add_exec_arguments(node, node->command);
 	return (node);
 }
 
@@ -78,9 +75,7 @@ void	add_exec_arguments(t_Exec_Node *exec_node, const char *arg)
 t_Node	*get_tail(t_Node *node)
 {
 	while (node->left != NULL)
-	{
 		node = node->left;
-	}
 	return (node);
 }
 

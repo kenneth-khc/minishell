@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ast.h"
+#include "tree.h"
 #include "parser.h"
 #include <stdio.h>
 #include "debug.h"

@@ -11,17 +11,15 @@
 /* ************************************************************************** */
 
 #include "parser.h"
-#include "ast.h"
+#include "tree.h"
 #include "tokens.h"
-#include <stdlib.h>
 #include "debug.h"
 #include <stdbool.h>
 #include <fcntl.h>
-#include <stdio.h>
 #include <unistd.h>
 
 t_Node	*parse(t_Parser *parser, t_Token_List *tokens)
-{(void)parser;(void)tokens;
+{
 	// cout("start parser");
 	t_Node	*root;
 

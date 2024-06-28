@@ -22,6 +22,10 @@
 # define cout(...) _log(stdout, __FILE__, __FUNCTION__, __LINE__, __VA_ARGS__)
 # define cerr(...) _log(stderr, __FILE__, __FUNCTION__, __LINE__, __VA_ARGS__)
 
+# define PARSE_SUCCESS 1
+# define PARSE_FAIL 0
+
+
 void	_log(FILE *FILE,
 			const char *FILENAME,
 			const char *FUNC,
