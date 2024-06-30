@@ -17,7 +17,7 @@
 #include <stdbool.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include "tree_visualization.h"
+//#include "tree_visualization.h"
 
 #define BLUE "\e[0;34m\0"
 
@@ -29,7 +29,7 @@ t_Node	*parse(t_Parser *parser, t_Token_List *tokens)
 	parser->lookahead = parser->token->next;
 
 	root = parse_complete_command(parser);
-	export_tree(root);
+//	export_tree(root);
 
 	// cout("Root: %s", parser->root->value);
 	// cout("end parser");

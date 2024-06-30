@@ -12,7 +12,7 @@ c_reset := \e[0m
 
 libft_dir := libft
 libft := $(libft_dir)/libft.a
-includes := -I includes -I libft/includes
+includes ?= -I includes -I libft/includes
 
 srcs_dir := sources
 lexer_dir := $(srcs_dir)/lexer
@@ -24,50 +24,42 @@ objects := $(patsubst objects/lexer/%.o, $(obj_dir)/%.o, $(objects))
 objects := $(patsubst objects/parser/%.o, $(obj_dir)/%.o, $(objects))
 # objects := $(addprefix $(obj_dir)/, $(objects))
 
-# todo: fix dis
-tools_dir := tools/
-tools_srcs := $(tools_dir)/cJSON.c $(tools_dir)/serialize_tree.c
-tools_objects := $(patsubst $(tools_dir)/%.c, $(tools_dir)/%.o, $(tools_srcs))
-includes += -I $(tools_dir)
-
 test: all
-	@printf "$(green)Running minishell...\n$(c_reset)"
+	@printf "$(green)Testing minishell...\n$(c_reset)"
 	./$(NAME)
-
-visualize: $(libft) $(obj_dir) $(objects) $(tools_objects)
-	$(CC) $(debug) $(includes) -I $(tools_dir) $(objects) $(tools_objects) \
-	$(CFLAGS) $(LDFLAGS) $(LDLIBS) $(fsan) -o visualize_minishell
-
-vpath %.c $(tools_dir)
-$(tools_dir)/%.o: %.c
-	$(CC) $(CFLAGS) $(includes) -I $(tools_dir) $< -c -o $@
 
 all: $(NAME)
 
-$(NAME): $(libft) $(obj_dir) $(objects)
-	$(CC) $(debug) $(objects) $(CFLAGS) $(LDFLAGS) $(LDLIBS) $(fsan) -o $@
+$(NAME): $(libft) obj
+	@printf "$(green)Making minishell...\n$(c_reset)"
+	@$(CC) $(debug) $(objects) $(CFLAGS) $(LDFLAGS) $(LDLIBS) $(fsan) -o $@
 
 $(libft):
 	@if git submodule status | grep '^[+-]' ; then \
-		printf "$(green)Initializing libft submodule...\n $(c_reset)" ; \
+		printf "$(green)Initializing libft submodule...\n$(c_reset)" ; \
 		git submodule update --init ; \
 	fi
 	make -C $(libft_dir)
 
+obj: $(obj_dir) $(objects)
+
+$(obj_dir):
+	@printf "$(green)Making minishell objects...\n$(c_reset)"
+	@mkdir -p $(obj_dir)
+
 vpath %.c sources sources/lexer sources/parser
 $(obj_dir)/%.o: %.c
-	$(CC) $(CFLAGS)  $(debug) $(includes) $< -c -o $@
+	@$(CC) $(CFLAGS) $(debug) $(includes) $< -c -o $@
  
-$(obj_dir):
-	mkdir -p $(obj_dir)
-
 .PHONY: clean
 clean:
-	rm -rf $(obj_dir)
+	@printf "$(green)Cleaning minishell objects...\n$(c_reset)"
+	@rm -rf $(obj_dir)
 
 .PHONY: fclean
 fclean: clean
-	rm -rf $(NAME)
+	@printf "$(green)Removing minishell...\n$(c_reset)"
+	@rm -rf $(NAME)
 
 .PHONY: re
 re: fclean all

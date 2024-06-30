@@ -73,7 +73,7 @@ void	export_tree(t_Node *node)
 	cJSON	*tree;
 	char	*json;
 
-	fd = open("tools/tree.json", O_CREAT | O_WRONLY | O_TRUNC, 0777);
+	fd = open("tree.json", O_CREAT | O_WRONLY | O_TRUNC, 0777);
 	tree = node_to_json(node);
 	json = cJSON_Print(tree);
 	printf("%s\n", json);
