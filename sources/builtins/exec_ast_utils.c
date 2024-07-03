@@ -6,12 +6,14 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 21:44:44 by qang              #+#    #+#             */
-/*   Updated: 2024/07/02 17:49:03 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/03 17:22:09 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "a.h"
 #include <dirent.h>
+
+static int *errnono(void);
 
 int get_exit_status(void)
 {
@@ -30,16 +32,6 @@ static int *errnono(void)
   return (&exit_status);
 }
 
-int pipepromax(int fd[2])
-{
-  if (pipe(fd) == -1)
-  {
-    dprintf(2, "pipe error\n");
-    return (-1);
-  }
-  return (0);
-}
-
 int	exec_wait_pid(int last_pid, char *name)
 {
 	int	status;
@@ -52,7 +44,7 @@ int	exec_wait_pid(int last_pid, char *name)
 			ft_putendl_fd("Quit: 3", STDERR_FILENO);
 		else if (WTERMSIG(status) == 2)
 			ft_putstr_fd("\n", STDERR_FILENO);
-		// printf("error %d\n", WTERMSIG(status));
+		printf("error %d\n", WTERMSIG(status));
 		status = 128 + WTERMSIG(status);
 	}
 	else if (WIFEXITED(status))

@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/26 23:12:37 by qang              #+#    #+#             */
-/*   Updated: 2024/06/27 01:45:12 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/03 20:58:10 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,6 @@ static int	cd_home(t_entab *table)
 int	cd(char **args, t_entab *table)
 {
 	int		errno;
-	t_envar	*path_node;
 
 	errno = 0;
 	if (length(args) == 1)

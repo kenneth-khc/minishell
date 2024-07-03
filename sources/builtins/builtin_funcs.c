@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 19:35:04 by qang              #+#    #+#             */
-/*   Updated: 2024/06/27 22:28:44 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/03 16:49:32 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,20 +27,20 @@ int	run_builtin(char **av, t_entab *table)
 	int	errno;
 
 	errno = 0;
-	if (ft_strcmp("echo", av[1]) == 0)
-		errno = echo(&av[1]);
-	else if (ft_strcmp("cd", av[1]) == 0)
-		errno = cd(&av[1], table);
-	else if (ft_strcmp("pwd", av[1]) == 0)
-		errno = pwd(&av[1], table);
-	else if (ft_strcmp("export", av[1]) == 0)
-		errno = export(&av[1], table);
-	else if (ft_strcmp("unset", av[1]) == 0)
-		errno = unset(&av[1], table);
-	else if (ft_strcmp("env", av[1]) == 0)
-		errno = print_env(&av[1], table);
-	else if (ft_strcmp("exit", av[1]) == 0)
-		errno = exit_sh(&av[1], table);
+	if (ft_strcmp("echo", av[0]) == 0)
+		errno = echo(av);
+	else if (ft_strcmp("cd", av[0]) == 0)
+		errno = cd(av, table);
+	else if (ft_strcmp("pwd", av[0]) == 0)
+		errno = pwd(av, table);
+	else if (ft_strcmp("export", av[0]) == 0)
+		errno = export(av, table);
+	else if (ft_strcmp("unset", av[0]) == 0)
+		errno = unset(av, table);
+	else if (ft_strcmp("env", av[0]) == 0)
+		errno = print_env(av, table);
+	else if (ft_strcmp("exit", av[0]) == 0)
+		errno = exit_sh(av, table);
 	return (errno);
 }
 

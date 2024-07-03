@@ -6,13 +6,19 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 22:15:03 by qang              #+#    #+#             */
-/*   Updated: 2024/07/02 20:37:12 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/03 21:09:58 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "a.h"
 
 void	exec_ast(t_general *node);
+
+// void dosmthg(int sig) {
+// 	printf("%d\n", get_exit_status());
+// 	fflush(stdout);
+// 	exit(0);
+// }
 
 void	exec(t_exec *node)
 {
@@ -24,14 +30,21 @@ void	exec(t_exec *node)
 		dprintf(STDERR_FILENO, "error");
 		return ;
 	}
-	if (ft_isbuiltin(node->args) && pid != 0)
-		node->ret_status = run_builtin(node->args, node->table);
-	else if (pid == 0)
+	if (pid > 0)
 	{
+		signal(SIGINT, SIG_IGN);
+	}
+	if (ft_isbuiltin(node->args) && pid != 0)
+		set_exit_status(run_builtin(node->args, node->table));
+	else if (!ft_isbuiltin(node->args) && pid == 0)
+	{
+		execve(node->args[0], node->args, NULL);
 		execvepromax(node->args[0], node->args, get_var("PATH", node->table));
 		dprintf(STDERR_FILENO, "execve failed\n");
 	}
-  set_exit_status(exec_wait_pid(pid, node->args[0]));
+	if (!ft_isbuiltin(node->args))
+		set_exit_status(exec_wait_pid(pid, node->args[0]));
+	printf("exit_status: %d\n", get_exit_status());
 }
 
 void	paip(t_pipe *node)
@@ -129,25 +142,19 @@ int	main(int ac, char **av, char **env)
 	t_entab	*table = init_env_table(env);
 	t_general	*general;
 
-  char **args;
-  args = malloc(sizeof(char *) * 2);
-  args[0] = ft_strdup("pwd");
-  args[1] = 0;
-  t_exec *pwd;
-  pwd = malloc(sizeof(t_exec));
-  pwd->type = EXEC;
-  pwd->left = 0;
-  pwd->right = 0;
-  pwd->args = args;
-  pwd->table = table;
+	t_exec *pwd;
+	pwd = malloc(sizeof(t_exec));
+	pwd->type = EXEC;
+	pwd->left = 0;
+	pwd->right = 0;
+	pwd->args = &av[1];
+	pwd->table = table;
 
-  general = (t_general *) pwd;
-  general->type = pwd->type;
-  exec_ast(general);
-  free(args[0]);
-  free(args);
-  free_env(table);
-  free(pwd); 
+	general = (t_general *) pwd;
+	general->type = pwd->type;
+	exec_ast(general);
+	free_env(table);
+	free(pwd);
   
 	// t_exec	*ls_la;
 	// ls_la = malloc(sizeof(t_exec));
