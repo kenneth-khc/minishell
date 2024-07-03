@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 22:27:01 by qang              #+#    #+#             */
-/*   Updated: 2024/06/28 14:56:15 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/02 17:49:45 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,7 @@ bool		ft_isbuiltin(char **av);
 int			run_builtin(char **av, t_entab *table);
 
 int			execvepromax(char *file, char **args, t_envar *path_node);
+void  set_exit_status(int status);
 
 typedef enum e_types
 {
