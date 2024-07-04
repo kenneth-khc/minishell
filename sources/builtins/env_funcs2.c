@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 21:32:14 by qang              #+#    #+#             */
-/*   Updated: 2024/06/27 22:27:36 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/05 02:15:23 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,15 @@
 t_envar	*copy_env(t_envar *src);
 void	del_var(char *key, t_entab *table);
 t_envar	*get_var(char *key, t_entab *table);
+void	print_sorted_env(t_entab *table);
+
+void	print_sorted_env(t_entab *table)
+{
+	t_envar	*sorted;
+
+	sorted = copy_and_sort_env(table);
+	print_and_free_env(sorted);
+}
 
 t_envar	*get_var(char *key, t_entab *table)
 {

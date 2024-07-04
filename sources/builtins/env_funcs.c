@@ -6,19 +6,37 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 21:24:13 by qang              #+#    #+#             */
-/*   Updated: 2024/06/27 22:28:30 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/05 02:21:20 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "a.h"
 
 t_envar	*new_env_var(const char *str);
+void	add_var(char *str, t_entab *table);
+void	free_env(t_entab *table);
+t_entab	*init_env_table(char **env);
+
+static void	update_var(t_envar *node, t_envar *new)
+{
+	char	*temp;
+
+	temp = node->val;
+	if (new->val)
+	{
+		node->val = new->val;
+		if (temp)
+			free(temp);
+	}
+	node->display = new->display;
+	free(new->key);
+	free(new);
+}
 
 void	add_var(char *str, t_entab *table)
 {
 	t_envar	*node;
 	t_envar	*new;
-	char	*temp;
 
 	node = table->head;
 	new = new_env_var(str);
@@ -31,16 +49,7 @@ void	add_var(char *str, t_entab *table)
 	{
 		if (ft_strcmp(new->key, node->key) == 0)
 		{
-			temp = node->val;
-			if (new->val)
-			{
-				node->val = new->val;
-				if (temp)
-					free(temp);
-			}
-			node->display = new->display;
-			free(new->key);
-			free(new);
+			update_var(node, new);
 			return ;
 		}
 		node = node->next;

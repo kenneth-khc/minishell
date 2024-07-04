@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 22:27:01 by qang              #+#    #+#             */
-/*   Updated: 2024/07/03 16:30:16 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/05 02:12:46 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,9 @@ typedef struct s_entab
 int			ft_strcmp(char *s1, char *s2);
 
 /*prints sorted env (for export)*/
-t_envar		*print_sorted_env(t_entab *table);
+void		print_sorted_env(t_entab *table);
+t_envar		*copy_and_sort_env(t_entab *table);
+void		print_and_free_env(t_envar *chead);
 
 /*get length of args*/
 int			length(char **arg);
@@ -104,9 +106,9 @@ typedef struct s_redir
 {
 	t_type		type;
 	char		**args;
-	int				oldfd;
-	int				newfd;
-	int				flags;
+	int			oldfd;
+	int			newfd;
+	int			flags;
 	mode_t		mode;
 	t_general	*left;
 	t_general	*right;

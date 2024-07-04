@@ -6,19 +6,13 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 22:15:03 by qang              #+#    #+#             */
-/*   Updated: 2024/07/03 21:09:58 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/05 02:31:00 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "a.h"
 
 void	exec_ast(t_general *node);
-
-// void dosmthg(int sig) {
-// 	printf("%d\n", get_exit_status());
-// 	fflush(stdout);
-// 	exit(0);
-// }
 
 void	exec(t_exec *node)
 {
@@ -33,6 +27,7 @@ void	exec(t_exec *node)
 	if (pid > 0)
 	{
 		signal(SIGINT, SIG_IGN);
+		signal(SIGQUIT, SIG_IGN);
 	}
 	if (ft_isbuiltin(node->args) && pid != 0)
 		set_exit_status(run_builtin(node->args, node->table));
@@ -47,38 +42,49 @@ void	exec(t_exec *node)
 	printf("exit_status: %d\n", get_exit_status());
 }
 
+void	pipepromax(int fd[2])
+{
+	int	err;
+
+	err = pipe(fd);
+	if (err == -1)
+	{
+		dprintf(STDERR_FILENO, "error");
+		return ;
+	}
+}
+
+int	forkpromax(void)
+{
+	int	pid;
+
+	pid = fork();
+	if (pid < 0)
+	{
+		dprintf(STDERR_FILENO, "error");
+		return (-1);
+	}
+	return (pid);
+}
+
 void	paip(t_pipe *node)
 {
 	int	fd[2];
+	int	pid1;
+	int	pid2;
 
-	if (pipe(fd) == -1)
-	{
-		dprintf(STDERR_FILENO, "error");
-		return ;
-	}
-	int	pid1 = fork();
-	if (pid1 < 0)
-	{
-		dprintf(STDERR_FILENO, "error");
-		return ;
-	}
+	pipepromax(fd);
+	pid1 = forkpromax();
 	if (pid1 == 0)
 	{
 		dup2(fd[1], STDOUT_FILENO);
 		exec_ast((t_general *)node->left);
 		exit(0);
 	}
-	int	pid2 = fork();
-	if (pid2 < 0)
-	{
-		dprintf(STDERR_FILENO, "error");
-		return ;
-	}
+	pid2 = forkpromax();
 	if (pid2 == 0)
 	{
 		dup2(fd[0], STDIN_FILENO);
-		// close(fd[0]);
-		// close(fd[1]);
 		exec_ast((t_general *)node->right);
 		exit(0);
 	}
@@ -90,13 +96,9 @@ void	paip(t_pipe *node)
 
 void	redir(t_Redir_Node *node)
 {
-	int	pid1 = fork();
+	int	pid1;
 
-	if (pid1 < 0)
-	{
-		printf("error");
-		return ;
-	}
+	pid1 = fork();
 	if (pid1 == 0)
 	{
 		if (node->args[1][0] == '<')
@@ -117,11 +119,22 @@ void	redir(t_Redir_Node *node)
 	waitpid(pid1, NULL, 0);
 }
 
-// void	andand(t_andand *node)
-// {
-// 	exec_ast(node->left);
-// 	if ()
-// }
+void	andand(t_andand *node)
+{
+	exec_ast(node->left);
+	if (get_exit_status() != 0)
+		return ;
+	else
+		exec_ast(node->right);
+}
+
+void  oror(t_oror *node)
+{
+	exec_ast(node->left);
+	if (get_exit_status() == 0)
+		return ;
+	exec_ast(node->right);
+}
 
 void	exec_ast(t_general *node)
 {
@@ -155,81 +168,5 @@ int	main(int ac, char **av, char **env)
 	exec_ast(general);
 	free_env(table);
 	free(pwd);
-  
-	// t_exec	*ls_la;
-	// ls_la = malloc(sizeof(t_exec));
-	// ls_la->type = EXEC;
-	// ls_la->args = (char *[]){"ls", "-la", NULL};
-	// ls_la->left = NULL;
-	// ls_la->right = NULL;
-	// ls_la->table = table;
-
-	// t_exec	*grep_exec;
-	// grep_exec = malloc(sizeof(t_exec));
-	// grep_exec->type = EXEC;
-	// grep_exec->args = (char *[]){"grep", "exec", NULL};
-	// grep_exec->left = NULL;
-	// grep_exec->right = NULL;
-	// grep_exec->table = table;
-
-	// t_exec	*wc;
-	// wc = malloc(sizeof(t_exec));
-	// wc->type = EXEC;
-	// wc->args = (char *[]){"wc", NULL};
-	// wc->left = NULL;
-	// wc->right = NULL;
-	// wc->table = table;
-
-	// t_exec	*bro;
-	// bro = malloc(sizeof(t_exec));
-	// bro->type = EXEC;
-	// bro->args = (char *[]){"/Users/qang/42/minishell/sources/builtins/bro", NULL};
-	// bro->left = NULL;
-	// bro->right = NULL;
-	// bro->table = table;
-
-	// t_pipe	*pip1 = malloc(sizeof(t_pipe));
-	// pip1->type = PIPE;
-	// pip1->args = (char *[]){"ls -la", "|", "grep exec", NULL};
-
-	// t_general	*general1 = (t_general *) ls_la;
-	// general1->type = ls_la->type;
-	// pip1->left = general1;
-
-	// t_general	*general2 = (t_general *) grep_exec;
-	// general2->type = grep_exec->type;
-	// pip1->right = general2;
-
-	// t_pipe	*pip2 = malloc(sizeof(t_pipe));
-	// pip2->type = PIPE;
-	// pip2->args = (char *[]){"ls -la", "|", "grep exec", "|", "./bro", NULL};
-
-	// general = (t_general *) bro;
-	// general->type = bro->type;
-	// pip2->right = general;
-
-	// general = (t_general *) pip1;
-	// general->type = pip1->type;
-	// pip2->left = general;
-
-	// t_pipe	*pip3 = malloc(sizeof(t_pipe));
-	// pip3->type = PIPE;
-	// pip3->args = (char *[]){"ls -la", "|", "grep exec", "|", "/Users/qang/42/minishell/sources/builtins/bro", "|", "wc", NULL};
-
-	// general = (t_general *) pip2;
-	// general->type = pip2->type;
-	// pip3->left = general;
-
-	// general = (t_general *) wc;
-	// general->type = wc->type;
-	// pip3->right = general;
-
-	// general = (t_general *) pip3;
-	// general->type = pip3->type;
-
-	// general = (t_general *) pip1;
-	// general->type = pip1->type;
-	
-	// exec_ast(general);
 	return (0);
 }

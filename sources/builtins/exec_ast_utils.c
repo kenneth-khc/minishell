@@ -6,30 +6,30 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 21:44:44 by qang              #+#    #+#             */
-/*   Updated: 2024/07/03 17:22:09 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/05 01:59:26 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "a.h"
 #include <dirent.h>
 
-static int *errnono(void);
+static int	*errnono(void);
 
-int get_exit_status(void)
+int	get_exit_status(void)
 {
-  return (*errnono());
+	return (*errnono());
 }
 
-void  set_exit_status(int status)
+void	set_exit_status(int status)
 {
-  *errnono() = status;
+	*errnono() = status;
 }
 
-static int *errnono(void)
+static int	*errnono(void)
 {
-  static int exit_status = 0;
+	static int	exit_status = 0;
 
-  return (&exit_status);
+	return (&exit_status);
 }
 
 int	exec_wait_pid(int last_pid, char *name)
