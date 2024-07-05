@@ -1,46 +1,48 @@
 # Grammar
 
 ```bnf
-command		: simple_command
+command			: complete_command
 
-pipe_sequence	: simple_command
-		| pipe-sequence PIPE simple_command
+complete_command	: pipe_sequence and_or
 
-simple_command	: command_prefix command_word command_suffix
-		| command_prefix command_word
-		| command_prefix
-		| command_name command_suffix
-		| command_name
+pipe_sequence		: simple_command pipes
 
-command_prefix	: io_redirect
-		| command_prefix io_redirect
-		| ASSIGNMENT_WORD
-		| command_prefix ASSIGNMENT_WORD
+pipes			: PIPE pipe_sequence 
+			| ε  
 
-command_suffix	: io_redirect
-		| command_suffix io_redirect
-		| WORD
-		| command_suffix WORD
+and_or			: AND_AND pipe_sequence and_or
+			| OR_OR pipe_sequence and_or
+			| ε
 
-io_redirect	: io_file
-		| IO_NUMBER io_file
-		| io_here
-		| IO_NUMBER io_here
+simple_command		: command_prefix command_word command_suffix
+			| command_prefix command_word
+			| command_prefix
+			| command_name command_suffix
+			| command_name
+
+command_prefix		: io_redirect command_prefix
+			| ASSIGNMENT_WORD command_prefix
+			| ε  
+
+command_suffix		: io_redirect command_suffix
+			| WORD command_suffix
+			| ε  
+
+io_redirect		: io_file
+			| io_here
 	
-io_file		: LESS filename
-		| LESS_AND filename
-		| GREAT filename
-		| GREAT_GREAT filename
-		| GREAT_AND filename
+io_file			: LESS filename
+			| GREAT filename
+			| GREAT_GREAT filename
 
-io_here		: LESS_LESS here_end
+io_here			: LESS_LESS here_end
 
-command_name	: WORD
+command_name		: WORD
 
-command_word	: WORD
+command_word		: WORD
 
-filename	: WORD
+filename		: WORD
 
-here_end	: WORD
+here_end		: WORD
 ```
 
