@@ -30,7 +30,7 @@ t_Node	*parse_simple_command(t_Parser *parser)
 	t_Node		*ret;
 	t_Exec_Node	*exec_node;
 
-	exec_node = create_exec_node(NULL, NULL);
+	exec_node = create_exec_node(NULL, parser->envtab);
 	prefix = parse_command_prefix(parser);
 	while (peek_token(parser->token) == WORD)
 	{
