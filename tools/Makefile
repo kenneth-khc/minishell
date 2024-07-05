@@ -22,6 +22,10 @@ export includes
 srcs := cJSON.c serialize_tree.c
 objs := $(patsubst %.c, %.o, $(srcs))
 
+.PHONY: run
+run: $(NAME)
+	./$(NAME)
+
 all: $(NAME)
 
 $(NAME): minishell_objects $(objs)

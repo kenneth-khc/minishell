@@ -12,6 +12,7 @@
 
 #include "tree.h"
 #include <fcntl.h>
+#include <sys/wait.h>
 
 void	exec_ast(t_Node *node);
 
