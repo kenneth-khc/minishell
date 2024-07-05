@@ -22,7 +22,7 @@ typedef struct s_Parser
 {
 	t_Token		*token; // current token the parser is looking at
 	t_Token		*lookahead; // 1 token after current token
-	t_entab		*envtab;
+	t_entab		*envtab; // environment table
 }	t_Parser;
 
 t_Node			*parse(t_Parser *parser, t_Token_List *tokens);
