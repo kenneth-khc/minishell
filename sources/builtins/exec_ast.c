@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 22:15:03 by qang              #+#    #+#             */
-/*   Updated: 2024/07/05 17:02:01 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/05 18:56:28 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,13 +34,14 @@ void	exec(t_Exec_Node *node)
 		set_exit_status(run_builtin(node->args, node->table));
 	else if (!ft_isbuiltin(node->args) && pid == 0)
 	{
-		execve(node->args[0], (char **)node->args, NULL); //todo: FIX
+		execve(node->args[0], (char **)node->args, env_convert(node->table));
 		execvepromax((char *)node->args[0], (char **)node->args, get_var("PATH", node->table));
 		dprintf(STDERR_FILENO, "execve failed\n");
+		exit(0);
 	}
 	if (!ft_isbuiltin(node->args))
 		set_exit_status(exec_wait_pid(pid, (char *)node->args[0]));
-	printf("exit_status: %d\n", get_exit_status());
+	// printf("exit_status: %d\n", get_exit_status());
 }
 
 void	pipepromax(int fd[2])

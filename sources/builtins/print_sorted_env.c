@@ -6,15 +6,15 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 01:54:16 by qang              #+#    #+#             */
-/*   Updated: 2024/07/05 02:20:20 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/05 18:44:21 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "a.h"
 
 static void	merge_sort(t_envar **head_ref);
-t_envar	*copy_and_sort_env(t_entab *table);
-void	print_and_free_sorted(t_envar *chead);
+t_envar		*copy_and_sort_env(t_entab *table);
+void		print_and_free_sorted(t_envar *chead);
 
 /*chead = copy of head*/
 t_envar	*copy_and_sort_env(t_entab *table)

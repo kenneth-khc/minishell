@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 19:42:59 by qang              #+#    #+#             */
-/*   Updated: 2024/07/03 21:01:08 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/05 18:43:24 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static int	skip_space_and_sign(char *str, long *sign)
 
 static int	ft_print_error(char *str)
 {
-	printf("exit: %s: numeric argument required\n", str);
+	printf("%s: exit: %s: numeric argument required\n", SHELL, str);
 	return (2);
 }
 
@@ -89,9 +89,9 @@ int	exit_sh(char **arg, t_entab *table)
 	else
 	{
 		if (!is_valid(arg[1]))
-			printf("exit: %s: numeric argument required\n", arg[1]);
+			printf("%s: exit: %s: numeric argument required\n", SHELL, arg[1]);
 		else
-			printf("exit: too many arguments\n");
+			printf("%s: exit: too many arguments\n", SHELL);
 		return (2);
 	}
 	return (0);

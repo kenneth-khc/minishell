@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 21:18:39 by qang              #+#    #+#             */
-/*   Updated: 2024/07/03 20:59:55 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/05 18:51:03 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	print_env(char **args, t_entab *table)
 
 	node = table->head;
 	if (length(args) > 1)
-		printf("env: %s: No such file or directory\n", args[1]);
+		printf("%s: env: %s: No such file or directory\n", SHELL, args[1]);
 	while (node)
 	{
 		if (ft_strcmp(node->key, "_") == 0)

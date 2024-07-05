@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 21:20:05 by qang              #+#    #+#             */
-/*   Updated: 2024/07/03 16:49:55 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/05 18:47:33 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,22 +37,20 @@ int	export(char **args, t_entab *table)
 	i = 1;
 	errno = 0;
 	if (length(args) == 1)
-		print_sorted_env(table);
-	else
+		return (print_sorted_env(table));
+	while (args[i])
 	{
-		while (args[i])
+		temp = ft_substr(args[i], 0, ft_strchr(args[i], '=') - args[i]);
+		if (ft_isstring(args[i]))
+			add_var(args[i], table);
+		else
 		{
-			temp = ft_substr(args[i], 0, ft_strchr(args[i], '=') - args[i]);
-			if (ft_isstring(args[i]))
-				add_var(args[i], table);
-			else
-			{
-				printf("export: `%s': not a valid identifier\n", args[i]);
-				errno = 1;
-			}
-			free(temp);
-			i++;
+			printf("%s: export: `%s': not a valid identifier\n",
+				SHELL, args[i]);
+			errno = 1;
 		}
+		free(temp);
+		i++;
 	}
 	return (errno);
 }

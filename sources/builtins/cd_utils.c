@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/26 00:30:17 by qang              #+#    #+#             */
-/*   Updated: 2024/06/27 01:44:03 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/05 18:40:11 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static void	add_pwd(t_entab *table)
 	}
 	else
 	{
-		printf("cd: error retrieving current directory: getcwd: ");
+		printf("%s: cd: error retrieving current directory: getcwd: ", SHELL);
 		printf("cannot access parent directories: No such file or directory");
 	}
 }

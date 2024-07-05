@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 22:27:01 by qang              #+#    #+#             */
-/*   Updated: 2024/07/05 17:04:15 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/05 18:45:38 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,9 @@
 # include <unistd.h>
 # include "libft.h"
 # include <stdio.h>
+# ifndef SHELL
+#  define SHELL "bish"
+# endif
 /*envar = env variable*/
 typedef struct s_envar
 {
@@ -37,7 +40,7 @@ typedef struct s_entab
 
 
 /*prints sorted env (for export)*/
-void		print_sorted_env(t_entab *table);
+int		print_sorted_env(t_entab *table);
 t_envar		*copy_and_sort_env(t_entab *table);
 void		print_and_free_env(t_envar *chead);
 
@@ -51,6 +54,7 @@ t_envar		*get_var(char *key, t_entab *table);
 t_entab		*init_env_table(char **env);
 void		free_env(t_entab *table);
 t_envar		*copy_env(t_envar *src);
+char		**env_convert(t_entab *table);
 
 /*builtin funcs*/
 int			cd(char **args, t_entab *table);
