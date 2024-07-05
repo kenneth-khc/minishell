@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   AST_utils.c                                        :+:      :+:    :+:   */
+/*   tree_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
+/*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 21:02:06 by kecheong          #+#    #+#             */
-/*   Updated: 2024/06/20 22:13:42 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/05 20:01:51 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void	add_exec_arguments(t_Exec_Node *exec_node, const char *arg)
 	if (exec_node->arg_count == 0)
 		exec_node->command = arg;
 	exec_node->arg_count++;
-	temp = ft_calloc(exec_node->arg_count, sizeof(const char *));
+	temp = ft_calloc(exec_node->arg_count + 1, sizeof(const char *));
 	while (i < old_count)
 	{
 		temp[i] = exec_node->args[i];

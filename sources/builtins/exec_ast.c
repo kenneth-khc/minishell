@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 22:15:03 by qang              #+#    #+#             */
-/*   Updated: 2024/07/05 18:56:28 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/05 20:02:27 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,9 @@ void	exec(t_Exec_Node *node)
 	int	pid;
 
 	pid = fork();
+	
+	printf("%d: %s ", pid, node->args[2]);
+	fflush(stdout);
 	if (pid < 0)
 	{
 		dprintf(STDERR_FILENO, "error");
@@ -34,11 +37,13 @@ void	exec(t_Exec_Node *node)
 		set_exit_status(run_builtin(node->args, node->table));
 	else if (!ft_isbuiltin(node->args) && pid == 0)
 	{
-		execve(node->args[0], (char **)node->args, env_convert(node->table));
+		execve((char *)node->args[0], (char **)node->args, NULL);
 		execvepromax((char *)node->args[0], (char **)node->args, get_var("PATH", node->table));
 		dprintf(STDERR_FILENO, "execve failed\n");
 		exit(0);
 	}
+	else if (ft_isbuiltin(node->args) && pid == 0)
+		exit(0);
 	if (!ft_isbuiltin(node->args))
 		set_exit_status(exec_wait_pid(pid, (char *)node->args[0]));
 	// printf("exit_status: %d\n", get_exit_status());
