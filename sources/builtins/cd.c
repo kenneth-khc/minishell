@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/26 23:12:37 by qang              #+#    #+#             */
-/*   Updated: 2024/07/05 18:42:06 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/05 23:05:41 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,7 @@ static int	cd_home2(t_entab *table, char *path)
 static int	cd_home(t_entab *table)
 {
 	t_envar	*path_node;
-	int		errno;
 
-	errno = 0;
 	path_node = get_var("HOME", table);
 	if (path_node == NULL || (path_node != NULL && !path_node->display))
 	{

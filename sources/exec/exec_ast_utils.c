@@ -6,34 +6,15 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 21:44:44 by qang              #+#    #+#             */
-/*   Updated: 2024/07/05 18:29:45 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/06 00:54:35 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "a.h"
 #include <dirent.h>
 
-static int	*errnono(void);
-
-int	get_exit_status(void)
+int	exec_wait_pid(int last_pid)
 {
-	return (*errnono());
-}
-
-void	set_exit_status(int status)
-{
-	*errnono() = status;
-}
-
-static int	*errnono(void)
-{
-	static int	exit_status = 0;
-
-	return (&exit_status);
-}
-
-int	exec_wait_pid(int last_pid, char *name)
-{(void)name;
 	int	status;
 
 	status = 0;
@@ -44,7 +25,6 @@ int	exec_wait_pid(int last_pid, char *name)
 			ft_putendl_fd("Quit: 3", STDERR_FILENO);
 		else if (WTERMSIG(status) == 2)
 			ft_putstr_fd("\n", STDERR_FILENO);
-		printf("error %d\n", WTERMSIG(status));
 		status = 128 + WTERMSIG(status);
 	}
 	else if (WIFEXITED(status))

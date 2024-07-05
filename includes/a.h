@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 22:27:01 by qang              #+#    #+#             */
-/*   Updated: 2024/07/05 18:45:38 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/06 00:52:11 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,6 @@ typedef struct s_entab
 	t_envar			*tail;
 }	t_entab;
 
-
 /*prints sorted env (for export)*/
 int		print_sorted_env(t_entab *table);
 t_envar		*copy_and_sort_env(t_entab *table);
@@ -66,44 +65,14 @@ int			export(char **args, t_entab *table);
 int			pwd(char **args, t_entab *table);
 int			unset(char **args, t_entab *table);
 
-bool		ft_isbuiltin(const char **av);
+bool    ft_isbuiltin(const char *command);
 int			run_builtin(const char **av, t_entab *table);
 
+/*exec_ast_utils*/
 int			execvepromax(char *file, char **args, t_envar *path_node);
 void		set_exit_status(int status);
-int			exec_wait_pid(int pid, char *name);
+int	    exec_wait_pid(int last_pid);
 int			get_exit_status(void);
-
-
-// typedef struct s_temp
-// {
-// 	t_type		type;
-// 	char		**args;
-// 	t_general	*left;
-// 	t_general	*right;
-// }	t_temp;
-
-// typedef struct s_back
-// {
-// 	t_type		type;
-// 	char		**args;
-// 	t_general	*left;
-// 	t_general	*right;
-// }	t_back;
-
-// typedef struct s_andand
-// {
-// 	t_type		type;
-// 	char		**args;
-// 	t_general	*left;
-// 	t_general	*right;
-// }	t_andand;
-
-// typedef struct s_oror
-// {
-// 	t_type		type;
-// 	char		**args;
-// 	t_general	*left;
-// 	t_general	*right;
-// }	t_oror;
+int     forkpromax(void);
+void    pipepromax(int fd[2]);
 #endif

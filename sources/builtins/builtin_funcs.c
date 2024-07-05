@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 19:35:04 by qang              #+#    #+#             */
-/*   Updated: 2024/07/03 16:49:32 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/06 00:59:24 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,9 @@ int	length(char **arg)
 
 int	run_builtin(const char **cav, t_entab *table)
 {
-	int	errno;
+	int		errno;
 	char	**av;
+
 	av = (char **)cav;
 	errno = 0;
 	if (ft_strcmp("echo", av[0]) == 0)
@@ -46,12 +47,10 @@ int	run_builtin(const char **cav, t_entab *table)
 	return (errno);
 }
 
-bool	ft_isbuiltin(const char **av)
+bool	ft_isbuiltin(const char *command)
 {
-	if (ft_strcmp(av[0], "echo") == 0 || ft_strcmp(av[0], "cd") == 0
-		|| ft_strcmp(av[0], "pwd") == 0 || ft_strcmp(av[0], "export") == 0
-		|| ft_strcmp(av[0], "unset") == 0 || ft_strcmp(av[0], "env") == 0
-		|| ft_strcmp(av[0], "exit") == 0)
-		return (true);
-	return (false);
+	return (ft_strcmp(command, "echo") == 0 || ft_strcmp(command, "cd") == 0
+		|| ft_strcmp(command, "pwd") == 0 || ft_strcmp(command, "export") == 0
+		|| ft_strcmp(command, "unset") == 0 || ft_strcmp(command, "env") == 0
+		|| ft_strcmp(command, "exit") == 0);
 }

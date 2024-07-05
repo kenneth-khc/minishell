@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 22:15:03 by qang              #+#    #+#             */
-/*   Updated: 2024/07/05 20:02:27 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/06 01:05:35 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,6 @@ void	exec(t_Exec_Node *node)
 	int	pid;
 
 	pid = fork();
-	
-	printf("%d: %s ", pid, node->args[2]);
-	fflush(stdout);
 	if (pid < 0)
 	{
 		dprintf(STDERR_FILENO, "error");
@@ -33,45 +30,30 @@ void	exec(t_Exec_Node *node)
 	// 	signal(SIGINT, SIG_IGN);
 	// 	signal(SIGQUIT, SIG_IGN);
 	// }
-	if (ft_isbuiltin(node->args) && pid != 0)
-		set_exit_status(run_builtin(node->args, node->table));
-	else if (!ft_isbuiltin(node->args) && pid == 0)
+	if (pid == 0)
 	{
-		execve((char *)node->args[0], (char **)node->args, NULL);
-		execvepromax((char *)node->args[0], (char **)node->args, get_var("PATH", node->table));
-		dprintf(STDERR_FILENO, "execve failed\n");
+		if (!ft_isbuiltin(node->command))
+		{
+			execve((char *)node->command, (char **)node->args, env_convert(node->table));
+			execvepromax((char *)node->command, (char **)node->args, get_var("PATH", node->table));
+			dprintf(STDERR_FILENO, "execve failed\n");
+		}
 		exit(0);
 	}
-	else if (ft_isbuiltin(node->args) && pid == 0)
-		exit(0);
-	if (!ft_isbuiltin(node->args))
-		set_exit_status(exec_wait_pid(pid, (char *)node->args[0]));
-	// printf("exit_status: %d\n", get_exit_status());
+	else
+	{
+		if (ft_isbuiltin(node->command))
+			set_exit_status(run_builtin(node->args, node->table));
+	}
+	if (!ft_isbuiltin(node->command))
+		set_exit_status(exec_wait_pid(pid));
 }
 
-void	pipepromax(int fd[2])
+
+void	close_pipe(int fd[2])
 {
-	int	err;
-
-	err = pipe(fd);
-	if (err == -1)
-	{
-		dprintf(STDERR_FILENO, "error");
-		return ;
-	}
-}
-
-int	forkpromax(void)
-{
-	int	pid;
-
-	pid = fork();
-	if (pid < 0)
-	{
-		dprintf(STDERR_FILENO, "error");
-		return (-1);
-	}
-	return (pid);
+	close(fd[0]);
+	close(fd[1]);
 }
 
 void	paip(t_Pipe_Node *node)
@@ -85,6 +67,7 @@ void	paip(t_Pipe_Node *node)
 	if (pid1 == 0)
 	{
 		dup2(fd[1], STDOUT_FILENO);
+		close_pipe(fd);
 		exec_ast(node->left);
 		exit(0);
 	}
@@ -92,11 +75,11 @@ void	paip(t_Pipe_Node *node)
 	if (pid2 == 0)
 	{
 		dup2(fd[0], STDIN_FILENO);
+		close_pipe(fd);
 		exec_ast(node->right);
 		exit(0);
 	}
-	close(fd[0]);
-	close(fd[1]);
+	close_pipe(fd);
 	waitpid(pid1, NULL, 0);
 	waitpid(pid2, NULL, 0);
 }
@@ -112,6 +95,7 @@ void	redir(t_Redir_Node *node)
 		dup2(node->newfd, node->oldfd);
 		close(node->newfd);
 		exec_ast(node->left);
+		exit(0);
 	}
 	waitpid(pid1, NULL, 0);
 }

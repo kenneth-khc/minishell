@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 21:18:39 by qang              #+#    #+#             */
-/*   Updated: 2024/07/05 18:51:03 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/06 00:04:03 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	print_env(char **args, t_entab *table)
 			node = node->next;
 			continue ;
 		}
-		if (node->val != NULL && node->display == true)
+		if (node->val != NULL && node->display)
 			printf("%s=%s\n", node->key, node->val);
 		node = node->next;
 	}

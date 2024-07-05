@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 21:24:13 by qang              #+#    #+#             */
-/*   Updated: 2024/07/05 18:18:43 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/06 00:59:03 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ void	add_var(char *str, t_entab *table)
 	node = table->tail;
 	node->next = new;
 	new->prev = node;
+	table->tail = new;
 }
 
 t_envar	*new_env_var(const char *str)
