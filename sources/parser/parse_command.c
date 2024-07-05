@@ -126,7 +126,7 @@ t_Exec_Node	*parse_command_name(t_Parser *parser)
 	exec_node = NULL;
 	if (peek_token(parser->token) == WORD)
 	{
-		exec_node = create_exec_node(parser->token->lexeme, NULL);
+		exec_node = create_exec_node(parser->token->lexeme, parser->envtab);
 		consume(parser);
 		while (parse_command_suffix(parser, exec_node))
 			;

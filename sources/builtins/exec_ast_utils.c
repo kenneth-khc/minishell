@@ -33,7 +33,7 @@ static int	*errnono(void)
 }
 
 int	exec_wait_pid(int last_pid, char *name)
-{
+{(void)name;
 	int	status;
 
 	status = 0;

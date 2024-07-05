@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "a.h"
+#include "libft.h"
 
 int	length(char **arg)
 {
@@ -22,10 +23,11 @@ int	length(char **arg)
 	return (i);
 }
 
-int	run_builtin(char **av, t_entab *table)
+int	run_builtin(const char **cav, t_entab *table)
 {
 	int	errno;
-
+	char	**av;
+	av = (char **)cav;
 	errno = 0;
 	if (ft_strcmp("echo", av[0]) == 0)
 		errno = echo(av);
@@ -44,7 +46,7 @@ int	run_builtin(char **av, t_entab *table)
 	return (errno);
 }
 
-bool	ft_isbuiltin(char **av)
+bool	ft_isbuiltin(const char **av)
 {
 	if (ft_strcmp(av[0], "echo") == 0 || ft_strcmp(av[0], "cd") == 0
 		|| ft_strcmp(av[0], "pwd") == 0 || ft_strcmp(av[0], "export") == 0

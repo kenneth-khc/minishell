@@ -13,8 +13,9 @@
 #ifndef TREE_H
 # define TREE_H
 # include <sys/types.h>
-# include "a.h"
+//# include "a.h"
 # include "libft.h"
+# include "a.h"
 
 typedef enum e_Node_Type
 {
@@ -36,6 +37,7 @@ typedef struct s_Node
 	struct s_Node		*left;
 	struct s_Node		*right;
 }	t_Node;
+void	exec_ast(t_Node *node);
 
 /**
  * Node for executing commands
@@ -51,7 +53,7 @@ typedef struct s_Exec_Node
 	t_entab				*table;
 }	t_Exec_Node;
 
-t_Exec_Node		*create_exec_node(const char *cmd_name, const char **envp);
+t_Exec_Node		*create_exec_node(const char *cmd_name, t_entab *envtab);
 void			add_exec_arguments(t_Exec_Node *exec_node, const char *arg);
 
 /**

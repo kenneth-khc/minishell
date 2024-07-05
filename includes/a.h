@@ -13,7 +13,11 @@
 #ifndef A_H
 # define A_H
 
-# include "tree.h"
+//# include "tree.h"
+# include <stdbool.h>
+# include <unistd.h>
+# include "libft.h"
+# include <stdio.h>
 /*envar = env variable*/
 typedef struct s_envar
 {
@@ -31,8 +35,6 @@ typedef struct s_entab
 	t_envar			*tail;
 }	t_entab;
 
-/*use the one in libft later*/
-int			ft_strcmp(char *s1, char *s2);
 
 /*prints sorted env (for export)*/
 void		print_sorted_env(t_entab *table);
@@ -60,8 +62,8 @@ int			export(char **args, t_entab *table);
 int			pwd(char **args, t_entab *table);
 int			unset(char **args, t_entab *table);
 
-bool		ft_isbuiltin(char **av);
-int			run_builtin(char **av, t_entab *table);
+bool		ft_isbuiltin(const char **av);
+int			run_builtin(const char **av, t_entab *table);
 
 int			execvepromax(char *file, char **args, t_envar *path_node);
 void		set_exit_status(int status);

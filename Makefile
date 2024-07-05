@@ -23,6 +23,7 @@ obj_dir := objects
 objects := $(patsubst $(srcs_dir)/%.c, $(obj_dir)/%.o, $(sources))
 objects := $(patsubst objects/lexer/%.o, $(obj_dir)/%.o, $(objects))
 objects := $(patsubst objects/parser/%.o, $(obj_dir)/%.o, $(objects))
+objects := $(patsubst objects/builtins/%.o, $(obj_dir)/%.o, $(objects))
 # objects := $(addprefix $(obj_dir)/, $(objects))
 
 test: all
@@ -41,7 +42,7 @@ $(libft):
 	fi
 	make -C $(libft_dir)
 
-vpath %.c sources sources/lexer sources/parser
+vpath %.c sources sources/lexer sources/parser sources/builtins
 $(obj_dir)/%.o: %.c
 	$(CC) $(CFLAGS)  $(debug) $(includes) $< -c -o $@
  

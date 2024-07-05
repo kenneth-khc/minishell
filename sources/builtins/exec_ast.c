@@ -10,9 +10,10 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "a.h"
+#include "tree.h"
+#include <fcntl.h>
 
-void	exec_ast(t_Exec_Node *node);
+void	exec_ast(t_Node *node);
 
 void	exec(t_Exec_Node *node)
 {
@@ -24,21 +25,21 @@ void	exec(t_Exec_Node *node)
 		dprintf(STDERR_FILENO, "error");
 		return ;
 	}
-	if (pid > 0)
-	{
-		signal(SIGINT, SIG_IGN);
-		signal(SIGQUIT, SIG_IGN);
-	}
+	// if (pid > 0)
+	// {
+	// 	signal(SIGINT, SIG_IGN);
+	// 	signal(SIGQUIT, SIG_IGN);
+	// }
 	if (ft_isbuiltin(node->args) && pid != 0)
 		set_exit_status(run_builtin(node->args, node->table));
 	else if (!ft_isbuiltin(node->args) && pid == 0)
 	{
-		execve(node->args[0], node->args, NULL);
-		execvepromax(node->args[0], node->args, get_var("PATH", node->table));
+		execve(node->args[0], (char **)node->args, NULL); //todo: FIX
+		execvepromax((char *)node->args[0], (char **)node->args, get_var("PATH", node->table));
 		dprintf(STDERR_FILENO, "execve failed\n");
 	}
 	if (!ft_isbuiltin(node->args))
-		set_exit_status(exec_wait_pid(pid, node->args[0]));
+		set_exit_status(exec_wait_pid(pid, (char *)node->args[0]));
 	printf("exit_status: %d\n", get_exit_status());
 }
 
@@ -109,22 +110,22 @@ void	redir(t_Redir_Node *node)
 	waitpid(pid1, NULL, 0);
 }
 
-void	andand(t_andand *node)
-{
-	exec_ast(node->left);
-	if (get_exit_status() != 0)
-		return ;
-	else
-		exec_ast(node->right);
-}
-
-void  oror(t_oror *node)
-{
-	exec_ast(node->left);
-	if (get_exit_status() == 0)
-		return ;
-	exec_ast(node->right);
-}
+// void	andand(t_andand *node)
+// {
+// 	exec_ast(node->left);
+// 	if (get_exit_status() != 0)
+// 		return ;
+// 	else
+// 		exec_ast(node->right);
+// }
+//
+// void  oror(t_oror *node)
+// {
+// 	exec_ast(node->left);
+// 	if (get_exit_status() == 0)
+// 		return ;
+// 	exec_ast(node->right);
+// }
 
 void	exec_ast(t_Node *node)
 {

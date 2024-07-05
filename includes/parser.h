@@ -16,11 +16,13 @@
 #include "tokens.h"
 #include <stdbool.h>
 #include "tree.h"
+# include "a.h"
 
 typedef struct s_Parser
 {
 	t_Token		*token; // current token the parser is looking at
 	t_Token		*lookahead; // 1 token after current token
+	t_entab		*envtab;
 }	t_Parser;
 
 t_Node			*parse(t_Parser *parser, t_Token_List *tokens);

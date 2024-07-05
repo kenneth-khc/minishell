@@ -15,9 +15,11 @@
 #include "input.h"
 #include "tokens.h"
 #include "parser.h"
+#include "a.h"
 
 void	free_tokens(t_Token_List *tokens);
 char	*get_history(t_Input *input);
+
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -30,6 +32,8 @@ int	main(int argc, char **argv, char **envp)
 	(void)argv;
 	(void)envp;
 	input = (t_Input){0};
+
+	parser.envtab = init_env_table(envp);
 	while (1)
 	{
 		get_input(&input);

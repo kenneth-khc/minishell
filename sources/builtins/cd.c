@@ -11,6 +11,9 @@
 /* ************************************************************************** */
 
 #include "a.h"
+#include <unistd.h>
+#include "libft.h"
+#include <stdio.h>
 
 static int	cd_home2(t_entab *table, char *path)
 {
