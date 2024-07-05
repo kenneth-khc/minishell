@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
+/*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 05:13:16 by kecheong          #+#    #+#             */
-/*   Updated: 2024/06/20 16:18:06 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/05 16:40:07 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ int	main(int argc, char **argv, char **envp)
 	t_Token_List	tokens;
 	t_Input			input;
 	t_Parser		parser;
+	t_Node	*root;
 
 	(void)argc;
 	(void)argv;
@@ -35,7 +36,8 @@ int	main(int argc, char **argv, char **envp)
 		tokens = scan(&input);	
 		add_history(get_history(&input));
 		// print_tokens(&tokens);
-		parse(&parser, &tokens);
+		root = parse(&parser, &tokens);
+		exec_ast(root);
 		clear_input(&input);
 		free_tokens(&tokens);
 	}

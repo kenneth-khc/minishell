@@ -1,18 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ast.h                                              :+:      :+:    :+:   */
+/*   tree.h                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
+/*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 21:06:03 by kecheong          #+#    #+#             */
-/*   Updated: 2024/06/20 22:09:36 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/05 17:04:08 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef TREE_H
 # define TREE_H
 # include <sys/types.h>
+# include "a.h"
+# include "libft.h"
 
 typedef enum e_Node_Type
 {
@@ -46,7 +48,7 @@ typedef struct s_Exec_Node
 	const char			*command; // Name of the command to execute
 	int					arg_count; // Number of arguments in the command
 	const char			**args; // Args of the cmd, first one being the cmdname
-	const char			**envp;
+	t_entab				*table;
 }	t_Exec_Node;
 
 t_Exec_Node		*create_exec_node(const char *cmd_name, const char **envp);

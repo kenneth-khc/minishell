@@ -6,15 +6,15 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 22:15:03 by qang              #+#    #+#             */
-/*   Updated: 2024/07/05 02:31:00 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/05 17:02:01 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "a.h"
 
-void	exec_ast(t_general *node);
+void	exec_ast(t_Exec_Node *node);
 
-void	exec(t_exec *node)
+void	exec(t_Exec_Node *node)
 {
 	int	pid;
 
@@ -67,7 +67,7 @@ int	forkpromax(void)
 	return (pid);
 }
 
-void	paip(t_pipe *node)
+void	paip(t_Pipe_Node *node)
 {
 	int	fd[2];
 	int	pid1;
@@ -78,14 +78,14 @@ void	paip(t_pipe *node)
 	if (pid1 == 0)
 	{
 		dup2(fd[1], STDOUT_FILENO);
-		exec_ast((t_general *)node->left);
+		exec_ast(node->left);
 		exit(0);
 	}
 	pid2 = forkpromax();
 	if (pid2 == 0)
 	{
 		dup2(fd[0], STDIN_FILENO);
-		exec_ast((t_general *)node->right);
+		exec_ast(node->right);
 		exit(0);
 	}
 	close(fd[0]);
@@ -101,20 +101,10 @@ void	redir(t_Redir_Node *node)
 	pid1 = fork();
 	if (pid1 == 0)
 	{
-		if (node->args[1][0] == '<')
-		{
-			node->newfd = open(node->args[2], node->flags);
-			dup2(node->newfd, node->oldfd);
-			close(node->newfd);
-			exec_ast(node->left);
-		}
-		else if (node->args[1][0] == '>')
-		{
-			node->newfd = open(node->args[2], node->flags);
-			dup2(node->newfd, node->oldfd);
-			close(node->newfd);
-			exec_ast(node->left);
-		}
+		node->newfd = open(node->file, node->flags, node->mode);
+		dup2(node->newfd, node->oldfd);
+		close(node->newfd);
+		exec_ast(node->left);
 	}
 	waitpid(pid1, NULL, 0);
 }
@@ -136,37 +126,33 @@ void  oror(t_oror *node)
 	exec_ast(node->right);
 }
 
-void	exec_ast(t_general *node)
+void	exec_ast(t_Node *node)
 {
-	if (node->type == EXEC)
-		exec((t_exec *)node);
-	else if (node->type == REDIR)
+	if (node->type == Exec_Node)
+		exec((t_Exec_Node *)node);
+	else if (node->type == Redir_Node)
 		redir((t_Redir_Node *)node);
-	else if (node->type == PIPE)
-		paip((t_pipe *)node);
-	else if (node->type == BACK)
-		return ;
-	else if (node->type == LIST)
-		return ;
+	else if (node->type == Pipe_Node)
+		paip((t_Pipe_Node *)node);
 }
 
-int	main(int ac, char **av, char **env)
-{
-	t_entab	*table = init_env_table(env);
-	t_general	*general;
+// int	main(int ac, char **av, char **env)
+// {
+// 	t_entab	*table = init_env_table(env);
+// 	t_general	*general;
 
-	t_exec *pwd;
-	pwd = malloc(sizeof(t_exec));
-	pwd->type = EXEC;
-	pwd->left = 0;
-	pwd->right = 0;
-	pwd->args = &av[1];
-	pwd->table = table;
+// 	t_exec *pwd;
+// 	pwd = malloc(sizeof(t_exec));
+// 	pwd->type = EXEC;
+// 	pwd->left = 0;
+// 	pwd->right = 0;
+// 	pwd->args = &av[1];
+// 	pwd->table = table;
 
-	general = (t_general *) pwd;
-	general->type = pwd->type;
-	exec_ast(general);
-	free_env(table);
-	free(pwd);
-	return (0);
-}
+// 	general = (t_general *) pwd;
+// 	general->type = pwd->type;
+// 	exec_ast(general);
+// 	free_env(table);
+// 	free(pwd);
+// 	return (0);
+// }
