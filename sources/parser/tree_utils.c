@@ -24,14 +24,13 @@ t_Node	*create_node(enum e_Node_Type type)
 
 t_Exec_Node	*create_exec_node(const char *cmd_name, t_entab *envtab)
 {
-	(void)envtab;
 	t_Exec_Node	*node;
 
 	node = ft_calloc(1, sizeof(*node));
 	node->type = Exec_Node;
 	node->left = NULL;
 	node->command = cmd_name;
-	//node->envp = envp;
+	node->table = envtab;
 	return (node);
 }
 
