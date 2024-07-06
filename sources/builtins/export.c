@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 21:20:05 by qang              #+#    #+#             */
-/*   Updated: 2024/07/06 00:22:05 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/06 22:05:56 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int	export(char **args, t_entab *table)
 			add_var(args[i], table);
 		else
 		{
-			printf("%s: export: `%s': not a valid identifier\n",
+			ft_dprintf(2, "%s: export: `%s': not a valid identifier\n",
 				SHELL, args[i]);
 			errno = 1;
 		}

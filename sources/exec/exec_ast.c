@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 22:15:03 by qang              #+#    #+#             */
-/*   Updated: 2024/07/06 01:05:35 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/06 23:16:21 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,24 +19,15 @@ void	exec(t_Exec_Node *node)
 {
 	int	pid;
 
-	pid = fork();
-	if (pid < 0)
-	{
-		dprintf(STDERR_FILENO, "error");
-		return ;
-	}
-	// if (pid > 0)
-	// {
-	// 	signal(SIGINT, SIG_IGN);
-	// 	signal(SIGQUIT, SIG_IGN);
-	// }
+	pid = forkpromax();
 	if (pid == 0)
 	{
 		if (!ft_isbuiltin(node->command))
 		{
-			execve((char *)node->command, (char **)node->args, env_convert(node->table));
-			execvepromax((char *)node->command, (char **)node->args, get_var("PATH", node->table));
-			dprintf(STDERR_FILENO, "execve failed\n");
+			execve((char *)node->command, (char **)node->args,
+				env_convert(node->table));
+			execvepromax((char **)node->args, get_var("PATH", node->table));
+			ft_dprintf(2, "execve failed\n");
 		}
 		exit(0);
 	}
@@ -48,7 +39,6 @@ void	exec(t_Exec_Node *node)
 	if (!ft_isbuiltin(node->command))
 		set_exit_status(exec_wait_pid(pid));
 }
-
 
 void	close_pipe(int fd[2])
 {
@@ -126,24 +116,3 @@ void	exec_ast(t_Node *node)
 	else if (node->type == Pipe_Node)
 		paip((t_Pipe_Node *)node);
 }
-
-// int	main(int ac, char **av, char **env)
-// {
-// 	t_entab	*table = init_env_table(env);
-// 	t_general	*general;
-
-// 	t_exec *pwd;
-// 	pwd = malloc(sizeof(t_exec));
-// 	pwd->type = EXEC;
-// 	pwd->left = 0;
-// 	pwd->right = 0;
-// 	pwd->args = &av[1];
-// 	pwd->table = table;
-
-// 	general = (t_general *) pwd;
-// 	general->type = pwd->type;
-// 	exec_ast(general);
-// 	free_env(table);
-// 	free(pwd);
-// 	return (0);
-// }
