@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/26 00:30:17 by qang              #+#    #+#             */
-/*   Updated: 2024/07/06 00:00:57 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/06 16:40:18 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,27 +50,44 @@ static void	update_oldpwd(char *oldpwd, t_entab *table)
 	free(temp);
 }
 
-static void	update_pwd_args(t_envar *path_node, char *arg, t_entab *table)
+static void	update_pwd_args_helper(t_envar *path_node, char *arg, char *curr)
 {
 	char	*temp;
 	char	*temp2;
 
+	while (*arg)
+	{
+		if (ft_strncmp(arg, "..", 2) == 0)
+		{
+			temp2 = ft_strrchr(curr, '/');
+			path_node->val = ft_substr(curr, 0, temp2 - curr);
+		}
+		else
+		{
+			temp2 = ft_strjoin(curr, "/");
+			temp = ft_substr(arg, 0, ft_strchr(arg, '/') - arg);
+			path_node->val = ft_strjoin(temp2, temp);
+			free(temp2);
+			free(temp);
+		}
+		free(curr);
+		curr = path_node->val;
+		if (!ft_strchr(arg, '/'))
+			break ;
+		arg = ft_strchr(arg, '/') + 1;
+	}
+}
+
+static void	update_pwd_args(t_envar *path_node, char *arg, t_entab *table)
+{
+	char	*temp;
+
 	temp = path_node->val;
 	if (arg[0] != '/')
 	{
-		if (ft_strcmp(arg, "..") == 0)
-		{
-			temp2 = ft_strrchr(temp, '/');
-			path_node->val = ft_substr(temp, 0, temp2 - temp);
-		}
-		else if (ft_strcmp(arg, ".") != 0)
-		{
-			temp2 = ft_strjoin(temp, "/");
-			path_node->val = ft_strjoin(temp2, arg);
-			free(temp2);
-		}
-		else
+		if (ft_strcmp(arg, ".") == 0)
 			return ;
+		update_pwd_args_helper(path_node, arg, ft_strdup(temp));
 	}
 	else
 		path_node->val = ft_strdup(arg);
