@@ -13,6 +13,9 @@
 #ifndef ERROR_H
 # define ERROR_H
 
+# include "parser.h"
+
 void	error(const char *str);
+void	syntax_error(t_Parser *parser, const char *err_msg);
 
 #endif

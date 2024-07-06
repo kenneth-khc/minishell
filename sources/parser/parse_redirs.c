@@ -96,7 +96,7 @@ t_Node	*parse_io_here(t_Parser *parser)
 	{
 		consume(parser);
 		// search for here_end
-		if (expect(parser->token, WORD))
+		if (expect(parser, WORD))
 		{
 			consume(parser);
 			node = create_redir_node(STDIN_FILENO, ".heredoc", O_CREAT | O_TRUNC | O_WRONLY, 0644);

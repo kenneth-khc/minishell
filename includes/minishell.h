@@ -29,7 +29,6 @@ typedef struct s_Minishell
 t_Token_List	scan(t_Input *input);
 
 void	free_tokens(t_Token_List *tokens);
-void	free_tree(t_Node *node);
 char	*get_history(t_Input *input);
 
 

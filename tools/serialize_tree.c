@@ -37,6 +37,10 @@ static char	*get_data(t_Node *node)
 			str = ft_strjoin(ft_itoa(r->oldfd), ">");
 		str = ft_strjoin(str, r->file);
 	}
+	else if (node->type == AND_AND_NODE)
+		str = "&&";
+	else if (node->type == OR_OR_NODE)
+		str = "||";
 	return (str);
 }
 

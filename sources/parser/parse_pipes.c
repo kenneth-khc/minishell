@@ -12,6 +12,8 @@
 
 #include "parser.h"
 #include "libft.h"
+#include <unistd.h>
+#include "errors.h"
 
 t_Node	*parse_pipe_sequence(t_Parser *parser)
 {
@@ -26,6 +28,11 @@ t_Node	*parse_pipe_sequence(t_Parser *parser)
 		temp->type = Pipe_Node;
 		temp->left = left;
 		temp->right = parse_simple_command(parser);
+		if (temp->right == NULL)
+		{
+			syntax_error(parser, "missing command to pipe to\n");
+			return (NULL);
+		}
 		left = temp;
 	}
 	return (left);

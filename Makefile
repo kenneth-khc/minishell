@@ -13,7 +13,6 @@ c_reset := \e[0m
 libft_dir := libft
 libft := $(libft_dir)/libft.a
 includes ?= -I includes -I libft/includes
-
 srcs_dir := sources
 lexer_dir := $(srcs_dir)/lexer
 parser_dir := $(srcs_dir)/parser

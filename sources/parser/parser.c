@@ -27,8 +27,10 @@ t_Node	*parse(t_Parser *parser, t_Token_List *tokens)
 
 	parser->token = tokens->head;
 	parser->lookahead = parser->token->next;
+	parser->root = NULL;
 
 	root = parse_complete_command(parser);
+	parser->root = root;
 //	export_tree(root);
 
 	// cout("Root: %s", parser->root->value);
@@ -76,16 +78,6 @@ void	print_nodes(t_Node *node)
 			cerr("Missing node type");
 		}
 		node = node->left;
-	}
-}
-
-void	consume(t_Parser *parser)
-{
-	if (parser->token)
-	{
-		parser->token = parser->token->next;
-		if (parser->token)
-			parser->lookahead = parser->token->next;
 	}
 }
 

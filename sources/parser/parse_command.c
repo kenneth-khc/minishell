@@ -6,7 +6,7 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/26 16:20:58 by kecheong          #+#    #+#             */
-/*   Updated: 2024/06/26 23:56:17 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/06 19:20:31 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,30 @@
 #include <stdio.h>
 #include "debug.h"
 
+bool	is_and_or_token(t_Token *token)
+{
+	return (token->type == AND_AND
+			|| token->type == OR_OR);
+}
+
 t_Node	*parse_complete_command(t_Parser *parser)
 {
 	t_Node	*node;
+	t_Node	*andor;
 
 	node = parse_pipe_sequence(parser);
+	while (is_and_or_token(parser->token))
+	{
+		andor = ft_calloc(1, sizeof(*andor));
+		if (peek_token(parser->token) == AND_AND)
+			andor->type = AND_AND_NODE;
+		else if (peek_token(parser->token) == OR_OR)
+			andor->type = OR_OR_NODE;
+		consume(parser);
+		andor->left = node;
+		andor->right = parse_pipe_sequence(parser);
+		node = andor;
+	}
 	return (node);
 }
 
@@ -58,6 +77,11 @@ t_Node	*parse_simple_command(t_Parser *parser)
 	}
 	else
 		ret = (t_Node *)exec_node;
+	if (exec_node->command == NULL)
+	{
+		ret = NULL;
+		free(exec_node);
+	}
 	return (ret); // todo: add more expressions
 }
 

@@ -32,6 +32,4 @@ void	_log(FILE *FILE,
 			int LINE,
 			char *format, ...);
 
-bool	expect(t_Token *token, enum e_Token_Types expected_type);
-
 #endif

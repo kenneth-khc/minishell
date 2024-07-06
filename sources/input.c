@@ -16,6 +16,7 @@
 #include "input.h"
 #include "errors.h"
 #include <readline/history.h>
+#include <stdio.h>
 
 t_Line	*make_line(char *str)
 {

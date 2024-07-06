@@ -23,7 +23,9 @@ typedef enum e_Node_Type
 	Exec_Node = 1,
 	Argument_Node,
 	Redir_Node,
-	Pipe_Node
+	Pipe_Node,
+	AND_AND_NODE,
+	OR_OR_NODE
 }	t_Node_Type;
 
 /**
@@ -87,5 +89,6 @@ typedef struct s_Pipe_Node
 
 t_Node			*get_tail(t_Node *node);
 void			print_nodes(t_Node *node);
+void			free_tree(t_Node *node);
 
 #endif
