@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 22:15:03 by qang              #+#    #+#             */
-/*   Updated: 2024/07/06 23:16:21 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/06 23:49:15 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ void	exec(t_Exec_Node *node)
 	pid = forkpromax();
 	if (pid == 0)
 	{
+    set_sig();
 		if (!ft_isbuiltin(node->command))
 		{
 			execve((char *)node->command, (char **)node->args,
@@ -33,6 +34,7 @@ void	exec(t_Exec_Node *node)
 	}
 	else
 	{
+    ignore_sigs();
 		if (ft_isbuiltin(node->command))
 			set_exit_status(run_builtin(node->args, node->table));
 	}

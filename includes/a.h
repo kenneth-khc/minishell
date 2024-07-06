@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 22:27:01 by qang              #+#    #+#             */
-/*   Updated: 2024/07/06 22:30:42 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/06 23:43:37 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,9 +39,11 @@ typedef struct s_entab
 
 /*signal handling*/
 void	init_signal(void);
+void	ignore_sigs(void);
+void	set_sig(void);
 
 /*prints sorted env (for export)*/
-int		print_sorted_env(t_entab *table);
+int			print_sorted_env(t_entab *table);
 t_envar		*copy_and_sort_env(t_entab *table);
 void		print_and_free_env(t_envar *chead);
 
