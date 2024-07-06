@@ -6,14 +6,13 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 22:27:01 by qang              #+#    #+#             */
-/*   Updated: 2024/07/06 00:52:11 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/06 22:30:42 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef A_H
 # define A_H
 
-//# include "tree.h"
 # include <stdbool.h>
 # include <unistd.h>
 # include "libft.h"
@@ -38,6 +37,9 @@ typedef struct s_entab
 	t_envar			*tail;
 }	t_entab;
 
+/*signal handling*/
+void	init_signal(void);
+
 /*prints sorted env (for export)*/
 int		print_sorted_env(t_entab *table);
 t_envar		*copy_and_sort_env(t_entab *table);
@@ -57,6 +59,8 @@ char		**env_convert(t_entab *table);
 
 /*builtin funcs*/
 int			cd(char **args, t_entab *table);
+void	  add_pwd(t_entab *table);
+void	  update_oldpwd(char *oldpwd, t_entab *table);
 void		update_pwd(char **args, t_entab *table);
 int			echo(char **args);
 int			print_env(char **args, t_entab *table);
@@ -69,7 +73,7 @@ bool    ft_isbuiltin(const char *command);
 int			run_builtin(const char **av, t_entab *table);
 
 /*exec_ast_utils*/
-int			execvepromax(char *file, char **args, t_envar *path_node);
+int			execvepromax(char **args, t_envar *path_node);
 void		set_exit_status(int status);
 int	    exec_wait_pid(int last_pid);
 int			get_exit_status(void);

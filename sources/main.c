@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 05:13:16 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/05 16:40:07 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/06 22:29:55 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ int	main(int argc, char **argv, char **envp)
 	input = (t_Input){0};
 
 	parser.envtab = init_env_table(envp);
+  init_signal();
 	while (1)
 	{
 		get_input(&input);

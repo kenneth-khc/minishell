@@ -6,70 +6,57 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/26 00:30:17 by qang              #+#    #+#             */
-/*   Updated: 2024/07/06 16:40:18 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/06 23:15:46 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "a.h"
 
-static void	add_pwd(t_entab *table)
+static void	parse_prev_path(t_envar *path_node)
 {
-	char	cwd[PATH_MAX];
 	char	*temp;
 
-	if (getcwd(cwd, PATH_MAX - 1))
+	if (ft_strlen(path_node->val) == 1)
 	{
-		temp = ft_strjoin("PWD=", cwd);
-		add_var(temp, table);
-		get_var("PWD", table)->display = false;
+		path_node->val = ft_strdup("/");
+		return ;
 	}
+	temp = ft_strrchr(path_node->val, '/');
+	if (temp == &path_node->val[0])
+		path_node->val = ft_strdup("/");
 	else
-	{
-		printf("%s: cd: error retrieving current directory: getcwd: ", SHELL);
-		printf("cannot access parent directories: No such file or directory");
-	}
+		path_node->val = ft_substr(path_node->val, 0, temp - path_node->val);
 }
 
-static void	update_oldpwd(char *oldpwd, t_entab *table)
+static void	add_path(t_envar *path_node, char *arg)
 {
-	t_envar		*path_node;
-	char		*temp;
+	char	*temp;
 
-	path_node = get_var("OLDPWD", table);
-	if (path_node == NULL)
+	if (ft_strcmp(arg, ".") != 0)
 	{
-		temp = ft_strjoin("OLDPWD=", oldpwd);
-		add_var(temp, table);
-		get_var("OLDPWD", table)->display = false;
+		temp = ft_strjoin(path_node->val, "/");
+		path_node->val = ft_strjoin(temp, arg);
+		free(temp);
 	}
 	else
-	{
-		temp = path_node->val;
-		path_node->val = ft_strdup(oldpwd);
-	}
-	free(temp);
+		path_node->val = ft_strdup(path_node->val);
 }
 
 static void	update_pwd_args_helper(t_envar *path_node, char *arg, char *curr)
 {
 	char	*temp;
-	char	*temp2;
 
 	while (*arg)
 	{
-		if (ft_strncmp(arg, "..", 2) == 0)
-		{
-			temp2 = ft_strrchr(curr, '/');
-			path_node->val = ft_substr(curr, 0, temp2 - curr);
-		}
+		if (ft_strchr(arg, '/') == NULL)
+			temp = ft_strdup(arg);
 		else
-		{
-			temp2 = ft_strjoin(curr, "/");
 			temp = ft_substr(arg, 0, ft_strchr(arg, '/') - arg);
-			path_node->val = ft_strjoin(temp2, temp);
-			free(temp2);
-			free(temp);
-		}
+		if (ft_strcmp(temp, "..") == 0)
+			parse_prev_path(path_node);
+		else
+			add_path(path_node, temp);
+		free(temp);
 		free(curr);
 		curr = path_node->val;
 		if (!ft_strchr(arg, '/'))
@@ -107,7 +94,8 @@ void	update_pwd(char **args, t_entab *table)
 		update_pwd_args(path_node, args[1], table);
 	else
 		update_pwd_args(path_node, get_var("HOME", table)->val, table);
-	while (!*(ft_strrchr(path_node->val, '/') + 1))
+	while (ft_strlen(path_node->val) > 1
+		&& !*(ft_strrchr(path_node->val, '/') + 1))
 	{
 		temp = path_node->val;
 		path_node->val = ft_substr(path_node->val, 0,

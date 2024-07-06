@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 19:42:59 by qang              #+#    #+#             */
-/*   Updated: 2024/07/06 00:58:25 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/06 23:16:58 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static int	skip_space_and_sign(char *str, long *sign)
 static int	ft_print_error(char *str, bool *valid)
 {
 	*valid = false;
-	printf("%s: exit: %s: numeric argument required\n", SHELL, str);
+	ft_dprintf(2, "%s: exit: %s: numeric argument required\n", SHELL, str);
 	return (2);
 }
 
@@ -80,12 +80,9 @@ int	exit_sh(char **arg, t_entab *table)
 	bool	valid;
 
 	valid = true;
-	printf("exit\n");
+	ft_dprintf(2, "exit\n");
 	if (length(arg) == 1)
-	{
-		free_env(table);
 		exit(0);
-	}
 	if (length(arg) == 2)
 	{
 		ft_exitatol(arg[1], &valid);
@@ -96,9 +93,10 @@ int	exit_sh(char **arg, t_entab *table)
 	else
 	{
 		if (!is_valid(arg[1]))
-			printf("%s: exit: %s: numeric argument required\n", SHELL, arg[1]);
+			ft_dprintf(2, "%s: exit: %s: numeric argument required\n",
+				SHELL, arg[1]);
 		else
-			printf("%s: exit: too many arguments\n", SHELL);
+			ft_dprintf(2, "%s: exit: too many arguments\n", SHELL);
 		return (2);
 	}
 	return (0);
