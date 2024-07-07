@@ -20,7 +20,7 @@
  * and metacharacters, unless the blanks and metacharacters are quoted.
  **/
 #define TOKEN_TYPES 13
-enum e_Token_Types
+typedef enum e_Token_Types
 {
 	WORD = 256,
 	PIPE,				// |
@@ -36,7 +36,7 @@ enum e_Token_Types
 	SEMICOLON,			// ;
 	END_OF_LINE,		// \n
 	HASH				// #
-};
+} t_Token_Type;
 
 /**
  * Representing a token.
@@ -45,9 +45,9 @@ enum e_Token_Types
  */
 typedef struct s_Token
 {
-	struct s_Token	*next;
-	int				type;
-	const char		*lexeme;
+	enum e_Token_Types	type;
+	const char			*lexeme;
+	struct s_Token		*next;
 }	t_Token;
 
 /**
@@ -62,6 +62,8 @@ typedef struct s_Token_List
 
 t_Token	*create_token(int type, const char *lexeme);
 void	add_token(t_Token_List *tokens, t_Token *token);
+int		get_tokens_count(t_Token_List *tokens);
 void	print_tokens(t_Token_List *tokens);
+char	*token_enum_to_str(t_Token *token);
 
 #endif

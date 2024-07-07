@@ -1,21 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   errors.h                                           :+:      :+:    :+:   */
+/*   history.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/14 13:16:22 by kecheong          #+#    #+#             */
-/*   Updated: 2024/04/14 13:16:38 by kecheong         ###   ########.fr       */
+/*   Created: 2024/07/06 17:24:42 by kecheong          #+#    #+#             */
+/*   Updated: 2024/07/06 17:27:46 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ERROR_H
-# define ERROR_H
+#include "input.h"
+#include "libft.h"
 
-# include "parser.h"
+char	*get_history(t_Input *input)
+{
+	int		i;
+	char	*buffer;
 
-void	error(const char *str);
-void	syntax_error(t_Parser *parser, const char *err_msg);
+	i = 0;
+	buffer = "";
+	while (i < input->count)
+	{
+		buffer = ft_strjoin(buffer, input->lines[i]->start);
+		i++;
+	}
+	return (buffer);
+}
 
-#endif

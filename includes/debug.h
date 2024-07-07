@@ -6,7 +6,7 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 11:20:48 by kecheong          #+#    #+#             */
-/*   Updated: 2024/04/12 07:39:37 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/06/20 21:43:30 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,17 +16,20 @@
 # include <assert.h>
 # include <stdarg.h>
 # include <stdio.h>
+# include "tokens.h"
+# include <stdbool.h>
 
-# define cout(msg) _log(stdout, __FILE__, __FUNCTION__, __LINE__, msg)
-# define cerr(msg) _log(stderr, __FILE__, __FUNCTION__, __LINE__, msg)
+# define cout(...) _log(stdout, __FILE__, __FUNCTION__, __LINE__, __VA_ARGS__)
+# define cerr(...) _log(stderr, __FILE__, __FUNCTION__, __LINE__, __VA_ARGS__)
+
+# define PARSE_SUCCESS 1
+# define PARSE_FAIL 0
+
 
 void	_log(FILE *FILE,
 			const char *FILENAME,
 			const char *FUNC,
 			int LINE,
-			char *msg)
-{
-	fprintf(FILE, "%s:%s:%d: %s\n", FILENAME, FUNC, LINE, msg);
-}
+			char *format, ...);
 
 #endif

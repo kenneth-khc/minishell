@@ -1,21 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   errors.h                                           :+:      :+:    :+:   */
+/*   debug.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/14 13:16:22 by kecheong          #+#    #+#             */
-/*   Updated: 2024/04/14 13:16:38 by kecheong         ###   ########.fr       */
+/*   Created: 2024/06/20 21:42:07 by kecheong          #+#    #+#             */
+/*   Updated: 2024/06/20 21:43:21 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ERROR_H
-# define ERROR_H
-
+#include <stdarg.h>
+#include <stdio.h>
+# include "debug.h"
 # include "parser.h"
 
-void	error(const char *str);
-void	syntax_error(t_Parser *parser, const char *err_msg);
+void	_log(FILE *FILE,
+			const char *FILENAME,
+			const char *FUNC,
+			int LINE,
+			char *format, ...)
+{
+	fprintf(FILE, "%s:%s:%d: ", FILENAME, FUNC, LINE);
+	va_list args;
+	va_start(args, format);
+	vfprintf(FILE, format, args);
+	va_end(args);
+	fprintf(FILE, "\n");
+}
 
-#endif
+const char	*__asan_default_options()
+{
+	return "detect_leaks=0";
+}
+

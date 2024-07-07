@@ -1,21 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   errors.h                                           :+:      :+:    :+:   */
+/*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
+/*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/14 13:16:22 by kecheong          #+#    #+#             */
-/*   Updated: 2024/04/14 13:16:38 by kecheong         ###   ########.fr       */
+/*   Created: 2024/06/27 21:20:33 by qang              #+#    #+#             */
+/*   Updated: 2024/07/03 16:39:58 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef ERROR_H
-# define ERROR_H
+#include "a.h"
 
-# include "parser.h"
-
-void	error(const char *str);
-void	syntax_error(t_Parser *parser, const char *err_msg);
-
-#endif
+int	pwd(char **args, t_entab *table)
+{
+	if (length(args) == 1 || args[1][0] != '-')
+		printf("%s\n", get_var("PWD", table)->val);
+	return (0);
+}

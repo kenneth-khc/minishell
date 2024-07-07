@@ -1,35 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/11 05:29:11 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/06 17:28:57 by kecheong         ###   ########.fr       */
+/*   Created: 2024/06/27 21:20:52 by qang              #+#    #+#             */
+/*   Updated: 2024/06/27 22:25:35 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
+#include "a.h"
 
-# include <readline/readline.h>
-# include <readline/history.h>
-# include <unistd.h>
-
-# include "input.h"
-# include "tokens.h"
-# include "tree.h"
-
-typedef struct s_Minishell
+int	echo(char **args)
 {
-		
-}	t_Minishell;
+	int	newline;
+	int	i;
 
-t_Token_List	scan(t_Input *input);
-
-void	free_tokens(t_Token_List *tokens);
-char	*get_history(t_Input *input);
-
-
-#endif
+	newline = 10;
+	i = 1;
+	if (length(args) == 1)
+	{
+		printf("\n");
+		return (0);
+	}
+	while (args[i] && ft_strcmp(args[i], "-n") == 0)
+	{
+		i++;
+		newline = 0;
+	}
+	while (args[i])
+	{
+		printf("%s", args[i]);
+		if (args[i + 1])
+			printf(" ");
+		i++;
+	}
+	if (newline)
+		printf("%c", newline);
+	return (0);
+}

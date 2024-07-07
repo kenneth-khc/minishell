@@ -12,9 +12,20 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include "parser.h"
 
 void	error(const char *str)
 {
 	printf("%s\n", str);
 	exit(EXIT_FAILURE);
+}
+
+void	syntax_error(t_Parser *parser, const char *err_msg)
+{
+	(void)parser;
+	ft_dprintf(STDERR_FILENO, err_msg);
+	free_tree(parser->root);
+	parser->root = NULL;
+	return ;
 }

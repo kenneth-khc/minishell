@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
+/*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 05:13:16 by kecheong          #+#    #+#             */
-/*   Updated: 2024/06/10 06:04:15 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/06 19:03:54 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,43 +14,37 @@
 #include "libft.h"
 #include "input.h"
 #include "tokens.h"
-
-void	free_tokens(t_Token_List *tokens);
-char	*get_history(t_Input *input);
+#include "parser.h"
+#include "a.h"
+#include <readline/readline.h>
+#include "serialize_tree.h"
 
 int	main(int argc, char **argv, char **envp)
 {
 	t_Token_List	tokens;
 	t_Input			input;
+	t_Parser		parser;
+	t_Node			*root;
 
 	(void)argc;
 	(void)argv;
-	(void)envp;
 	input = (t_Input){0};
+
+	parser.envtab = init_env_table(envp);
 	while (1)
 	{
 		get_input(&input);
-		tokens = scan(&input);	
-		add_history(get_history(&input));
-		print_tokens(&tokens);
+		tokens = scan(&input);
+		//print_tokens(&tokens);
+		root = parse(&parser, &tokens);
+		export_tree(root);
+		if (root)
+			exec_ast(root);
 		clear_input(&input);
 		free_tokens(&tokens);
+		free_tree(root);
 	}
-}
-
-char	*get_history(t_Input *input)
-{
-	int		i;
-	char	*buffer;
-
-	i = 0;
-	buffer = "";
-	while (i < input->count)
-	{
-		buffer = ft_strjoin(buffer, input->lines[i]->start);
-		i++;
-	}
-	return (buffer);
+	clear_history();
 }
 
 void	free_tokens(t_Token_List *tokens)
@@ -67,5 +61,23 @@ void	free_tokens(t_Token_List *tokens)
 		curr = curr->next;
 		free(prev);
 	}
+}
+
+void	free_tree(t_Node *node)
+{
+	t_Node	*temp;
+	t_Exec_Node	*enode;
+
+	temp = node;
+	if (node == NULL)
+		return ;
+	if (node->type == Exec_Node)
+	{
+		enode = (t_Exec_Node *)node;
+		free(enode->args);
+	}
+	free_tree(node->left);
+	free_tree(node->right);
+	free(temp);
 }
 
