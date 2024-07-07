@@ -40,6 +40,21 @@ void	add_token(t_Token_List *tokens, t_Token *token)
 	tokens->tail = token;
 }
 
+int	get_tokens_count(t_Token_List *tokens)
+{
+	int		count;
+	t_Token	*curr;
+
+	count = 0;
+	curr = tokens->head;
+	while (curr != NULL)
+	{
+		count++;
+		curr = curr->next;
+	}
+	return (count);
+}
+
 void	print_tokens(t_Token_List *tokens)
 {
 	int			i;

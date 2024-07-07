@@ -88,7 +88,6 @@ typedef struct s_Pipe_Node
 }	t_Pipe_Node;
 
 t_Node			*get_tail(t_Node *node);
-void			print_nodes(t_Node *node);
 void			free_tree(t_Node *node);
 
 #endif

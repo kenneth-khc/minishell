@@ -45,9 +45,9 @@ typedef enum e_Token_Types
  */
 typedef struct s_Token
 {
-	struct s_Token		*next;
 	enum e_Token_Types	type;
 	const char			*lexeme;
+	struct s_Token		*next;
 }	t_Token;
 
 /**
@@ -62,6 +62,7 @@ typedef struct s_Token_List
 
 t_Token	*create_token(int type, const char *lexeme);
 void	add_token(t_Token_List *tokens, t_Token *token);
+int		get_tokens_count(t_Token_List *tokens);
 void	print_tokens(t_Token_List *tokens);
 char	*token_enum_to_str(t_Token *token);
 

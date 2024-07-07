@@ -38,7 +38,7 @@ minishell_objects:
 	@make obj -C $(minishell_dir)
 
 %.o: %.c
-	@$(CC) $(CFLAGS) $(includes) $< -c -o $@
+	@$(CC) $(CFLAGS) $(fsan) $(debug) $(includes) $< -c -o $@
 
 .PHONY: clean
 clean:

@@ -40,15 +40,15 @@ t_Node	*parse_io_file(t_Parser *parser)
 	t_Redir_Node	*node;
 
 	node = NULL;
-	if (peek_token(parser->token) == LESSER)
+	if (peek(1, parser) == LESSER)
 	{
 		node = input_redir(parser, O_RDONLY);
 	}
-	else if (peek_token(parser->token) == GREATER)
+	else if (peek(1, parser) == GREATER)
 	{
 		node = output_redir(parser, O_WRONLY | O_CREAT | O_TRUNC);
 	}
-	else if (peek_token(parser->token) == GREATER_GREATER)
+	else if (peek(1, parser) == GREATER_GREATER)
 	{
 		node = output_redir(parser, O_WRONLY | O_CREAT | O_APPEND);
 	}
@@ -59,7 +59,7 @@ t_Redir_Node	*input_redir(t_Parser *parser, int flags)
 {
 	t_Redir_Node	*node;
 
-	if (peek_token(parser->lookahead), WORD)
+	if (peek(1, parser), WORD)
 	{
 		consume(parser);
 		node = create_redir_node(STDIN_FILENO, parser->token->lexeme,
@@ -75,7 +75,7 @@ t_Redir_Node	*output_redir(t_Parser *parser, int flags)
 {
 	t_Redir_Node	*node;
 
-	if (peek_token(parser->lookahead), WORD)
+	if (peek(2, parser), WORD)
 	{
 		consume(parser);
 		node = create_redir_node(STDOUT_FILENO, parser->token->lexeme,
@@ -92,7 +92,7 @@ t_Node	*parse_io_here(t_Parser *parser)
 	t_Redir_Node	*node;
 
 	node = ft_calloc(1, sizeof(*node));
-	if (peek_token(parser->token) == LESSER_LESSER)
+	if (peek(1, parser) == LESSER_LESSER)
 	{
 		consume(parser);
 		// search for here_end

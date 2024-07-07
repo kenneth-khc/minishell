@@ -21,7 +21,7 @@ t_Node	*parse_pipe_sequence(t_Parser *parser)
 	t_Node	*temp;
 
 	left = parse_simple_command(parser);
-	while (peek_token(parser->token) == PIPE)
+	while (parser->token->type == PIPE)
 	{
 		consume(parser);
 		temp = ft_calloc(1, sizeof(*temp));

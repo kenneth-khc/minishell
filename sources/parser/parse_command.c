@@ -15,33 +15,6 @@
 #include <stdio.h>
 #include "debug.h"
 
-bool	is_and_or_token(t_Token *token)
-{
-	return (token->type == AND_AND
-			|| token->type == OR_OR);
-}
-
-t_Node	*parse_complete_command(t_Parser *parser)
-{
-	t_Node	*node;
-	t_Node	*andor;
-
-	node = parse_pipe_sequence(parser);
-	while (is_and_or_token(parser->token))
-	{
-		andor = ft_calloc(1, sizeof(*andor));
-		if (peek_token(parser->token) == AND_AND)
-			andor->type = AND_AND_NODE;
-		else if (peek_token(parser->token) == OR_OR)
-			andor->type = OR_OR_NODE;
-		consume(parser);
-		andor->left = node;
-		andor->right = parse_pipe_sequence(parser);
-		node = andor;
-	}
-	return (node);
-}
-
 t_Node	*parse_simple_command(t_Parser *parser)
 {
 	t_Node		*prefix;
@@ -51,7 +24,7 @@ t_Node	*parse_simple_command(t_Parser *parser)
 
 	exec_node = create_exec_node(NULL, parser->envtab);
 	prefix = parse_command_prefix(parser);
-	while (peek_token(parser->token) == WORD)
+	while (peek(1, parser) == WORD)
 	{
 		add_exec_arguments(exec_node, parser->token->lexeme);
 		consume(parser);
@@ -134,7 +107,7 @@ t_Node	*parse_command_suffix(t_Parser *parser, t_Exec_Node *exec_node)
 			curr = node;
 		}
 	}
-	while (peek_token(parser->token) == WORD)
+	while (peek(1, parser) == WORD)
 	{
 		add_exec_arguments(exec_node, parser->token->lexeme);
 		consume(parser);
@@ -148,7 +121,7 @@ t_Exec_Node	*parse_command_name(t_Parser *parser)
 	t_Exec_Node	*exec_node;
 
 	exec_node = NULL;
-	if (peek_token(parser->token) == WORD)
+	if (peek(1, parser) == WORD)
 	{
 		exec_node = create_exec_node(parser->token->lexeme, parser->envtab);
 		consume(parser);

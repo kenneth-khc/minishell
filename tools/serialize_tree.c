@@ -30,12 +30,23 @@ static char	*get_data(t_Node *node)
 		str = "PIPE";
 	else if (node->type == Redir_Node)
 	{
+		char	*temp;
 		r = (t_Redir_Node *)node;
 		if (r->oldfd == 0)
-			str = ft_strjoin(ft_itoa(r->oldfd), "<");
+		{
+			temp = ft_itoa(r->oldfd);
+			str = ft_strjoin(temp, "<");
+			free(temp);
+		}
 		else if (r->oldfd == 1)
-			str = ft_strjoin(ft_itoa(r->oldfd), ">");
+		{
+			temp = ft_itoa(r->oldfd);
+			str = ft_strjoin(temp, ">");
+			free(temp);
+		}
+		temp = str;
 		str = ft_strjoin(str, r->file);
+		free(temp);
 	}
 	else if (node->type == AND_AND_NODE)
 		str = "&&";
@@ -54,7 +65,8 @@ static cJSON	*node_to_json(t_Node *node)
 	if (node == NULL)
 		return (NULL);
 	ret = cJSON_CreateObject();
-	data = cJSON_CreateString(get_data(node));
+	char	*temp = get_data(node);
+	data = cJSON_CreateString(temp);
 	if (data == NULL)
 		data = cJSON_CreateString("NULL");
 	cJSON_AddItemToObject(ret, "string", data);
@@ -80,7 +92,7 @@ void	export_tree(t_Node *node)
 	fd = open("tree.json", O_CREAT | O_WRONLY | O_TRUNC, 0777);
 	tree = node_to_json(node);
 	json_str = cJSON_Print(tree);
-//	printf("%s\n", json_str);
+	printf("%s\n", json_str);
 	ft_dprintf(fd, "%s", json_str);
 	free(json_str);
 	cJSON_Delete(tree);
