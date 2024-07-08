@@ -57,6 +57,8 @@ void	add_exec_arguments(t_Exec_Node *exec_node, const char *arg)
 	const char	**temp;
 
 	i = 0;
+	if (arg == NULL || *arg == '\0')
+		return ;
 	old_count = exec_node->arg_count;
 	if (exec_node->arg_count == 0)
 		exec_node->command = arg;
