@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 22:27:01 by qang              #+#    #+#             */
-/*   Updated: 2024/07/06 23:43:37 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/07 21:33:46 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ t_entab		*init_env_table(char **env);
 void		free_env(t_entab *table);
 t_envar		*copy_env(t_envar *src);
 char		**env_convert(t_entab *table);
+void			incr_shlvl(t_entab *table);
 
 /*builtin funcs*/
 int			cd(char **args, t_entab *table);

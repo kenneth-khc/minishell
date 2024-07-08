@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 05:13:16 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/06 23:44:16 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/08 18:45:29 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,10 @@ int	main(int argc, char **argv, char **envp)
 	input = (t_Input){0};
 
 	parser.envtab = init_env_table(envp);
+	incr_shlvl(parser.envtab);
 	while (1)
 	{
-    init_signal();
+		// init_signal();
 		get_input(&input);
 		tokens = scan(&input);	
 		add_history(get_history(&input));

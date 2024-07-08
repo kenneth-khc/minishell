@@ -6,8 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 21:06:03 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/05 17:04:08 by qang             ###   ########.fr       */
-/*   Updated: 2024/06/28 19:01:38 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/08 22:19:14 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +22,9 @@ typedef enum e_Node_Type
 	Exec_Node = 1,
 	Argument_Node,
 	Redir_Node,
-	Pipe_Node
+	Pipe_Node,
+  AND_AND_NODE,
+  OR_OR_NODE
 }	t_Node_Type;
 
 /**

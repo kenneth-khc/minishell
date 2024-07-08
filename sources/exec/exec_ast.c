@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 22:15:03 by qang              #+#    #+#             */
-/*   Updated: 2024/07/06 23:49:15 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/08 18:46:00 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ void	exec(t_Exec_Node *node)
 	pid = forkpromax();
 	if (pid == 0)
 	{
-    set_sig();
+    // set_sig();
 		if (!ft_isbuiltin(node->command))
 		{
 			execve((char *)node->command, (char **)node->args,
@@ -34,7 +34,7 @@ void	exec(t_Exec_Node *node)
 	}
 	else
 	{
-    ignore_sigs();
+    // ignore_sigs();
 		if (ft_isbuiltin(node->command))
 			set_exit_status(run_builtin(node->args, node->table));
 	}
@@ -92,22 +92,22 @@ void	redir(t_Redir_Node *node)
 	waitpid(pid1, NULL, 0);
 }
 
-// void	andand(t_andand *node)
-// {
-// 	exec_ast(node->left);
-// 	if (get_exit_status() != 0)
-// 		return ;
-// 	else
-// 		exec_ast(node->right);
-// }
-//
-// void  oror(t_oror *node)
-// {
-// 	exec_ast(node->left);
-// 	if (get_exit_status() == 0)
-// 		return ;
-// 	exec_ast(node->right);
-// }
+void	andand(t_Node *node)
+{
+	exec_ast(node->left);
+	if (get_exit_status() != 0)
+		return ;
+	else
+		exec_ast(node->right);
+}
+
+void  oror(t_Node *node)
+{
+	exec_ast(node->left);
+	if (get_exit_status() == 0)
+		return ;
+	exec_ast(node->right);
+}
 
 void	exec_ast(t_Node *node)
 {
@@ -117,4 +117,8 @@ void	exec_ast(t_Node *node)
 		redir((t_Redir_Node *)node);
 	else if (node->type == Pipe_Node)
 		paip((t_Pipe_Node *)node);
+  else if (node->type == AND_AND_NODE)
+    andand(node);
+  else if (node->type == OR_OR_NODE)
+    oror(node);
 }
