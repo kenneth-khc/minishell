@@ -19,6 +19,8 @@
 #include <readline/readline.h>
 #include "serialize_tree.h"
 
+void	expand_tokens(t_Token_List *tokens, t_entab *env);
+
 int	main(int argc, char **argv, char **envp)
 {
 	t_Token_List	tokens;
@@ -36,15 +38,33 @@ int	main(int argc, char **argv, char **envp)
 		get_input(&input);
 		tokens = scan(&input);
 		//print_tokens(&tokens);
+		expand_tokens(&tokens, parser.envtab);
 		root = parse(&parser, &tokens);
-		export_tree(root);
 		if (root)
+		{
+			export_tree(root);
 			exec_ast(root);
+		}
 		clear_input(&input);
 		free_tokens(&tokens);
 		free_tree(root);
 	}
 	clear_history();
+}
+
+void	expand_tokens(t_Token_List *tokens, t_entab *env)
+{
+	t_Token	*curr;
+
+	curr = tokens->head;
+	while (curr != NULL)
+	{
+		if (curr->word_flags & W_TILDE_EXPANSION)
+		{
+			curr->lexeme = ft_strdup(get_var("HOME", env)->val);
+		}
+		curr = curr->next;
+	}
 }
 
 void	free_tokens(t_Token_List *tokens)

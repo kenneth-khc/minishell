@@ -41,6 +41,7 @@ void	match_word(t_Lexer *lexer, t_Token_List *tokens, t_Input *input)
 		lexeme = extract_substring(lexer->start_char, lexer->end_char);
 		word = create_token(WORD, lexeme);
 		add_token(tokens, word);
+		set_word_flags(word);
 		lexer->start_char = lexer->end_char + 1;
 		lexer->end_char = lexer->start_char;
 	}
@@ -130,3 +131,40 @@ void	update_lexer_state(t_Lexer *lexer)
 		}
 	}
 }
+
+#include "debug.h"
+void	set_word_flags(t_Token *token)
+{
+	const char	*word;
+	const char	*word_end;
+	const char	*eq;
+
+	word = token->lexeme;
+	word_end = word + ft_strlen(word) - 1;
+	if (*word == '\'' && *word_end == '\'')
+		token->word_flags |= W_STRONG_QUOTED;
+	else if (*word == '"' && *word_end == '"')
+		token->word_flags |= W_WEAK_QUOTED;
+	if (ft_strchr(word, '$'))
+		token->word_flags |= W_HAS_DOLLAR;
+	if (ft_strchr(word, '='))
+	{
+		eq = ft_strchr(word, '=');
+		if (is_valid_name(word, eq))
+			token->word_flags |= W_ASSIGNMENT;
+	}
+	if (ft_strchr(word, '~') && ft_strlen(word) == 1)
+		token->word_flags |= W_TILDE_EXPANSION;
+}
+
+bool	is_valid_name(const char *start, const char *end)
+{
+	while (start < end)
+	{
+		if (!ft_isalnum(*start) && *start != '_')
+			return (false);
+		start++;
+	}
+	return (true);
+}
+

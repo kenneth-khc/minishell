@@ -54,5 +54,7 @@ void	match_word(t_Lexer *lexer, t_Token_List *tokens, t_Input *input);
 void	advance_word(t_Lexer *lexer);
 void	join_input_lines(t_Lexer *lexer, t_Input *input);
 void	update_lexer_state(t_Lexer *lexer);
+void	set_word_flags(t_Token *token);
+bool	is_valid_name(const char *start, const char *end);
 
 #endif
