@@ -30,6 +30,9 @@ t_Token_List	scan(t_Input *input);
 
 void	free_tokens(t_Token_List *tokens);
 char	*get_history(t_Input *input);
+void	expand_tokens(t_Token_List *tokens, t_entab *env);
+void	tilde_expansion(t_Token_List *tokens, t_entab *env);
+void	parameter_expansion(t_Token_List *tokens, t_entab *env);
 
 
 #endif

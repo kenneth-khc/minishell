@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 05:13:16 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/06 19:03:54 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/08 18:13:05 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,7 @@
 #include "parser.h"
 #include "a.h"
 #include <readline/readline.h>
-#include "serialize_tree.h"
-
-void	expand_tokens(t_Token_List *tokens, t_entab *env);
+//#include "serialize_tree.h"
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -42,7 +40,7 @@ int	main(int argc, char **argv, char **envp)
 		root = parse(&parser, &tokens);
 		if (root)
 		{
-			export_tree(root);
+			//export_tree(root);
 			exec_ast(root);
 		}
 		clear_input(&input);
@@ -50,21 +48,6 @@ int	main(int argc, char **argv, char **envp)
 		free_tree(root);
 	}
 	clear_history();
-}
-
-void	expand_tokens(t_Token_List *tokens, t_entab *env)
-{
-	t_Token	*curr;
-
-	curr = tokens->head;
-	while (curr != NULL)
-	{
-		if (curr->word_flags & W_TILDE_EXPANSION)
-		{
-			curr->lexeme = ft_strdup(get_var("HOME", env)->val);
-		}
-		curr = curr->next;
-	}
 }
 
 void	free_tokens(t_Token_List *tokens)
