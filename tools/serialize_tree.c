@@ -12,7 +12,9 @@
 
 #include <stdio.h>
 #include <fcntl.h>
+#include <stdlib.h>
 #include "libft.h"
+#include "ft_dprintf.h"
 #include "tree.h"
 #include "cJSON.h"
 

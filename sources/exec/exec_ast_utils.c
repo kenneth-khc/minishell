@@ -13,6 +13,7 @@
 #include "a.h"
 #include <dirent.h>
 #include <sys/wait.h>
+#include <stdlib.h>
 
 int	exec_wait_pid(int last_pid)
 {

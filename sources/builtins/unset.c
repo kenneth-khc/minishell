@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "a.h"
+#include <stdlib.h>
 
 int	unset(char **args, t_entab *table)
 {

@@ -17,6 +17,8 @@
 #include "errors.h"
 #include <readline/history.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include "get_next_line.h"
 
 t_Line	*make_line(char *str)
 {

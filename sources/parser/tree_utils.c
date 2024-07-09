@@ -12,6 +12,7 @@
 
 #include "tree.h"
 #include "libft.h"
+#include <stdlib.h>
 
 t_Node	*create_node(enum e_Node_Type type)
 {

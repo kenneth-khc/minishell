@@ -14,6 +14,7 @@
 #include <unistd.h>
 #include "libft.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 static int	cd_home2(t_entab *table, char *path)
 {

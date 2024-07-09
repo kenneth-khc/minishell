@@ -12,6 +12,7 @@
 
 #include "minishell.h"
 #include "libft.h"
+#include <stdlib.h>
 #include "input.h"
 #include "tokens.h"
 #include "parser.h"

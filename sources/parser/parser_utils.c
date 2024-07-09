@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <unistd.h>
 #include "parser.h"
+#include "ft_dprintf.h"
 
 // Checks if a token is for redirection
 bool	is_redirection_token(t_Token *token)

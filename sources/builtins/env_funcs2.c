@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "a.h"
+#include <stdlib.h>
 
 t_envar	*copy_env(t_envar *src);
 void	del_var(char *key, t_entab *table);

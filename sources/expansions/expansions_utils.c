@@ -1,32 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   errors.c                                           :+:      :+:    :+:   */
+/*   expansions_utils.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/14 12:57:43 by kecheong          #+#    #+#             */
-/*   Updated: 2024/04/14 12:58:22 by kecheong         ###   ########.fr       */
+/*   Created: 2024/07/09 21:15:19 by kecheong          #+#    #+#             */
+/*   Updated: 2024/07/09 21:23:04 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include "parser.h"
-#include "ft_dprintf.h"
+#include <stdbool.h>
+#include "minishell.h"
 
-void	error(const char *str)
+bool	is_identifier_character(char c)
 {
-	printf("%s\n", str);
-	exit(EXIT_FAILURE);
+	return (ft_isalnum(c) || c == '_');
 }
 
-void	syntax_error(t_Parser *parser, const char *err_msg)
+bool	is_not_identifier(char c)
 {
-	(void)parser;
-	ft_dprintf(STDERR_FILENO, err_msg);
-	free_tree(parser->root);
-	parser->root = NULL;
-	return ;
+	return (!ft_isalnum(c) && c != '_');
 }
+
+char	*copy_var_val(char *key, t_entab *env)
+{
+	t_envar	*envar;
+	char	*value;
+
+	envar = get_var(key, env);
+	if (envar)
+		value = envar->val;
+	else
+		value = NULL;
+	if (value)
+		ft_strdup(value);
+	return (value);
+}
+

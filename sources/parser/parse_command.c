@@ -14,6 +14,7 @@
 #include "parser.h"
 #include <stdio.h>
 #include "debug.h"
+#include <stdlib.h>
 
 t_Node	*parse_simple_command(t_Parser *parser)
 {
