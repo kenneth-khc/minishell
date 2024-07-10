@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 22:09:08 by qang              #+#    #+#             */
-/*   Updated: 2024/07/06 23:52:38 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/10 10:22:00 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,19 +16,10 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
-void	signal_print_newline(int sig)
+void  set_sig(void)
 {
-	(void)sig;
-	rl_on_new_line();
-}
-
-void	set_sig(void)
-{
-	struct sigaction	sa;
-
-	sa.sa_handler = &signal_print_newline;
-	sigaction(SIGINT, &sa, NULL);
-	sigaction(SIGQUIT, &sa, NULL);
+  signal(SIGINT, SIG_DFL);
+  signal(SIGQUIT, SIG_DFL);
 }
 
 void	ignore_sigs(void)
@@ -55,4 +46,5 @@ void	init_signal(void)
 
 	sa.sa_handler = re_prompt;
 	sigaction(SIGINT, &sa, NULL);
+  signal(SIGQUIT, SIG_IGN);
 }

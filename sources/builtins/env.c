@@ -6,11 +6,19 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 21:18:39 by qang              #+#    #+#             */
-/*   Updated: 2024/07/06 00:04:03 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/10 18:26:15 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "a.h"
+
+static void print_val(t_envar *node)
+{
+  if (!node->fakepwd)
+    printf("%s=%s\n", node->key, node->val);
+  else
+    printf("%s=%s\n", node->key, node->pwd);
+}
 
 int	print_env(char **args, t_entab *table)
 {
@@ -29,7 +37,7 @@ int	print_env(char **args, t_entab *table)
 			continue ;
 		}
 		if (node->val != NULL && node->display)
-			printf("%s=%s\n", node->key, node->val);
+      print_val(node);
 		node = node->next;
 	}
 	if (absfn)

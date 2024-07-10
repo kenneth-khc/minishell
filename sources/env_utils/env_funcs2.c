@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 21:32:14 by qang              #+#    #+#             */
-/*   Updated: 2024/07/07 00:10:49 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/10 18:19:44 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ t_envar	*copy_env(t_envar *src);
 void	del_var(char *key, t_entab *table);
 t_envar	*get_var(char *key, t_entab *table);
 int		print_sorted_env(t_entab *table);
-char	**env_convert(t_entab *table);
 
 int	print_sorted_env(t_entab *table)
 {
@@ -56,6 +55,8 @@ void	del_var(char *key, t_entab *table)
 				node->next->prev = node->prev;
 			if (node->val)
 				free(node->val);
+      if (node->fakepwd)
+				free(node->pwd);
 			free(node->key);
 			free(node);
 		}
@@ -74,35 +75,17 @@ t_envar	*copy_env(t_envar *src)
 	else
 		temp->val = NULL;
 	temp->display = src->display;
+	if (src->fakepwd)
+	{
+		temp->fakepwd = true;
+		temp->pwd = ft_strdup(src->pwd);
+	}
+	else
+	{
+		temp->fakepwd = false;
+		temp->pwd = NULL;
+	}
 	temp->next = NULL;
 	temp->prev = NULL;
 	return (temp);
-}
-
-char	**env_convert(t_entab *table)
-{
-	t_envar	*node;
-	int		i;
-	char	**ret;
-	char	*temp;
-
-	node = table->head;
-	i = 0;
-	while (node)
-	{
-		node = node->next;
-		i++;
-	}
-	ret = (char **)malloc(sizeof(char *) * (i + 1));
-	node = table->head;
-	i = 0;
-	while (node)
-	{
-		temp = ft_strjoin(node->key, "=");
-		ret[i++] = ft_strjoin(temp, node->val);
-		free(temp);
-		node = node->next;
-	}
-	ret[i] = 0;
-	return (ret);
 }

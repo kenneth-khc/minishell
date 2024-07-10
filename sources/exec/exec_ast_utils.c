@@ -6,14 +6,15 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 21:44:44 by qang              #+#    #+#             */
-/*   Updated: 2024/07/06 23:16:31 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/10 17:16:04 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "a.h"
 #include <dirent.h>
+#include <sys/wait.h>
 
-int	exec_wait_pid(int last_pid)
+int	wait_for_child(int last_pid)
 {
 	int	status;
 

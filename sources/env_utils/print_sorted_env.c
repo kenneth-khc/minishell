@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 01:54:16 by qang              #+#    #+#             */
-/*   Updated: 2024/07/05 18:44:21 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/10 18:23:14 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,8 +58,10 @@ void	print_and_free_env(t_envar *chead)
 			val = node->val;
 			if (val == NULL)
 				printf("declare -x %s\n", node->key);
-			else
+			else if (!node->fakepwd)
 				printf("declare -x %s=\"%s\"\n", node->key, node->val);
+      else
+        printf("declare -x %s=\"%s\"\n", node->key, node->pwd);
 		}
 		temp = node->next;
 		free(node->key);

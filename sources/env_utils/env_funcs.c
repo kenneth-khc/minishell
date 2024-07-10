@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 21:24:13 by qang              #+#    #+#             */
-/*   Updated: 2024/07/06 00:59:03 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/10 18:44:51 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,43 +21,42 @@ static void	update_var(t_envar *node, t_envar *new)
 {
 	char	*temp;
 
-	temp = node->val;
-	if (new->val)
-	{
-		node->val = new->val;
-		if (temp)
-			free(temp);
-	}
-	node->display = new->display;
-	free(new->key);
-	free(new);
+  if (ft_strcmp(new->key, "PWD") == 0)
+    special_pwd(node, new);
+  else
+  {
+    temp = node->val;
+    if (new->val)
+    {
+      node->val = new->val;
+      if (temp)
+        free(temp);
+    }
+    node->display = new->display;
+    free(new->key);
+    free(new);
+  }
 }
 
 void	add_var(char *str, t_entab *table)
 {
-	t_envar	*node;
 	t_envar	*new;
 
-	node = table->head;
 	new = new_env_var(str);
 	if (table->head == NULL)
 	{
 		table->head = new;
 		return ;
 	}
-	while (node)
-	{
-		if (ft_strcmp(new->key, node->key) == 0)
-		{
-			update_var(node, new);
-			return ;
-		}
-		node = node->next;
-	}
-	node = table->tail;
-	node->next = new;
-	new->prev = node;
-	table->tail = new;
+  if (get_var(new->key, table) == NULL)
+  {
+    table->tail->next = new;
+    new->prev = table->tail;
+    table->tail = new;
+    return ;
+  }
+  else
+    update_var(get_var(new->key, table), new);
 }
 
 t_envar	*new_env_var(const char *str)
@@ -81,6 +80,7 @@ t_envar	*new_env_var(const char *str)
 	new->prev = NULL;
 	new->next = NULL;
 	new->display = true;
+  new->fakepwd = false;
 	return (new);
 }
 
@@ -97,6 +97,8 @@ void	free_env(t_entab *table)
 		free(temp->key);
 		if (temp->val)
 			free(temp->val);
+    if (temp->fakepwd)
+      free(temp->pwd);
 		free(temp);
 	}
 	free(table);
@@ -112,7 +114,7 @@ t_entab	*init_env_table(char **env)
 	i = -1;
 	table = malloc(sizeof(t_entab));
 	prev = NULL;
-	temp = NULL;
+  temp = NULL;
 	while (env[++i])
 	{
 		temp = new_env_var(env[i]);
