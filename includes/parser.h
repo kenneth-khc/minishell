@@ -13,8 +13,8 @@
 #ifndef PARSER_H
 # define PARSER_H
 
-#include "tokens.h"
 #include <stdbool.h>
+#include "tokens.h"
 #include "tree.h"
 # include "a.h"
 
@@ -33,7 +33,7 @@ t_Node			*parse_and_or(t_Parser *parser);
 t_Node			*parse_pipe_sequence(t_Parser *parser);
 t_Node			*parse_simple_command(t_Parser *parser);
 t_Node			*parse_command_prefix(t_Parser *parser);
-t_Node			*parse_command_suffix(t_Parser *parser, t_Exec_Node *exec_node);
+t_Node			*parse_command_suffix(t_Parser *parser, t_Node *prefix, t_Exec_Node *exec_node);
 t_Exec_Node		*parse_command_name(t_Parser *parser); // what is the difference
 bool			parse_command_word(t_Parser *parser); // between a name and a word?
 t_Node			*parse_io_redirect(t_Parser *parser);

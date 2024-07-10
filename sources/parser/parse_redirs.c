@@ -6,7 +6,7 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/26 16:29:09 by kecheong          #+#    #+#             */
-/*   Updated: 2024/06/26 22:52:32 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/10 18:16:25 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,17 +22,53 @@
 
 t_Node	*parse_io_redirect(t_Parser *parser)
 {
-	t_Node	*node;
+	t_Redir_Node	*redir_node;
+	bool			oldfd_set = false;
 
-	node = parse_io_file(parser);
-	if (node)
-		return (node);
-	node = parse_io_here(parser);
-	if (node)
-		return (node);
-	if (node == NULL)
-		cerr("expected redirection");
-	return (NULL);
+	redir_node = ft_calloc(1, sizeof(*redir_node));
+	redir_node->type = Redir_Node;
+	redir_node->left = NULL;
+	if (peek(1, parser) == IO_NUMBER)
+	{
+		redir_node->oldfd = ft_atoi(parser->token->lexeme);
+		oldfd_set = true;
+		consume(parser);
+	}
+	// todo: HEREDOCS
+	if (peek(1, parser) == LESSER)
+	{
+		consume(parser);
+		if (oldfd_set == false)
+			redir_node->oldfd = STDIN_FILENO;
+		redir_node->flags = O_RDONLY;
+		redir_node->file = parser->token->lexeme;
+		redir_node->mode = 0;
+		redir_node->left = NULL;
+		consume(parser);
+	}
+	else if (peek(1, parser) == GREATER)
+	{
+		consume(parser);
+		if (oldfd_set == false)
+			redir_node->oldfd = STDOUT_FILENO;
+		redir_node->flags = O_WRONLY | O_CREAT | O_TRUNC;
+		redir_node->file = parser->token->lexeme;
+		redir_node->mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
+		redir_node->left = NULL;
+		consume(parser);
+	}
+	else if (peek(1, parser) == GREATER_GREATER)
+	{
+		consume(parser);
+		if (oldfd_set == false)
+			redir_node->oldfd = STDOUT_FILENO;
+		redir_node->flags = O_WRONLY | O_CREAT | O_APPEND;
+		redir_node->file = parser->token->lexeme;
+		redir_node->mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
+		redir_node->left = NULL;
+		consume(parser);
+	}
+	return ((t_Node *)redir_node);
 }
 
 t_Node	*parse_io_file(t_Parser *parser)

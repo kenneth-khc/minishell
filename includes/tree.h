@@ -25,7 +25,8 @@ typedef enum e_Node_Type
 	Redir_Node,
 	Pipe_Node,
 	AND_AND_NODE,
-	OR_OR_NODE
+	OR_OR_NODE,
+	ASS_NODE
 }	t_Node_Type;
 
 /**
@@ -89,5 +90,18 @@ typedef struct s_Pipe_Node
 
 t_Node			*get_tail(t_Node *node);
 void			free_tree(t_Node *node);
+
+/**
+ * Node for assigning variables into the current shell process
+ * Not exported to children by default
+**/
+typedef struct s_Ass_Node
+{
+	enum e_Node_Type	type;
+	struct s_Node		*left;
+	struct s_Node		*right;
+	char				*key; // variable identifier
+	char				*value; // variable value
+}	t_Ass_Node;
 
 #endif

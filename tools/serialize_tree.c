@@ -21,39 +21,57 @@
 static char	*get_data(t_Node *node)
 {
 	char			*str;
+	t_Exec_Node		*e;
 	t_Redir_Node	*r;
+	t_Ass_Node		*a;
 
 	if (node == NULL)
 		return (NULL);
 	str = NULL;
 	if (node->type == Exec_Node)
-		str = (char *)((t_Exec_Node *)node)->command;
+	{
+		e = (t_Exec_Node *)node;
+		char *cmd = (char *)e->command;
+		char *args[10] = {NULL};
+		str = ft_strjoin(cmd, "\n");
+		for (int i = 0; i < e->arg_count; i++)
+		{
+			if (i == 0)
+				continue ;
+			args[i] = (char *)e->args[i];
+			str = ft_strjoin(str, args[i]);
+			str = ft_strjoin(str, " ");
+		}
+	}
 	else if (node->type == Pipe_Node)
 		str = "PIPE";
 	else if (node->type == Redir_Node)
 	{
-		char	*temp;
 		r = (t_Redir_Node *)node;
-		if (r->oldfd == 0)
-		{
-			temp = ft_itoa(r->oldfd);
-			str = ft_strjoin(temp, "<");
-			free(temp);
-		}
-		else if (r->oldfd == 1)
-		{
-			temp = ft_itoa(r->oldfd);
-			str = ft_strjoin(temp, ">");
-			free(temp);
-		}
-		temp = str;
-		str = ft_strjoin(str, r->file);
-		free(temp);
+		char *old = ft_itoa(r->oldfd);
+		char *op;
+		if (r->mode == 0)
+			op = "<";
+		else if (r->flags & O_TRUNC)
+			op = ">";
+		else if (r->flags & O_APPEND)
+			op = ">>";
+		else
+			op = "???";
+		char *new = (char *)r->file;
+		str = ft_strjoin_multiple(3, old, op, new);
+
 	}
 	else if (node->type == AND_AND_NODE)
 		str = "&&";
 	else if (node->type == OR_OR_NODE)
 		str = "||";
+	else if (node->type == ASS_NODE)
+	{
+		a = (t_Ass_Node *)node;
+	printf("loool\n");
+		str = ft_strjoin_multiple(3, a->key, "=", a->value);
+	}
 	return (str);
 }
 

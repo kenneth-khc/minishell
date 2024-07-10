@@ -6,7 +6,7 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 21:47:29 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/08 18:36:08 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/10 17:52:28 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,10 @@ void	match_word(t_Lexer *lexer, t_Token_List *tokens, t_Input *input)
 		word = create_token(WORD, lexeme);
 		add_token(tokens, word);
 		set_word_flags(word);
+		// if (word->word_flags & W_ASSIGNMENT)
+		// 	printf("assign\n");
+		// else
+		// 	printf("no assign\n");
 		lexer->start_char = lexer->end_char + 1;
 		lexer->end_char = lexer->start_char;
 	}
@@ -151,17 +155,22 @@ void	set_word_flags(t_Token *token)
 	{
 		eq = ft_strchr(word, '=');
 		if (is_valid_name(word, eq))
+		{
 			token->word_flags |= W_ASSIGNMENT;
+			token->type = ASSIGNMENT_WORD;
+		}
 	}
 	if (ft_strchr(word, '~') && ft_strlen(word) == 1)
 		token->word_flags |= W_TILDE_EXPANSION;
 }
 
+#include "expansions.h"
 bool	is_valid_name(const char *start, const char *end)
 {
 	while (start < end)
 	{
-		if (!ft_isalnum(*start) && *start != '_')
+		if (is_not_identifier(*start))
+		// if (!ft_isalnum(*start) && *start != '_')
 			return (false);
 		start++;
 	}

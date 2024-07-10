@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 05:13:16 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/08 18:13:05 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/10 17:55:36 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #include "parser.h"
 #include "a.h"
 #include <readline/readline.h>
-//#include "serialize_tree.h"
+#include "serialize_tree.h"
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -41,7 +41,7 @@ int	main(int argc, char **argv, char **envp)
 		root = parse(&parser, &tokens);
 		if (root)
 		{
-			//export_tree(root);
+			export_tree(root);
 			exec_ast(root);
 		}
 		clear_input(&input);

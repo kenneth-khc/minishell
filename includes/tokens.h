@@ -36,6 +36,7 @@ typedef enum e_Token_Types
 	SEMICOLON,			// ;
 	END_OF_LINE,		// \n
 	HASH,				// #
+	ASSIGNMENT_WORD,
 	IO_NUMBER // for left operand of redirection
 } t_Token_Type;
 
@@ -52,12 +53,12 @@ typedef struct s_Token
 	struct s_Token		*next;
 }	t_Token;
 
-#define W_STRONG_QUOTED 0x1
-#define W_WEAK_QUOTED 0x2
-#define W_ASSIGNMENT 0x4
-#define W_HAS_DOLLAR 0x8
-#define W_PARAM_EXPANSION 0x10
-#define W_TILDE_EXPANSION 0x20
+#define W_STRONG_QUOTED	       0b1
+#define W_WEAK_QUOTED	      0b10
+#define W_ASSIGNMENT	     0b100
+#define W_HAS_DOLLAR	    0b1000
+#define W_PARAM_EXPANSION  0b10000
+#define W_TILDE_EXPANSION 0b100000
 
 /**
  * A list of all the tokens.
