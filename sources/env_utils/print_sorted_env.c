@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 01:54:16 by qang              #+#    #+#             */
-/*   Updated: 2024/07/10 18:23:14 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/11 22:43:30 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,29 +47,25 @@ t_envar	*copy_and_sort_env(t_entab *table)
 void	print_and_free_env(t_envar *chead)
 {
 	t_envar	*node;
-	t_envar	*temp;
 	char	*val;
 
 	node = chead;
 	while (node)
 	{
-		if (ft_strcmp("_", node->key) != 0 && node->display == true)
+		if (ft_strcmp("_", node->key) != 0
+      && ((node->state & (DISPLAY | EXPORT)) == (DISPLAY | EXPORT)))
 		{
 			val = node->val;
 			if (val == NULL)
 				printf("declare -x %s\n", node->key);
-			else if (!node->fakepwd)
+			else if (!node->pwd)
 				printf("declare -x %s=\"%s\"\n", node->key, node->val);
       else
         printf("declare -x %s=\"%s\"\n", node->key, node->pwd);
 		}
-		temp = node->next;
-		free(node->key);
-		if (node->val)
-			free(node->val);
-		free(node);
-		node = temp;
+    node = node->next;
 	}
+  free_env_list(chead);
 }
 
 static void	split(t_envar *head, t_envar **front_ref, t_envar **back_ref)

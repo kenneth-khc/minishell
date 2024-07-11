@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 21:24:13 by qang              #+#    #+#             */
-/*   Updated: 2024/07/10 18:44:51 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/11 23:11:07 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ static void	update_var(t_envar *node, t_envar *new)
       if (temp)
         free(temp);
     }
-    node->display = new->display;
+    node->state = new->state;
     free(new->key);
     free(new);
   }
@@ -77,10 +77,10 @@ t_envar	*new_env_var(const char *str)
 		val = ft_strdup(temp + 1);
 	new->key = key;
 	new->val = val;
+  new->pwd = NULL;
 	new->prev = NULL;
 	new->next = NULL;
-	new->display = true;
-  new->fakepwd = false;
+  new->state = DISPLAY;
 	return (new);
 }
 
@@ -97,7 +97,7 @@ void	free_env(t_entab *table)
 		free(temp->key);
 		if (temp->val)
 			free(temp->val);
-    if (temp->fakepwd)
+    if (temp->pwd)
       free(temp->pwd);
 		free(temp);
 	}
@@ -118,6 +118,7 @@ t_entab	*init_env_table(char **env)
 	while (env[++i])
 	{
 		temp = new_env_var(env[i]);
+    temp->state |= EXPORT;
 		if (prev == NULL)
 			table->head = temp;
 		else

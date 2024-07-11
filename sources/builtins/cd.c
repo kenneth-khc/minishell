@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/26 23:12:37 by qang              #+#    #+#             */
-/*   Updated: 2024/07/06 23:15:53 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/11 22:36:27 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ void	add_pwd(t_entab *table)
 	{
 		temp = ft_strjoin("PWD=", cwd);
 		add_var(temp, table);
-		get_var("PWD", table)->display = false;
+		get_var("PWD", table)->state &= ~DISPLAY;
 	}
 	else
 	{
@@ -41,14 +41,15 @@ void	update_oldpwd(char *oldpwd, t_entab *table)
 	{
 		temp = ft_strjoin("OLDPWD=", oldpwd);
 		add_var(temp, table);
-		get_var("OLDPWD", table)->display = false;
+		get_var("OLDPWD", table)->state &= ~DISPLAY;
 	}
 	else
 	{
 		temp = path_node->val;
 		path_node->val = ft_strdup(oldpwd);
 	}
-	free(temp);
+  if (temp)
+	  free(temp);
 }
 
 static int	cd_home2(t_entab *table, char *path)
@@ -77,7 +78,8 @@ static int	cd_home(t_entab *table)
 	t_envar	*path_node;
 
 	path_node = get_var("HOME", table);
-	if (path_node == NULL || (path_node != NULL && !path_node->display))
+	if (path_node == NULL
+    || (path_node != NULL && !(path_node->state & DISPLAY)))
 	{
 		ft_dprintf(2, "%s: cd: HOME not set\n", SHELL);
 		return (1);

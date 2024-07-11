@@ -6,11 +6,17 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 21:20:05 by qang              #+#    #+#             */
-/*   Updated: 2024/07/06 22:05:56 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/11 22:54:17 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "a.h"
+
+static void	ft_export_error(char *str, int *errno)
+{
+	ft_dprintf(2, "%s: export: `%s': not a valid identifier\n", SHELL, str);
+	*errno = 1;
+}
 
 static bool	ft_is_valid_export(char *str)
 {
@@ -42,13 +48,12 @@ int	export(char **args, t_entab *table)
 	{
 		temp = ft_substr(args[i], 0, ft_strchr(args[i], '=') - args[i]);
 		if (ft_is_valid_export(temp))
-			add_var(args[i], table);
-		else
 		{
-			ft_dprintf(2, "%s: export: `%s': not a valid identifier\n",
-				SHELL, args[i]);
-			errno = 1;
+			add_var(args[i], table);
+			get_var(temp, table)->state |= EXPORT;
 		}
+		else
+			ft_export_error(args[i], &errno);
 		free(temp);
 		i++;
 	}

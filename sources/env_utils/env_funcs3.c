@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 00:11:02 by qang              #+#    #+#             */
-/*   Updated: 2024/07/10 18:43:47 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/11 23:17:06 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,13 +24,14 @@ static char	**convert(char **ret, t_envar *node, int size)
 	i = 0;
 	while (i < size)
 	{
-		if (node->display || ft_strcmp(node->key, "PWD") == 0)
+		if (((node->state & EXPORT) || ft_strcmp(node->key, "PWD") == 0)
+      && node->val)
 		{
-			temp = ft_strjoin(node->key, "=");
-			ret[i] = ft_strjoin(temp, node->val);
-			free(temp);
-			i++;
-		}
+        temp = ft_strjoin(node->key, "=");
+        ret[i] = ft_strjoin(temp, node->val);
+        free(temp);
+        i++;
+    }
 		node = node->next;
 	}
 	return (ret);
@@ -46,7 +47,8 @@ char	**env_convert(t_entab *table)
 	i = 0;
 	while (node)
 	{
-		if (node->display || ft_strcmp(node->key, "PWD") == 0)
+		if (((node->state & EXPORT) || ft_strcmp(node->key, "PWD") == 0)
+      && node->val)
 			i++;
 		node = node->next;
 	}
@@ -81,7 +83,7 @@ void  add_ass(char *str, t_entab *table)
 	else
 	{
 		add_var(str, table);
-		new->display = false;
+		new->state = LOCAL;
 	}
 	free(new->key);
 	if (new->val)
@@ -91,9 +93,9 @@ void  add_ass(char *str, t_entab *table)
 
 void  special_pwd(t_envar *node, t_envar *new)
 {
-	if (node->fakepwd)
+	if (node->state & LOCAL)
 		free(node->pwd);
-	node->fakepwd = true;
+	node->state |= LOCAL;
 	node->pwd = new->val;
 	free(new->key);
 	free(new);
