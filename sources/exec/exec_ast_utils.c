@@ -6,13 +6,19 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 21:44:44 by qang              #+#    #+#             */
-/*   Updated: 2024/07/10 17:16:04 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/12 01:56:48 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "a.h"
 #include <dirent.h>
 #include <sys/wait.h>
+
+void	close_pipe(int fd[2])
+{
+	close(fd[0]);
+	close(fd[1]);
+}
 
 int	wait_for_child(int last_pid)
 {
@@ -59,19 +65,20 @@ static char	*next_path(char **path)
 	return (ft_substr(start, 0, len));
 }
 
-static void	attempt_exec(struct dirent *entry, DIR *dir,
-			char *path, char **args)
+static void	attempt_exec(DIR *dir, char *path, char **args, t_entab *table)
 {
 	char	*temp;
 	char	*ret;
+	struct dirent	*entry;
 
+	entry = readdir(dir);
 	while (entry != NULL)
 	{
 		if (ft_strcmp(entry->d_name, args[0]) == 0)
 		{
 			temp = ft_strjoin(path, "/");
 			ret = ft_strjoin(temp, args[0]);
-			execve(ret, args, NULL);
+			execve(ret, args, env_convert(table));
 			free(ret);
 			free(temp);
 		}
@@ -79,27 +86,28 @@ static void	attempt_exec(struct dirent *entry, DIR *dir,
 	}
 }
 
-int	execvepromax(char **args, t_envar *path_node)
+int	execvepromax(char **args, t_entab *table, t_envar *path_node)
 {
-	DIR				*dir;
-	struct dirent	*entry;
-	char			*path;
+	DIR		*dir;
+	char	*path;
 
-	path = next_path(&path_node->val);
-	while (path != NULL)
+	if (path_node != NULL)
 	{
-		dir = opendir(path);
-		if (dir == NULL)
+		path = next_path(&path_node->val);
+		while (path != NULL)
 		{
+			dir = opendir(path);
+			if (dir == NULL)
+			{
+				free(path);
+				path = next_path(NULL);
+				continue ;
+			}
+			attempt_exec(dir, path, args, table);
+			closedir(dir);
 			free(path);
 			path = next_path(NULL);
-			continue ;
 		}
-		entry = readdir(dir);
-		attempt_exec(entry, dir, path, args);
-		closedir(dir);
-		free(path);
-		path = next_path(NULL);
 	}
 	return (-1);
 }

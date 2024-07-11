@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 22:15:03 by qang              #+#    #+#             */
-/*   Updated: 2024/07/10 17:11:33 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/12 01:57:42 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void	exec(t_Exec_Node *node)
 		{
 			execve((char *)node->command, (char **)node->args,
 				env_convert(node->table));
-			execvepromax((char **)node->args, get_var("PATH", node->table));
+			execvepromax((char **)node->args, node->table, get_var("PATH", node->table));
 			ft_dprintf(2, "%s: command not found\n", SHELL, node->command);
 		}
 		exit(0);
@@ -41,12 +41,6 @@ void	exec(t_Exec_Node *node)
 	}
 	if (!ft_isbuiltin(node->command))
 		set_exit_status(wait_for_child(pid));
-}
-
-void	close_pipe(int fd[2])
-{
-	close(fd[0]);
-	close(fd[1]);
 }
 
 void	paip(t_Pipe_Node *node)
