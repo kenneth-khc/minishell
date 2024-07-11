@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "a.h"
+#include <stdlib.h>
 
 static void	parse_prev_path(t_envar *path_node)
 {

@@ -13,19 +13,20 @@ c_reset := \e[0m
 libft_dir := libft
 libft := $(libft_dir)/libft.a
 includes ?= -I includes -I libft/includes
-
 srcs_dir := sources
 lexer_dir := $(srcs_dir)/lexer
 parser_dir := $(srcs_dir)/parser
 builtin_dir := $(srcs_dir)/builtins
 exec_dir := $(srcs_dir)/exec
-sources := $(wildcard $(srcs_dir)/*.c) $(wildcard $(lexer_dir)/*.c) $(wildcard $(parser_dir)/*.c) $(wildcard $(builtin_dir)/*.c) $(wildcard $(exec_dir)/*.c)
+expansions_dir := $(srcs_dir)/expansions
+sources := $(wildcard $(srcs_dir)/*.c) $(wildcard $(lexer_dir)/*.c) $(wildcard $(parser_dir)/*.c) $(wildcard $(builtin_dir)/*.c) $(wildcard $(exec_dir)/*.c) $(wildcard $(expansions_dir)/*.c)
 obj_dir := objects
 objects := $(patsubst $(srcs_dir)/%.c, $(obj_dir)/%.o, $(sources))
 objects := $(patsubst objects/lexer/%.o, $(obj_dir)/%.o, $(objects))
 objects := $(patsubst objects/parser/%.o, $(obj_dir)/%.o, $(objects))
 objects := $(patsubst objects/builtins/%.o, $(obj_dir)/%.o, $(objects))
 objects := $(patsubst objects/exec/%.o, $(obj_dir)/%.o, $(objects))
+objects := $(patsubst objects/expansions/%.o, $(obj_dir)/%.o, $(objects))
 # objects := $(addprefix $(obj_dir)/, $(objects))
 
 test: all
@@ -51,7 +52,7 @@ $(obj_dir):
 	@printf "$(green)Making minishell objects...\n$(c_reset)"
 	@mkdir -p $(obj_dir)
 
-vpath %.c sources sources/lexer sources/parser sources/builtins sources/exec
+vpath %.c sources sources/lexer sources/parser sources/builtins sources/exec sources/expansions
 $(obj_dir)/%.o: %.c
 	@$(CC) $(CFLAGS) $(debug) $(includes) $< -c -o $@
  

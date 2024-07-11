@@ -29,17 +29,8 @@ void	_log(FILE *FILE,
 	fprintf(FILE, "\n");
 }
 
-bool	expect(t_Token *token, enum e_Token_Types expected_type)
+const char	*__asan_default_options()
 {
-	if (token->type == expected_type)
-	{
-		cout("Expected %s", token_enum_to_str(token));
-		return (PARSE_SUCCESS);
-	}
-	else
-	{
-		cout("Unexpected %s", token_enum_to_str(token));
-		return (PARSE_FAIL);
-	}
+	return "detect_leaks=0";
 }
 

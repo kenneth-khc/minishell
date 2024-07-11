@@ -19,7 +19,7 @@ t_Token	*create_token(int type, const char *lexeme)
 {
 	t_Token	*new_token;
 
-	new_token = malloc(sizeof(*new_token));
+	new_token = ft_calloc(1, sizeof(*new_token));
 	new_token->type = type;
 	new_token->lexeme = lexeme;
 	new_token->next = NULL;
@@ -38,6 +38,21 @@ void	add_token(t_Token_List *tokens, t_Token *token)
 	*curr = token;
 	token->next = NULL;
 	tokens->tail = token;
+}
+
+int	get_tokens_count(t_Token_List *tokens)
+{
+	int		count;
+	t_Token	*curr;
+
+	count = 0;
+	curr = tokens->head;
+	while (curr != NULL)
+	{
+		count++;
+		curr = curr->next;
+	}
+	return (count);
 }
 
 void	print_tokens(t_Token_List *tokens)

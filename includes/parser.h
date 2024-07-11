@@ -20,9 +20,10 @@
 
 typedef struct s_Parser
 {
-	t_Token		*token; // current token the parser is looking at
-	t_Token		*lookahead; // 1 token after current token
-	t_entab		*envtab; // environment table
+	t_Token_List	*tokens; // list of tokens
+	t_Token			*token; // current token the parser is looking at
+	t_entab			*envtab; // environment table
+	t_Node			*root; // root of the tree constructed so far
 }	t_Parser;
 
 t_Node			*parse(t_Parser *parser, t_Token_List *tokens);
@@ -40,11 +41,14 @@ t_Node			*parse_io_here(t_Parser *parser);
 t_Node			*parse_io_file(t_Parser *parser);
 t_Redir_Node	*input_redir(t_Parser *parser, int flags);
 t_Redir_Node	*output_redir(t_Parser *parser, int flags);
-bool			expect(t_Token *token, enum e_Token_Types type);
+bool			expect(t_Parser *parser, enum e_Token_Types expected);
+bool			accept(t_Parser *parser, enum e_Token_Types type);
 void			consume(t_Parser *parser);
 
 // Utils
 bool			is_redirection_token(t_Token *token);
-enum e_Token_Types	peek_token(t_Token *token);
+bool			is_and_or_token(t_Token *token);
+bool			is_and_or(t_Parser *parser);
+enum e_Token_Types	peek(int k, t_Parser *parser);
 
 #endif

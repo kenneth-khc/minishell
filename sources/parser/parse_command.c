@@ -6,7 +6,7 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/26 16:20:58 by kecheong          #+#    #+#             */
-/*   Updated: 2024/06/26 23:56:17 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/06 19:20:31 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,7 @@
 #include "parser.h"
 #include <stdio.h>
 #include "debug.h"
-
-t_Node	*parse_complete_command(t_Parser *parser)
-{
-	t_Node	*node;
-
-	node = parse_pipe_sequence(parser);
-	return (node);
-}
+#include <stdlib.h>
 
 t_Node	*parse_simple_command(t_Parser *parser)
 {
@@ -32,7 +25,7 @@ t_Node	*parse_simple_command(t_Parser *parser)
 
 	exec_node = create_exec_node(NULL, parser->envtab);
 	prefix = parse_command_prefix(parser);
-	while (peek_token(parser->token) == WORD)
+	while (peek(1, parser) == WORD)
 	{
 		add_exec_arguments(exec_node, parser->token->lexeme);
 		consume(parser);
@@ -58,6 +51,11 @@ t_Node	*parse_simple_command(t_Parser *parser)
 	}
 	else
 		ret = (t_Node *)exec_node;
+	if (exec_node->command == NULL)
+	{
+		ret = NULL;
+		free(exec_node);
+	}
 	return (ret); // todo: add more expressions
 }
 
@@ -110,7 +108,7 @@ t_Node	*parse_command_suffix(t_Parser *parser, t_Exec_Node *exec_node)
 			curr = node;
 		}
 	}
-	while (peek_token(parser->token) == WORD)
+	while (peek(1, parser) == WORD)
 	{
 		add_exec_arguments(exec_node, parser->token->lexeme);
 		consume(parser);
@@ -124,7 +122,7 @@ t_Exec_Node	*parse_command_name(t_Parser *parser)
 	t_Exec_Node	*exec_node;
 
 	exec_node = NULL;
-	if (peek_token(parser->token) == WORD)
+	if (peek(1, parser) == WORD)
 	{
 		exec_node = create_exec_node(parser->token->lexeme, parser->envtab);
 		consume(parser);

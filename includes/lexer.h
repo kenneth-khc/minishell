@@ -6,7 +6,7 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 09:44:52 by kecheong          #+#    #+#             */
-/*   Updated: 2024/04/18 21:39:35 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/08 18:23:38 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,6 @@ typedef struct s_Match_Table
 
 bool	is_metacharacter(const char c);
 bool	is_blank(const char c);
-char	*extract_substring(const char *start, const char *end);
 bool	end_of_line(t_Token *token);
 void	skip_comment(t_Lexer *lexer);
 void	match(t_Input *input, t_Lexer *lexer, t_Token_List *tokens);
@@ -54,5 +53,7 @@ void	match_word(t_Lexer *lexer, t_Token_List *tokens, t_Input *input);
 void	advance_word(t_Lexer *lexer);
 void	join_input_lines(t_Lexer *lexer, t_Input *input);
 void	update_lexer_state(t_Lexer *lexer);
+void	set_word_flags(t_Token *token);
+bool	is_valid_name(const char *start, const char *end);
 
 #endif

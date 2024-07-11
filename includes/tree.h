@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 21:06:03 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/08 22:19:14 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/11 12:13:02 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,8 @@ typedef enum e_Node_Type
 	Argument_Node,
 	Redir_Node,
 	Pipe_Node,
-  AND_AND_NODE,
-  OR_OR_NODE
+	AND_AND_NODE,
+	OR_OR_NODE
 }	t_Node_Type;
 
 /**
@@ -87,6 +87,6 @@ typedef struct s_Pipe_Node
 }	t_Pipe_Node;
 
 t_Node			*get_tail(t_Node *node);
-void			print_nodes(t_Node *node);
+void			free_tree(t_Node *node);
 
 #endif

@@ -1,36 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   expansions.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/11 05:29:11 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/06 17:28:57 by kecheong         ###   ########.fr       */
+/*   Created: 2024/07/09 21:15:47 by kecheong          #+#    #+#             */
+/*   Updated: 2024/07/09 21:24:55 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
+#ifndef EXPANSIONS_H
+#define EXPANSIONS_H
 
-# include <readline/readline.h>
-# include <readline/history.h>
-# include <unistd.h>
+#include "tokens.h"
+#include "a.h"
 
-# include "input.h"
-# include "tokens.h"
-# include "tree.h"
-
-typedef struct s_Minishell
-{
-		
-}	t_Minishell;
-
-t_Token_List	scan(t_Input *input);
-
-void	free_tokens(t_Token_List *tokens);
-char	*get_history(t_Input *input);
+void	expand(t_Token *token, char *expansion, char *expand_start, char *expand_end);
 void	expand_tokens(t_Token_List *tokens, t_entab *env);
+char	*copy_var_val(char *key, t_entab *env);
 void	tilde_expansion(t_Token_List *tokens, t_entab *env);
 void	parameter_expansion(t_Token_List *tokens, t_entab *env);
 void	expand_exit_status(t_Token *token, char *dollar);
@@ -38,7 +26,6 @@ void	expand_pid(t_Token *token, char *dollar);
 void	expand_shname(t_Token *token, char *dollar);
 void	expand_variable(t_entab *env, t_Token *token, char *dollar);
 bool	is_identifier_character(char c);
-
-
+bool	is_not_identifier(char c);
 
 #endif

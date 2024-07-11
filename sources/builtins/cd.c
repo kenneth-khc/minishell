@@ -6,11 +6,15 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/26 23:12:37 by qang              #+#    #+#             */
-/*   Updated: 2024/07/06 23:15:53 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/11 12:16:10 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "a.h"
+#include <limits.h>
+#include <stdio.h>
+#include <unistd.h>
+#include "libft.h"
 
 void	add_pwd(t_entab *table)
 {

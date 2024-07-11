@@ -6,11 +6,12 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 21:32:14 by qang              #+#    #+#             */
-/*   Updated: 2024/07/10 18:19:44 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/11 12:18:38 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "a.h"
+#include <stdlib.h>
 
 t_envar	*copy_env(t_envar *src);
 void	del_var(char *key, t_entab *table);

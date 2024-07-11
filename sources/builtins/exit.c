@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "a.h"
+#include <stdlib.h>
 
 static int	skip_space_and_sign(char *str, long *sign)
 {

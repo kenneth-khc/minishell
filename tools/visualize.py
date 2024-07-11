@@ -43,7 +43,7 @@ def main():
 	dot = graphviz.Digraph()
 	dot = graphviz.Graph()
 	add_edges(dot, tree)
-	dot.render("binary_tree", format="png", view=True)
+	dot.render("binary_tree", format="svg", view=True)
 
 if __name__ == "__main__":
 	main()
