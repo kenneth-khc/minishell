@@ -77,6 +77,8 @@ bool	expect(t_Parser *parser, enum e_Token_Types expected)
 	{
 		return (true);
 	}
-	ft_dprintf(STDERR_FILENO, "unexpected token %d\n", parser->token->type);
-	return (false);
+	else
+	{
+		return (false);
+	}
 }

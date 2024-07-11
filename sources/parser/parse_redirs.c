@@ -22,53 +22,68 @@
 
 t_Node	*parse_io_redirect(t_Parser *parser)
 {
-	t_Redir_Node	*redir_node;
-	bool			oldfd_set = false;
+	t_Redir_Node	*node;
+	bool			oldfd_set;
 
-	redir_node = ft_calloc(1, sizeof(*redir_node));
-	redir_node->type = Redir_Node;
-	redir_node->left = NULL;
+	oldfd_set = false;
+	node = ft_calloc(1, sizeof(*node));
+	node->type = Redir_Node;
+	node->left = NULL;
 	if (peek(1, parser) == IO_NUMBER)
 	{
-		redir_node->oldfd = ft_atoi(parser->token->lexeme);
+		node->oldfd = ft_atoi(parser->token->lexeme);
 		oldfd_set = true;
-		consume(parser);
+		accept(parser, IO_NUMBER);
 	}
 	// todo: HEREDOCS
-	if (peek(1, parser) == LESSER)
+	// if (peek(1, parser) == LESSER_LESSER)
+	if (accept(parser, LESSER_LESSER))
+	{
+		if (oldfd_set == false)
+			node->oldfd = STDIN_FILENO;
+		node->file = ".temp";
+		node->flags = O_WRONLY | O_CREAT | O_TRUNC;
+		node->mode = 0644; // ??
+		node->left = NULL;
+		node->heredoc = true;
+		node->delim = (char *)parser->token->lexeme;
+		consume(parser);
+	}
+	// if (peek(1, parser) == LESSER)
+	if (accept(parser, LESSER))
+	{
+		if (oldfd_set == false)
+			node->oldfd = STDIN_FILENO;
+		node->flags = O_RDONLY;
+		node->file = parser->token->lexeme;
+		node->mode = 0;
+		node->left = NULL;
+		consume(parser);
+	}
+	else if (accept(parser, GREATER))
+	// else if (peek(1, parser) == GREATER)
+	{
+		if (oldfd_set == false)
+			node->oldfd = STDOUT_FILENO;
+		node->flags = O_WRONLY | O_CREAT | O_TRUNC;
+		node->file = parser->token->lexeme;
+		node->mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
+		node->left = NULL;
+		consume(parser);
+	}
+	// else if (peek(1, parser) == GREATER_GREATER)
+	else if (accept(parser, GREATER_GREATER))
 	{
 		consume(parser);
 		if (oldfd_set == false)
-			redir_node->oldfd = STDIN_FILENO;
-		redir_node->flags = O_RDONLY;
-		redir_node->file = parser->token->lexeme;
-		redir_node->mode = 0;
-		redir_node->left = NULL;
+			node->oldfd = STDOUT_FILENO;
+		node->flags = O_WRONLY | O_CREAT | O_APPEND;
+		node->file = parser->token->lexeme;
+		node->mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
+		node->left = NULL;
 		consume(parser);
 	}
-	else if (peek(1, parser) == GREATER)
-	{
-		consume(parser);
-		if (oldfd_set == false)
-			redir_node->oldfd = STDOUT_FILENO;
-		redir_node->flags = O_WRONLY | O_CREAT | O_TRUNC;
-		redir_node->file = parser->token->lexeme;
-		redir_node->mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
-		redir_node->left = NULL;
-		consume(parser);
-	}
-	else if (peek(1, parser) == GREATER_GREATER)
-	{
-		consume(parser);
-		if (oldfd_set == false)
-			redir_node->oldfd = STDOUT_FILENO;
-		redir_node->flags = O_WRONLY | O_CREAT | O_APPEND;
-		redir_node->file = parser->token->lexeme;
-		redir_node->mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
-		redir_node->left = NULL;
-		consume(parser);
-	}
-	return ((t_Node *)redir_node);
+	return ((t_Node *)node);
 }
 
 t_Node	*parse_io_file(t_Parser *parser)

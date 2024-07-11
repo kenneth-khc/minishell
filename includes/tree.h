@@ -26,7 +26,8 @@ typedef enum e_Node_Type
 	Pipe_Node,
 	AND_AND_NODE,
 	OR_OR_NODE,
-	ASS_NODE
+	ASS_NODE,
+	SUBSHELL_NODE
 }	t_Node_Type;
 
 /**
@@ -73,6 +74,8 @@ typedef struct s_Redir_Node
 	mode_t				mode; // permission bits for READ WRITE EXECUTE
 	const char			*file; // name of the file to open
 	int					newfd; // fd of the file opened
+	bool				heredoc;
+	char				*delim;
 }	t_Redir_Node;
 
 t_Redir_Node	*create_redir_node(int oldfd, const char *filename,

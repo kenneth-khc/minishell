@@ -18,7 +18,7 @@
 #include "parser.h"
 #include "a.h"
 #include <readline/readline.h>
-#include "serialize_tree.h"
+//#include "serialize_tree.h"
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -41,7 +41,7 @@ int	main(int argc, char **argv, char **envp)
 		root = parse(&parser, &tokens);
 		if (root)
 		{
-			export_tree(root);
+//			export_tree(root);
 			exec_ast(root);
 		}
 		clear_input(&input);

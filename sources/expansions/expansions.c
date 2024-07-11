@@ -36,13 +36,11 @@ void	find_io_number(t_Token_List *tokens)
 	tok = tokens->head;
 	while (tok != NULL)
 	{
-		if (only_digits(tok->lexeme) && is_redirection_token(tok->next))
+		if (only_digits(tok->lexeme)
+			&& is_redirection_token(tok->next)
+			&& ft_atoi(tok->lexeme) < OPEN_MAX)
 		{
-			// check for max fd
-			// printf("word: %s\n", tok->lexeme);
-			// printf("was %s\n", token_enum_to_str(tok));
 			tok->type = IO_NUMBER;
-			// printf("now io_number\n\n");
 		}
 		tok = tok->next;
 	}

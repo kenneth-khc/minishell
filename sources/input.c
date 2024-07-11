@@ -43,7 +43,8 @@ void	get_input(t_Input *input)
 		error("calloc failed");
 	read = readline("bish> ");
 	if (read == NULL)
-		printf("handle eof!\n"), exit(EXIT_FAILURE);
+		//printf("handle eof!\n"), exit(EXIT_FAILURE);
+		exit(EXIT_SUCCESS);
 	add_history(read);
 	newline_appended = ft_strjoin(read, "\n");
 	free(read);

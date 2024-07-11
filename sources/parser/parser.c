@@ -10,30 +10,63 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdbool.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include "parser.h"
 #include "tree.h"
 #include "tokens.h"
 #include "debug.h"
-#include <stdbool.h>
-#include <fcntl.h>
-#include <unistd.h>
+#include "errors.h"
 
 #define BLUE "\e[0;34m\0"
 
-t_Node	*parse(t_Parser *parser, t_Token_List *tokens)
+t_Node	*parse_command(t_Parser *parser)
 {
 	t_Node	*root;
 
-	parser->tokens = tokens;
-	parser->token = tokens->head;
-	parser->root = NULL;
-
-	root = parse_complete_command(parser);
-	parser->root = root;
+	if (accept(parser, OPEN_PARAN))
+	{
+		root = parse_subshell(parser);
+	}
+	else
+	{
+		root = parse_list(parser);
+	}
 	return (root);
 }
 
-t_Node	*parse_complete_command(t_Parser *parser)
+t_Node	*parse_subshell(t_Parser *parser)
+{
+	t_Node	*root;
+	t_Node	*node;
+
+	root = ft_calloc(1, sizeof(*node));
+	root->type = SUBSHELL_NODE;
+	root->left = parse_list(parser);
+	if (!expect(parser, CLOSE_PARAN))
+	{
+		syntax_error(parser, "expected closing parenthesis");
+		return (NULL);
+	}
+	while (peek(1, parser) == PIPE
+			|| is_and_or(parser))
+	{
+		node = ft_calloc(1, sizeof(*node));
+		if (accept(parser, PIPE))
+			node->type = Pipe_Node;
+		else if (accept(parser, AND_AND))
+			node->type = AND_AND_NODE;
+		else if (accept(parser, OR_OR))
+			node->type = OR_OR_NODE;
+		node->left = root;
+		node->right = parse_command(parser);
+		root = node;
+	}
+	return (root);
+}
+
+t_Node	*parse_list(t_Parser *parser)
 {
 	t_Node	*root;
 	t_Node	*and_or;
