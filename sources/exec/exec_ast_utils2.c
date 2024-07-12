@@ -1,35 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec_ast_utils2.c                                  :+:      :+:    :+:   */
+/*   exec_ast_utils3.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/06 00:46:52 by qang              #+#    #+#             */
-/*   Updated: 2024/07/06 22:16:51 by qang             ###   ########.fr       */
+/*   Created: 2024/07/13 00:42:15 by qang              #+#    #+#             */
+/*   Updated: 2024/07/13 00:44:19 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "a.h"
-
-static int	*errnono(void);
-
-int	get_exit_status(void)
-{
-	return (*errnono());
-}
-
-void	set_exit_status(int status)
-{
-	*errnono() = status;
-}
-
-static int	*errnono(void)
-{
-	static int	exit_status = 0;
-
-	return (&exit_status);
-}
 
 void	pipepromax(int fd[2])
 {
@@ -54,4 +35,10 @@ int	forkpromax(void)
 		return (-1);
 	}
 	return (pid);
+}
+
+void	close_pipe(int fd[2])
+{
+	close(fd[0]);
+	close(fd[1]);
 }

@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 21:06:03 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/08 22:19:14 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/13 00:54:40 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ typedef struct s_Node
 	struct s_Node		*left;
 	struct s_Node		*right;
 }	t_Node;
-void	exec_ast(t_Node *node);
 
 /**
  * Node for executing commands
@@ -89,4 +88,6 @@ typedef struct s_Pipe_Node
 t_Node			*get_tail(t_Node *node);
 void			print_nodes(t_Node *node);
 
+void	exec_ast(t_Node *node);
+void	exec(t_Exec_Node *node);
 #endif

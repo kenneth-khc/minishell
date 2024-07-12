@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 01:54:16 by qang              #+#    #+#             */
-/*   Updated: 2024/07/11 22:43:30 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/13 00:40:17 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,19 +53,19 @@ void	print_and_free_env(t_envar *chead)
 	while (node)
 	{
 		if (ft_strcmp("_", node->key) != 0
-      && ((node->state & (DISPLAY | EXPORT)) == (DISPLAY | EXPORT)))
+			&& ((node->state & (DISPLAY | EXPORT)) == (DISPLAY | EXPORT)))
 		{
 			val = node->val;
 			if (val == NULL)
 				printf("declare -x %s\n", node->key);
 			else if (!node->pwd)
 				printf("declare -x %s=\"%s\"\n", node->key, node->val);
-      else
-        printf("declare -x %s=\"%s\"\n", node->key, node->pwd);
+			else
+				printf("declare -x %s=\"%s\"\n", node->key, node->pwd);
 		}
-    node = node->next;
+		node = node->next;
 	}
-  free_env_list(chead);
+	free_env_list(chead);
 }
 
 static void	split(t_envar *head, t_envar **front_ref, t_envar **back_ref)

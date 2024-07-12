@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/26 23:12:37 by qang              #+#    #+#             */
-/*   Updated: 2024/07/11 22:36:27 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/13 00:40:49 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,8 @@ void	update_oldpwd(char *oldpwd, t_entab *table)
 		temp = path_node->val;
 		path_node->val = ft_strdup(oldpwd);
 	}
-  if (temp)
-	  free(temp);
+	if (temp)
+		free(temp);
 }
 
 static int	cd_home2(t_entab *table, char *path)
@@ -79,7 +79,7 @@ static int	cd_home(t_entab *table)
 
 	path_node = get_var("HOME", table);
 	if (path_node == NULL
-    || (path_node != NULL && !(path_node->state & DISPLAY)))
+		|| (path_node != NULL && !(path_node->state & DISPLAY)))
 	{
 		ft_dprintf(2, "%s: cd: HOME not set\n", SHELL);
 		return (1);

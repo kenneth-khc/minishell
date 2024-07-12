@@ -1,48 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec_ast.c                                         :+:      :+:    :+:   */
+/*   ast_funcs.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 22:15:03 by qang              #+#    #+#             */
-/*   Updated: 2024/07/13 00:25:27 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/13 00:49:18 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tree.h"
 #include <fcntl.h>
-#include <sys/wait.h>
 
 void	exec_ast(t_Node *node);
-
-void	exec(t_Exec_Node *node)
-{
-	int	pid;
-
-	pid = forkpromax();
-	if (pid == 0)
-	{
-    set_sig();
-		if (!ft_isbuiltin(node->command))
-		{
-      if (access(node->command, F_OK) == 0 && access(node->command, X_OK) == 0)
-			  execve((char *)node->command, (char **)node->args,
-				  env_convert(node->table));
-			execvepromax((char **)node->args, node->table, get_var("PATH", node->table));
-			ft_dprintf(2, "%s: %s: command not found\n", SHELL, node->command);
-		}
-		exit(0);
-	}
-	else
-	{
-    ignore_sigs();
-		if (ft_isbuiltin(node->command))
-			set_exit_status(run_builtin(node->args, node->table));
-	}
-	if (!ft_isbuiltin(node->command))
-		set_exit_status(wait_for_child(pid));
-}
 
 void	paip(t_Pipe_Node *node)
 {
@@ -97,7 +68,7 @@ void	andand(t_Node *node)
 		exec_ast(node->right);
 }
 
-void  oror(t_Node *node)
+void	oror(t_Node *node)
 {
 	exec_ast(node->left);
 	if (get_exit_status() == 0)
@@ -113,8 +84,8 @@ void	exec_ast(t_Node *node)
 		redir((t_Redir_Node *)node);
 	else if (node->type == Pipe_Node)
 		paip((t_Pipe_Node *)node);
-  else if (node->type == AND_AND_NODE)
-    andand(node);
-  else if (node->type == OR_OR_NODE)
-    oror(node);
+	else if (node->type == AND_AND_NODE)
+		andand(node);
+	else if (node->type == OR_OR_NODE)
+		oror(node);
 }

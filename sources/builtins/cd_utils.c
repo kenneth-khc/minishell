@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/26 00:30:17 by qang              #+#    #+#             */
-/*   Updated: 2024/07/11 22:42:44 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/13 00:38:16 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,12 +79,12 @@ static void	update_pwd_args(t_envar *path_node, char *arg, t_entab *table)
 	else
 		path_node->val = ft_strdup(arg);
 	update_oldpwd(temp, table);
-  if (path_node->pwd)
-  {
-    free(path_node->pwd);
-    path_node->pwd = NULL;
-    path_node->state &= ~LOCAL;
-  }
+	if (path_node->pwd)
+	{
+		free(path_node->pwd);
+		path_node->pwd = NULL;
+		path_node->state &= ~LOCAL;
+	}
 	free(temp);
 }
 

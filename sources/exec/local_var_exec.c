@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/12 01:10:26 by qang              #+#    #+#             */
-/*   Updated: 2024/07/13 00:08:40 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/13 00:36:35 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,14 +46,14 @@ static t_entab	*create_local_table(t_envar *node, char **var)
 	return (table);
 }
 
-void  local_var_exec(t_Exec_Node *node, char **var)
+void	local_var_exec(t_Exec_Node *node, char **var)
 {
 	t_entab	*table;
 	int		pid;
 	char	*file_path;
 
 	pid = forkpromax();
-  table = create_local_table(node->table->head, var);
+	table = create_local_table(node->table->head, var);
 	if (pid == 0)
 	{
 		file_path = (char *)node->command;
@@ -63,6 +63,6 @@ void  local_var_exec(t_Exec_Node *node, char **var)
 		ft_dprintf(2, "%s: command not found\n", SHELL, node->command);
 		exit(127);
 	}
-  free_env(table);
+	free_env(table);
 	wait_for_child(pid);
 }
