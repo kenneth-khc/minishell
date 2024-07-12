@@ -6,13 +6,15 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 21:44:44 by qang              #+#    #+#             */
-/*   Updated: 2024/07/12 18:20:29 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/13 00:18:12 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "a.h"
 #include <dirent.h>
 #include <sys/wait.h>
+
+static void	print_error(char *command);
 
 void	close_pipe(int fd[2])
 {
@@ -110,10 +112,11 @@ void	execvepromax(char **args, t_entab *table, t_envar *path_node)
 		}
 	}
 	else
-	{
-		for (int i = 0; i < length(args); i++)
-			printf("args[%d]: %s\n", i, args[i]);
-		ft_dprintf(2, "%s: %s: No such file or directory\n", SHELL, args[0]);
-		exit(127);
-	}
+		print_error(args[0]);
+}
+
+static void	print_error(char *command)
+{
+	ft_dprintf(2, "%s: %s: command not found\n", SHELL, command);
+	exit(127);
 }

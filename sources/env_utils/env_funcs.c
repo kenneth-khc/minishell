@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 21:24:13 by qang              #+#    #+#             */
-/*   Updated: 2024/07/12 20:27:46 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/13 00:13:56 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,6 @@ void	add_var(char *str, t_entab *table)
 		table->head = new;
 		return ;
 	}
-  for (t_envar *node = table->head; node; node = node->next)
-    printf("node: %s=%s\n", node->key, node->val);
   if (get_var(new->key, table) == NULL)
   {
     table->tail->next = new;
