@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 05:13:16 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/10 17:08:36 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/12 20:00:40 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,8 @@ int	main(int argc, char **argv, char **envp)
 
 	parser.envtab = init_env_table(envp);
 	incr_shlvl(parser.envtab);
+  for (t_envar *node = parser.envtab->head; node != NULL; node = node->next)
+    printf("%s=%s\n", node->key, node->val);
 	while (1)
 	{
 		init_signal();

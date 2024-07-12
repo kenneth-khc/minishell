@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 22:15:03 by qang              #+#    #+#             */
-/*   Updated: 2024/07/12 01:57:42 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/12 20:35:08 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,10 +26,11 @@ void	exec(t_Exec_Node *node)
     set_sig();
 		if (!ft_isbuiltin(node->command))
 		{
-			execve((char *)node->command, (char **)node->args,
-				env_convert(node->table));
+      if (access(node->command, F_OK) == 0 && access(node->command, X_OK) == 0)
+			  execve((char *)node->command, (char **)node->args,
+				  env_convert(node->table));
 			execvepromax((char **)node->args, node->table, get_var("PATH", node->table));
-			ft_dprintf(2, "%s: command not found\n", SHELL, node->command);
+			ft_dprintf(2, "%s: %s: command not found\n", SHELL, node->command);
 		}
 		exit(0);
 	}

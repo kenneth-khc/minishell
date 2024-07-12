@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 21:44:44 by qang              #+#    #+#             */
-/*   Updated: 2024/07/12 01:56:48 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/12 18:20:29 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,12 +86,12 @@ static void	attempt_exec(DIR *dir, char *path, char **args, t_entab *table)
 	}
 }
 
-int	execvepromax(char **args, t_entab *table, t_envar *path_node)
+void	execvepromax(char **args, t_entab *table, t_envar *path_node)
 {
 	DIR		*dir;
 	char	*path;
 
-	if (path_node != NULL)
+	if (path_node != NULL && path_node->state & DISPLAY)
 	{
 		path = next_path(&path_node->val);
 		while (path != NULL)
@@ -109,5 +109,11 @@ int	execvepromax(char **args, t_entab *table, t_envar *path_node)
 			path = next_path(NULL);
 		}
 	}
-	return (-1);
+	else
+	{
+		for (int i = 0; i < length(args); i++)
+			printf("args[%d]: %s\n", i, args[i]);
+		ft_dprintf(2, "%s: %s: No such file or directory\n", SHELL, args[0]);
+		exit(127);
+	}
 }

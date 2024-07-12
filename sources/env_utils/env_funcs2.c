@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 21:32:14 by qang              #+#    #+#             */
-/*   Updated: 2024/07/11 22:15:15 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/12 20:33:25 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,9 +50,13 @@ void	del_var(char *key, t_entab *table)
 	{
 		if (ft_strcmp(key, node->key) == 0)
 		{
-			if (node != table->head)
+      if (node == table->head)
+        table->head = node->next;
+      if (node == table->tail)
+        table->tail = node->prev;
+			if (node->prev)
 				node->prev->next = node->next;
-			if (node != table->tail)
+			if (node->next)
 				node->next->prev = node->prev;
 			if (node->val)
 				free(node->val);
