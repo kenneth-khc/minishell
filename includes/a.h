@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 22:27:01 by qang              #+#    #+#             */
-/*   Updated: 2024/07/07 21:33:46 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/12 18:15:22 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,12 +20,17 @@
 # ifndef SHELL
 #  define SHELL "bish"
 # endif
+
+# define EXPORT 0b1
+# define LOCAL 0b10
+# define DISPLAY 0b100
 /*envar = env variable*/
 typedef struct s_envar
 {
 	char			*key;
 	char			*val;
-	bool			display;
+	int       state;
+	char			*pwd;
 	struct s_envar	*prev;
 	struct s_envar	*next;
 }	t_envar;
@@ -59,6 +64,9 @@ void		free_env(t_entab *table);
 t_envar		*copy_env(t_envar *src);
 char		**env_convert(t_entab *table);
 void			incr_shlvl(t_entab *table);
+void  	special_pwd(t_envar *node, t_envar *new);
+t_envar		*new_env_var(const char *str);
+void		free_env_list(t_envar *node);
 
 /*builtin funcs*/
 int			cd(char **args, t_entab *table);
@@ -76,10 +84,14 @@ bool    ft_isbuiltin(const char *command);
 int			run_builtin(const char **av, t_entab *table);
 
 /*exec_ast_utils*/
-int			execvepromax(char **args, t_envar *path_node);
+void		execvepromax(char **args, t_entab *table, t_envar *path_node);
 void		set_exit_status(int status);
 int	    exec_wait_pid(int last_pid);
 int			get_exit_status(void);
 int     forkpromax(void);
 void    pipepromax(int fd[2]);
+int			wait_for_child(int last_pid);
+void		close_pipe(int fd[2]);
+
+void		*mallocpromax(size_t size);
 #endif

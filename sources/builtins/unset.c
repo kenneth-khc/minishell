@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 21:18:18 by qang              #+#    #+#             */
-/*   Updated: 2024/06/27 22:27:28 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/12 20:20:46 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int	unset(char **args, t_entab *table)
 			new = temp;
 		del_var(args[i], table);
 		add_var(new, table);
-		table->tail->display = false;
+		table->tail->state &= ~DISPLAY;
 		free(new);
 	}
 	return (0);

@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 21:32:14 by qang              #+#    #+#             */
-/*   Updated: 2024/07/11 12:18:38 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/12 20:41:10 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ t_envar	*copy_env(t_envar *src);
 void	del_var(char *key, t_entab *table);
 t_envar	*get_var(char *key, t_entab *table);
 int		print_sorted_env(t_entab *table);
+void	free_env_list(t_envar *node);
 
 int	print_sorted_env(t_entab *table)
 {
@@ -50,13 +51,17 @@ void	del_var(char *key, t_entab *table)
 	{
 		if (ft_strcmp(key, node->key) == 0)
 		{
-			if (node != table->head)
+      if (node == table->head)
+        table->head = node->next;
+      if (node == table->tail)
+        table->tail = node->prev;
+			if (node->prev)
 				node->prev->next = node->next;
-			if (node != table->tail)
+			if (node->next)
 				node->next->prev = node->prev;
 			if (node->val)
 				free(node->val);
-      if (node->fakepwd)
+			if (node->pwd)
 				free(node->pwd);
 			free(node->key);
 			free(node);
@@ -75,18 +80,29 @@ t_envar	*copy_env(t_envar *src)
 		temp->val = ft_strdup(src->val);
 	else
 		temp->val = NULL;
-	temp->display = src->display;
-	if (src->fakepwd)
-	{
-		temp->fakepwd = true;
+	temp->state = src->state;
+	if (src->pwd)
 		temp->pwd = ft_strdup(src->pwd);
-	}
 	else
-	{
-		temp->fakepwd = false;
 		temp->pwd = NULL;
-	}
 	temp->next = NULL;
 	temp->prev = NULL;
 	return (temp);
+}
+
+void	free_env_list(t_envar *node)
+{
+	t_envar	*temp;
+
+	while (node)
+	{
+		temp = node;
+		node = node->next;
+		free(temp->key);
+		if (temp->val)
+			free(temp->val);
+		if (temp->pwd)
+			free(temp->pwd);
+		free(temp);
+	}
 }
