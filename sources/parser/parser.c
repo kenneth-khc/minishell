@@ -21,48 +21,11 @@
 
 #define BLUE "\e[0;34m\0"
 
-t_Node	*parse_command(t_Parser *parser)
+t_Node	*parse(t_Parser *parser)
 {
 	t_Node	*root;
 
-	if (accept(parser, OPEN_PARAN))
-	{
-		root = parse_subshell(parser);
-	}
-	else
-	{
-		root = parse_list(parser);
-	}
-	return (root);
-}
-
-t_Node	*parse_subshell(t_Parser *parser)
-{
-	t_Node	*root;
-	t_Node	*node;
-
-	root = ft_calloc(1, sizeof(*node));
-	root->type = SUBSHELL_NODE;
-	root->left = parse_list(parser);
-	if (!expect(parser, CLOSE_PARAN))
-	{
-		syntax_error(parser, "expected closing parenthesis");
-		return (NULL);
-	}
-	while (peek(1, parser) == PIPE
-			|| is_and_or(parser))
-	{
-		node = ft_calloc(1, sizeof(*node));
-		if (accept(parser, PIPE))
-			node->type = Pipe_Node;
-		else if (accept(parser, AND_AND))
-			node->type = AND_AND_NODE;
-		else if (accept(parser, OR_OR))
-			node->type = OR_OR_NODE;
-		node->left = root;
-		node->right = parse_command(parser);
-		root = node;
-	}
+	root = parse_list(parser);
 	return (root);
 }
 
@@ -71,7 +34,10 @@ t_Node	*parse_list(t_Parser *parser)
 	t_Node	*root;
 	t_Node	*and_or;
 
-	root = parse_pipe_sequence(parser);
+	if (peek(1, parser) == OPEN_PARAN)
+		root = parse_subshell(parser);
+	else
+		root = parse_pipe_sequence(parser);
 	while (is_and_or(parser))
 	{
 		and_or = ft_calloc(1, sizeof(*and_or));
@@ -81,8 +47,32 @@ t_Node	*parse_list(t_Parser *parser)
 			and_or->type = OR_OR_NODE;
 		consume(parser);
 		and_or->left = root;
-		and_or->right = parse_pipe_sequence(parser);
+		if (peek(1, parser) == OPEN_PARAN)
+			and_or->right = parse_subshell(parser);
+		else
+			and_or->right = parse_pipe_sequence(parser);
 		root = and_or;
+	}
+	return (root);
+}
+
+t_Node	*parse_subshell(t_Parser *parser)
+{
+	t_Node	*root;
+	t_Node	*node;
+
+	if (!expect(parser, OPEN_PARAN))
+	{
+		syntax_error(parser, "expected opening parenthesis");
+		return (NULL);
+	}
+	root = ft_calloc(1, sizeof(*node));
+	root->type = SUBSHELL_NODE;
+	root->left = parse_list(parser);
+	if (!expect(parser, CLOSE_PARAN))
+	{
+		syntax_error(parser, "expected closing parenthesis");
+		return (NULL);
 	}
 	return (root);
 }

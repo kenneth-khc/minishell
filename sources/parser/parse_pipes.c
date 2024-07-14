@@ -27,7 +27,7 @@ t_Node	*parse_pipe_sequence(t_Parser *parser)
 		temp = ft_calloc(1, sizeof(*temp));
 		temp->type = Pipe_Node;
 		temp->left = left;
-		temp->right = parse_command(parser);
+		temp->right = parse_list(parser);
 		if (temp->right == NULL)
 		{
 			syntax_error(parser, "missing command to pipe to\n");

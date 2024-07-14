@@ -26,8 +26,7 @@ typedef struct s_Parser
 	t_Node			*root; // root of the tree constructed so far
 }	t_Parser;
 
-t_Node			*parse(t_Parser *parser, t_Token_List *tokens);
-t_Node			*parse_command(t_Parser *parser);
+t_Node			*parse(t_Parser *parser);
 t_Node			*parse_subshell(t_Parser *parser);
 t_Node			*parse_list(t_Parser *parser);
 t_Node			*parse_pipe_sequence(t_Parser *parser);

@@ -51,6 +51,7 @@ void	expand_tokens(t_Token_List *tokens, t_entab *env)
 	find_io_number(tokens);
 	tilde_expansion(tokens, env);
 	parameter_expansion(tokens, env);
+	quote_removal(tokens);
 }
 
 void	tilde_expansion(t_Token_List *tokens, t_entab *env)
@@ -72,4 +73,24 @@ void	tilde_expansion(t_Token_List *tokens, t_entab *env)
 // todo: filename expansion (*)
 // todo: pattern matching
 // todo: quote removal
+
+void	quote_removal(t_Token_List *tokens)
+{
+	t_Token	*tok;
+	char	*to_free;
+
+	tok = tokens->head;
+	while (tok)
+	{
+		if (tok->word_flags & W_WEAK_QUOTED
+			|| tok->word_flags & W_STRONG_QUOTED)
+		{
+			to_free = (char *)tok->lexeme;
+			tok->lexeme = ft_extract_substring(tok->lexeme + 1,
+									  tok->lexeme + ft_strlen(tok->lexeme) - 2);
+			free(to_free);
+		}
+		tok = tok->next;
+	}
+}
 

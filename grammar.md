@@ -1,23 +1,20 @@
 # Grammar
 
 ```
-complete_command	: command
-
-command			: list
-			| subshell
+complete_command	: list
 
 list			: pipe_sequence and_or
+			| subshell and_or
 
-subshell		: '(' list ')' pipe
-			| '(' list ')' and_or
+subshell		: '(' list ')'
 
 pipe_sequence		: simple_command pipe
 
 pipe			: '|' list
 			| ε  
 
-and_or			: '&&' command
-			| '||' command
+and_or			: '&&' list
+			| '||' list
 			| ε
 
 simple_command		: command_prefix command_word command_suffix

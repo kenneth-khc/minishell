@@ -23,6 +23,7 @@ t_Token	*create_token(int type, const char *lexeme)
 	new_token->type = type;
 	new_token->lexeme = lexeme;
 	new_token->next = NULL;
+	new_token->prev = NULL;
 	return (new_token);
 }
 
@@ -37,6 +38,7 @@ void	add_token(t_Token_List *tokens, t_Token *token)
 	}
 	*curr = token;
 	token->next = NULL;
+	token->prev = tokens->tail;
 	tokens->tail = token;
 }
 

@@ -51,6 +51,7 @@ typedef struct s_Token
 	const char			*lexeme;
 	int					word_flags;
 	struct s_Token		*next;
+	struct s_Token		*prev;
 }	t_Token;
 
 #define W_STRONG_QUOTED	       0b1
