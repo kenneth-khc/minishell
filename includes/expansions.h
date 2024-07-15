@@ -21,6 +21,7 @@ void	expand_tokens(t_Token_List *tokens, t_entab *env);
 char	*copy_var_val(char *key, t_entab *env);
 void	tilde_expansion(t_Token_List *tokens, t_entab *env);
 void	parameter_expansion(t_Token_List *tokens, t_entab *env);
+bool	word_is_quoted(t_Token *token);
 void	quote_removal(t_Token_List *tokens);
 void	expand_exit_status(t_Token *token, char *dollar);
 void	expand_pid(t_Token *token, char *dollar);

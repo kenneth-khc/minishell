@@ -40,6 +40,7 @@ typedef enum e_Token_Types
 	IO_NUMBER // for left operand of redirection
 } t_Token_Type;
 
+#include "quotes.h"
 /**
  * Representing a token.
  * Stores the type of the token and its lexeme.
@@ -50,6 +51,7 @@ typedef struct s_Token
 	enum e_Token_Types	type;
 	const char			*lexeme;
 	int					word_flags;
+	t_Quote_List		quotes;
 	struct s_Token		*next;
 	struct s_Token		*prev;
 }	t_Token;

@@ -74,7 +74,6 @@ t_Node	*parse_io_redirect(t_Parser *parser)
 	// else if (peek(1, parser) == GREATER_GREATER)
 	else if (accept(parser, GREATER_GREATER))
 	{
-		consume(parser);
 		if (oldfd_set == false)
 			node->oldfd = STDOUT_FILENO;
 		node->flags = O_WRONLY | O_CREAT | O_APPEND;
