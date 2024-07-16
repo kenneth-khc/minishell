@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "a.h"
+#include <stdlib.h>
 
 t_envar	*new_env_var(const char *str);
 void	add_var(char *str, t_entab *table);

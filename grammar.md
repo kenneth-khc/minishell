@@ -1,24 +1,25 @@
 # Grammar
 
-```bnf
-command			: complete_command
+```
+complete_command	: list
 
-complete_command	: pipe_sequence and_or
+list			: pipe_sequence and_or
+			| subshell and_or
 
-pipe_sequence		: simple_command pipes
+subshell		: '(' list ')'
 
-pipes			: PIPE pipe_sequence 
+pipe_sequence		: simple_command pipe
+
+pipe			: '|' list
 			| ε  
 
-and_or			: AND_AND pipe_sequence and_or
-			| OR_OR pipe_sequence and_or
+and_or			: '&&' list
+			| '||' list
 			| ε
 
 simple_command		: command_prefix command_word command_suffix
 			| command_prefix command_word
 			| command_prefix
-			| command_name command_suffix
-			| command_name
 
 command_prefix		: io_redirect command_prefix
 			| ASSIGNMENT_WORD command_prefix
@@ -28,14 +29,16 @@ command_suffix		: io_redirect command_suffix
 			| WORD command_suffix
 			| ε  
 
-io_redirect		: io_file
+io_redirect		: IO_NUMBER io_file
+			| IO_NUMBER io_here
+			| io_file
 			| io_here
 	
-io_file			: LESS filename
-			| GREAT filename
-			| GREAT_GREAT filename
+io_file			: '<' filename
+			| '>' filename
+			| '>>' filename
 
-io_here			: LESS_LESS here_end
+io_here			: '<<' here_end
 
 command_name		: WORD
 

@@ -12,9 +12,19 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include "parser.h"
+#include "ft_dprintf.h"
 
 void	error(const char *str)
 {
 	printf("%s\n", str);
 	exit(EXIT_FAILURE);
+}
+
+void	syntax_error(t_Parser *parser, const char *err_msg)
+{
+	(void)parser;
+	ft_dprintf(STDERR_FILENO, "%s: syntax error: %s\n", "bish", err_msg);
+	return ;
 }

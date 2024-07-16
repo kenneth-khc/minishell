@@ -6,7 +6,7 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 21:47:29 by kecheong          #+#    #+#             */
-/*   Updated: 2024/06/10 05:28:03 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/10 17:52:28 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,14 @@ void	match_word(t_Lexer *lexer, t_Token_List *tokens, t_Input *input)
 	advance_word(lexer);
 	if (lexer->terminated)
 	{
-		lexeme = extract_substring(lexer->start_char, lexer->end_char);
+		lexeme = ft_extract_substring(lexer->start_char, lexer->end_char);
 		word = create_token(WORD, lexeme);
 		add_token(tokens, word);
+		set_word_flags(word);
+		// if (word->word_flags & W_ASSIGNMENT)
+		// 	printf("assign\n");
+		// else
+		// 	printf("no assign\n");
 		lexer->start_char = lexer->end_char + 1;
 		lexer->end_char = lexer->start_char;
 	}
@@ -130,3 +135,45 @@ void	update_lexer_state(t_Lexer *lexer)
 		}
 	}
 }
+
+#include "debug.h"
+void	set_word_flags(t_Token *token)
+{
+	const char	*word;
+	const char	*word_end;
+	const char	*eq;
+
+	word = token->lexeme;
+	word_end = word + ft_strlen(word) - 1;
+	if (*word == '\'' && *word_end == '\'')
+		token->word_flags |= W_STRONG_QUOTED;
+	else if (*word == '"' && *word_end == '"')
+		token->word_flags |= W_WEAK_QUOTED;
+	if (ft_strchr(word, '$'))
+		token->word_flags |= W_HAS_DOLLAR;
+	if (ft_strchr(word, '='))
+	{
+		eq = ft_strchr(word, '=');
+		if (is_valid_name(word, eq))
+		{
+			token->word_flags |= W_ASSIGNMENT;
+			token->type = ASSIGNMENT_WORD;
+		}
+	}
+	if (ft_strchr(word, '~') && ft_strlen(word) == 1)
+		token->word_flags |= W_TILDE_EXPANSION;
+}
+
+#include "expansions.h"
+bool	is_valid_name(const char *start, const char *end)
+{
+	while (start < end)
+	{
+		if (is_not_identifier(*start))
+		// if (!ft_isalnum(*start) && *start != '_')
+			return (false);
+		start++;
+	}
+	return (true);
+}
+

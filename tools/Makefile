@@ -5,7 +5,7 @@ CFLAGS := -Wall -Werror -Wextra
 
 minishell_dir := ../
 minishell_objs_dir := $(minishell_dir)/objects/
-minishell_objs := $(minishell_objs_dir)*.o
+minishell_objs := $(minishell_objs_dir)/*.o $(minishell_objs_dir)/*/*.o
 
 LDFLAGS := -L $(minishell_dir)/libft
 LDLIBS := -lreadline -lft
@@ -22,6 +22,10 @@ export includes
 srcs := cJSON.c serialize_tree.c
 objs := $(patsubst %.c, %.o, $(srcs))
 
+.PHONY: run
+run: all
+	./$(NAME)
+
 all: $(NAME)
 
 $(NAME): minishell_objects $(objs)
@@ -34,7 +38,8 @@ minishell_objects:
 	@make obj -C $(minishell_dir)
 
 %.o: %.c
-	@$(CC) $(CFLAGS) $(includes) $< -c -o $@
+	@printf "$(green)Building $@\n$(c_reset)"
+	@$(CC) $(CFLAGS) $(fsan) $(debug) $(includes) $< -c -o $@
 
 .PHONY: clean
 clean:

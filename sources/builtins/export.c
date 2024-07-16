@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "a.h"
+#include <stdlib.h>
 
 static void	ft_export_error(char *str, int *errno)
 {

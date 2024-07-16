@@ -12,6 +12,8 @@
 
 #include "tree.h"
 #include <fcntl.h>
+#include <sys/wait.h>
+#include <stdlib.h>
 
 void	exec_ast(t_Node *node);
 
@@ -53,7 +55,8 @@ void	redir(t_Redir_Node *node)
 		node->newfd = open(node->file, node->flags, node->mode);
 		dup2(node->newfd, node->oldfd);
 		close(node->newfd);
-		exec_ast(node->left);
+		if (node->left) // there could be no cmd to execute
+			exec_ast(node->left);
 		exit(0);
 	}
 	waitpid(pid1, NULL, 0);

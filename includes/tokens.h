@@ -35,7 +35,9 @@ typedef enum e_Token_Types
 	CLOSE_PARAN,		// )
 	SEMICOLON,			// ;
 	END_OF_LINE,		// \n
-	HASH				// #
+	HASH,				// #
+	ASSIGNMENT_WORD,
+	IO_NUMBER // for left operand of redirection
 } t_Token_Type;
 
 /**
@@ -45,10 +47,19 @@ typedef enum e_Token_Types
  */
 typedef struct s_Token
 {
-	struct s_Token		*next;
 	enum e_Token_Types	type;
 	const char			*lexeme;
+	int					word_flags;
+	struct s_Token		*next;
+	struct s_Token		*prev;
 }	t_Token;
+
+#define W_STRONG_QUOTED	       0b1
+#define W_WEAK_QUOTED	      0b10
+#define W_ASSIGNMENT	     0b100
+#define W_HAS_DOLLAR	    0b1000
+#define W_PARAM_EXPANSION  0b10000
+#define W_TILDE_EXPANSION 0b100000
 
 /**
  * A list of all the tokens.
@@ -62,6 +73,7 @@ typedef struct s_Token_List
 
 t_Token	*create_token(int type, const char *lexeme);
 void	add_token(t_Token_List *tokens, t_Token *token);
+int		get_tokens_count(t_Token_List *tokens);
 void	print_tokens(t_Token_List *tokens);
 char	*token_enum_to_str(t_Token *token);
 

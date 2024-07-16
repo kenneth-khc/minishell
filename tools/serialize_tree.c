@@ -1,56 +1,116 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   tree_printing.c                                    :+:      :+:    :+:   */
+/*   serialize_tree.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/28 18:36:23 by kecheong          #+#    #+#             */
-/*   Updated: 2024/06/28 18:48:53 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/06 17:29:25 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
 #include <fcntl.h>
+#include <stdlib.h>
 #include "libft.h"
+#include "ft_dprintf.h"
 #include "tree.h"
 #include "cJSON.h"
 
-char	*get_data(t_Node *node)
+static char	*exec_to_json(t_Exec_Node *node)
+{
+	char	*str;
+	char	*cmd;
+	char	*args[100] = {NULL};
+	char	*temp;
+
+	cmd = (char *)node->command;
+	str = ft_strjoin(cmd, "\n");
+	for (int i = 0; i < node->arg_count; i++)
+	{
+		if (i == 0)
+			continue ;
+		args[i] = (char *)node->args[i];
+		temp = str;
+		str = ft_strjoin_multiple(3, str, args[i], " ");
+		free(temp);	
+	}
+	return (str);
+}
+
+static char	*redir_to_json(t_Redir_Node *node)
+{
+	char	*str;
+	char	*old;
+	char	*op;
+	char	*new;
+
+	old = ft_itoa(node->oldfd);
+	if (node->mode == 0)
+		op = "<";
+	else if (node->heredoc)
+	{
+		op = " << ";
+		str = ft_strjoin_multiple(4, "HEREDOC\n", old, op, node->delim);
+		return (str);
+	}
+	else if (node->flags & O_TRUNC)
+		op = " > ";
+	else if (node->flags & O_APPEND)
+		op = " >> ";
+	else
+		op = "???";
+	new = (char *)node->file;
+	str = ft_strjoin_multiple(3, old, op, new);
+	free(old);
+	return (str);
+}
+
+static char	*get_data(t_Node *node)
 {
 	char			*str;
-	t_Redir_Node	*r;
+	t_Ass_Node		*a;
 
 	if (node == NULL)
 		return (NULL);
 	str = NULL;
 	if (node->type == Exec_Node)
-		str = (char *)((t_Exec_Node *)node)->command;
+		str = exec_to_json((t_Exec_Node *)node);
 	else if (node->type == Pipe_Node)
 		str = "PIPE";
 	else if (node->type == Redir_Node)
+		str = redir_to_json((t_Redir_Node *)node);
+	else if (node->type == AND_AND_NODE)
+		str = "&&";
+	else if (node->type == OR_OR_NODE)
+		str = "||";
+	else if (node->type == ASS_NODE)
 	{
-		r = (t_Redir_Node *)node;
-		if (r->oldfd == 0)
-			str = ft_strjoin(ft_itoa(r->oldfd), "<");
-		else if (r->oldfd == 1)
-			str = ft_strjoin(ft_itoa(r->oldfd), ">");
-		str = ft_strjoin(str, r->file);
+		a = (t_Ass_Node *)node;
+		str = ft_strjoin_multiple(3, a->key, "=", a->value);
 	}
+	else if (node->type == SUBSHELL_NODE)
+		str = "SUBSHELL";
 	return (str);
 }
 
-cJSON	*node_to_json(t_Node *node)
+static cJSON	*node_to_json(t_Node *node)
 {
 	cJSON	*ret;
 	cJSON	*data;
 	cJSON	*left;
 	cJSON	*right;
+	char	*temp;
 
-	if (node == NULL)
-		return (NULL);
 	ret = cJSON_CreateObject();
-	data = cJSON_CreateString(get_data(node));
+	if (node == NULL)
+	{
+		cJSON_AddItemToObject(ret, "string", cJSON_CreateString("NULL"));
+		return (ret);
+	}
+	temp = get_data(node);
+	data = cJSON_CreateString(temp);
 	if (data == NULL)
 		data = cJSON_CreateString("NULL");
 	cJSON_AddItemToObject(ret, "string", data);
@@ -71,12 +131,15 @@ void	export_tree(t_Node *node)
 {
 	int		fd;
 	cJSON	*tree;
-	char	*json;
+	char	*json_str;
 
-	fd = open("tree.json", O_CREAT | O_WRONLY | O_TRUNC, 0777);
+	fd = open("tree.json", O_CREAT | O_WRONLY | O_TRUNC,
+		   S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 	tree = node_to_json(node);
-	json = cJSON_Print(tree);
-	printf("%s\n", json);
-	ft_dprintf(fd, "%s", json);
-	exit(EXIT_SUCCESS);
+	json_str = cJSON_Print(tree);
+//	printf("%s\n", json_str);
+	ft_dprintf(fd, "%s", json_str);
+	free(json_str);
+	cJSON_Delete(tree);
+//	system("python3 visualize.py");
 }

@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 21:06:03 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/13 00:54:40 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/16 14:58:23 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,10 @@ typedef enum e_Node_Type
 	Argument_Node,
 	Redir_Node,
 	Pipe_Node,
-  AND_AND_NODE,
-  OR_OR_NODE
+	AND_AND_NODE,
+	OR_OR_NODE,
+	ASS_NODE,
+	SUBSHELL_NODE
 }	t_Node_Type;
 
 /**
@@ -70,6 +72,8 @@ typedef struct s_Redir_Node
 	mode_t				mode; // permission bits for READ WRITE EXECUTE
 	const char			*file; // name of the file to open
 	int					newfd; // fd of the file opened
+	bool				heredoc;
+	char				*delim;
 }	t_Redir_Node;
 
 t_Redir_Node	*create_redir_node(int oldfd, const char *filename,
@@ -86,7 +90,20 @@ typedef struct s_Pipe_Node
 }	t_Pipe_Node;
 
 t_Node			*get_tail(t_Node *node);
-void			print_nodes(t_Node *node);
+void			free_tree(t_Node *node);
+
+/**
+ * Node for assigning variables into the current shell process
+ * Not exported to children by default
+**/
+typedef struct s_Ass_Node
+{
+	enum e_Node_Type	type;
+	struct s_Node		*left;
+	struct s_Node		*right;
+	char				*key; // variable identifier
+	char				*value; // variable value
+}	t_Ass_Node;
 
 void	exec_ast(t_Node *node);
 void	exec(t_Exec_Node *node);

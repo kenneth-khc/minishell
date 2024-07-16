@@ -6,7 +6,7 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 09:43:38 by kecheong          #+#    #+#             */
-/*   Updated: 2024/06/20 18:09:52 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/10 17:55:23 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,11 @@ t_Token	*create_token(int type, const char *lexeme)
 {
 	t_Token	*new_token;
 
-	new_token = malloc(sizeof(*new_token));
+	new_token = ft_calloc(1, sizeof(*new_token));
 	new_token->type = type;
 	new_token->lexeme = lexeme;
 	new_token->next = NULL;
+	new_token->prev = NULL;
 	return (new_token);
 }
 
@@ -37,7 +38,23 @@ void	add_token(t_Token_List *tokens, t_Token *token)
 	}
 	*curr = token;
 	token->next = NULL;
+	token->prev = tokens->tail;
 	tokens->tail = token;
+}
+
+int	get_tokens_count(t_Token_List *tokens)
+{
+	int		count;
+	t_Token	*curr;
+
+	count = 0;
+	curr = tokens->head;
+	while (curr != NULL)
+	{
+		count++;
+		curr = curr->next;
+	}
+	return (count);
 }
 
 void	print_tokens(t_Token_List *tokens)

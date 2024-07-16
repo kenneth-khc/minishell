@@ -10,82 +10,70 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdbool.h>
+#include <fcntl.h>
+#include <unistd.h>
 #include "parser.h"
 #include "tree.h"
 #include "tokens.h"
 #include "debug.h"
-#include <stdbool.h>
-#include <fcntl.h>
-#include <unistd.h>
-//#include "tree_visualization.h"
+#include "errors.h"
 
 #define BLUE "\e[0;34m\0"
 
-t_Node	*parse(t_Parser *parser, t_Token_List *tokens)
+t_Node	*parse(t_Parser *parser)
 {
 	t_Node	*root;
 
-	parser->token = tokens->head;
-	parser->lookahead = parser->token->next;
-
-	root = parse_complete_command(parser);
-//	export_tree(root);
-
-	// cout("Root: %s", parser->root->value);
-	// cout("end parser");
-	// print_nodes(root);
-	// exit(EXIT_SUCCESS);
+	root = parse_list(parser);
 	return (root);
 }
 
-void	print_nodes(t_Node *node)
+t_Node	*parse_list(t_Parser *parser)
 {
-	t_Redir_Node	*redir;
-	t_Exec_Node		*exec;
-	t_Pipe_Node		*pipe;
+	t_Node	*root;
+	t_Node	*and_or;
 
-	while (node)
+	if (peek(1, parser) == OPEN_PARAN)
+		root = parse_subshell(parser);
+	else
+		root = parse_pipe_sequence(parser);
+	while (is_and_or(parser))
 	{
-		if (node->type == Redir_Node)
-		{
-			redir = (t_Redir_Node *)node;
-			cerr("Oldfd: %d\n", redir->oldfd);
-			cerr("%s\n", redir->file);
-		}
-		else if (node->type == Exec_Node)
-		{
-			exec = (t_Exec_Node *)node;
-			if (exec->command)
-			{
-				cerr("Cmd: %s\n", exec->command);
-				cerr("Args: ");
-				for (int i=0; i < exec->arg_count; i++)
-					cerr("%s ", exec->args[i]);
-			}
-		}
-		else if (node->type == Pipe_Node)
-		{
-			pipe = (t_Pipe_Node *)node;
-			cerr("Piping\n");
-			print_nodes(pipe->left);
-			print_nodes(pipe->right);
-			break ;
-		}
+		and_or = ft_calloc(1, sizeof(*and_or));
+		if (peek(1, parser) == AND_AND)
+			and_or->type = AND_AND_NODE;
+		else if (peek(1, parser) == OR_OR)
+			and_or->type = OR_OR_NODE;
+		consume(parser);
+		and_or->left = root;
+		if (peek(1, parser) == OPEN_PARAN)
+			and_or->right = parse_subshell(parser);
 		else
-		{
-			cerr("Missing node type");
-		}
-		node = node->left;
+			and_or->right = parse_pipe_sequence(parser);
+		root = and_or;
 	}
+	return (root);
 }
 
-void	consume(t_Parser *parser)
+t_Node	*parse_subshell(t_Parser *parser)
 {
-	if (parser->token)
+	t_Node	*root;
+	t_Node	*node;
+
+	if (!expect(parser, OPEN_PARAN))
 	{
-		parser->token = parser->token->next;
-		if (parser->token)
-			parser->lookahead = parser->token->next;
+		syntax_error(parser, "expected opening parenthesis");
+		return (NULL);
 	}
+	root = ft_calloc(1, sizeof(*node));
+	root->type = SUBSHELL_NODE;
+	root->left = parse_list(parser);
+	if (!expect(parser, CLOSE_PARAN))
+	{
+		syntax_error(parser, "expected closing parenthesis");
+		return (NULL);
+	}
+	return (root);
 }
 

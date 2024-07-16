@@ -6,12 +6,14 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 00:46:52 by qang              #+#    #+#             */
-/*   Updated: 2024/07/13 00:55:06 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/16 14:58:51 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "a.h"
+#include <dirent.h>
 #include <sys/wait.h>
+#include <stdlib.h>
 
 static int	*errnono(void);
 

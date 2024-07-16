@@ -1,21 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse_and_or.c                                     :+:      :+:    :+:   */
+/*   expansions_utils.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/06/26 17:47:50 by kecheong          #+#    #+#             */
-/*   Updated: 2024/06/26 22:27:00 by kecheong         ###   ########.fr       */
+/*   Created: 2024/07/09 21:15:19 by kecheong          #+#    #+#             */
+/*   Updated: 2024/07/09 21:23:04 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "parser.h"
-#include <stdio.h>
+#include <stdbool.h>
+#include "minishell.h"
 
-t_Node	*parse_and_or(t_Parser *parser)
+bool	is_identifier_character(char c)
 {
-	(void)parser;
-	return (NULL);
+	return (ft_isalnum(c) || c == '_');
+}
+
+bool	is_not_identifier(char c)
+{
+	return (!ft_isalnum(c) && c != '_');
+}
+
+char	*copy_var_val(char *key, t_entab *env)
+{
+	t_envar	*envar;
+	char	*value;
+
+	envar = get_var(key, env);
+	if (envar)
+		value = envar->val;
+	else
+		value = NULL;
+	if (value)
+		ft_strdup(value);
+	return (value);
 }
 

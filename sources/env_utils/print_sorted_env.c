@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "a.h"
+#include <stdlib.h>
 
 static void	merge_sort(t_envar **head_ref);
 t_envar		*copy_and_sort_env(t_entab *table);
