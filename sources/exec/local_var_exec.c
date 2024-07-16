@@ -6,12 +6,13 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/12 01:10:26 by qang              #+#    #+#             */
-/*   Updated: 2024/07/13 00:36:35 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/16 15:01:48 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "a.h"
 #include "tree.h"
+#include <stdlib.h>
 
 void	*mallocpromax(size_t size)
 {

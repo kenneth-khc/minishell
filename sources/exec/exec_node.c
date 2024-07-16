@@ -6,11 +6,12 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/13 00:48:55 by qang              #+#    #+#             */
-/*   Updated: 2024/07/13 00:55:54 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/16 15:00:16 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tree.h"
+#include <stdlib.h>
 
 void	child_process(t_Exec_Node *node, t_entab *table)
 {

@@ -6,12 +6,13 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 00:11:02 by qang              #+#    #+#             */
-/*   Updated: 2024/07/13 00:39:34 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/16 15:01:59 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "a.h"
 #include <limits.h>
+#include <stdlib.h>
 
 char	**env_convert(t_entab *table);
 void	incr_shlvl(t_entab *table);

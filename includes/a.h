@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 22:27:01 by qang              #+#    #+#             */
-/*   Updated: 2024/07/12 18:15:22 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/16 15:14:27 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include <stdbool.h>
 # include <unistd.h>
 # include "libft.h"
+# include "ft_dprintf.h"
 # include <stdio.h>
 # ifndef SHELL
 #  define SHELL "bish"
