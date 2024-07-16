@@ -1,0 +1,8 @@
+.vscode/
+*minishell
+*.a
+*.o
+.DS_Store
+.cache/
+tmp/
+compile_commands.json
