@@ -6,20 +6,19 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 22:09:08 by qang              #+#    #+#             */
-/*   Updated: 2024/07/10 10:22:00 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/17 01:20:37 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
-#include <signal.h>
-#include <stdio.h>
-#include <readline/readline.h>
 #include <readline/history.h>
+#include <readline/readline.h>
+#include <signal.h>
+#include <unistd.h>
 
-void  set_sig(void)
+void	set_sig(void)
 {
-  signal(SIGINT, SIG_DFL);
-  signal(SIGQUIT, SIG_DFL);
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
 }
 
 void	ignore_sigs(void)
@@ -46,5 +45,5 @@ void	init_signal(void)
 
 	sa.sa_handler = re_prompt;
 	sigaction(SIGINT, &sa, NULL);
-  signal(SIGQUIT, SIG_IGN);
+	signal(SIGQUIT, SIG_IGN);
 }

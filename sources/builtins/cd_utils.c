@@ -6,12 +6,20 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/26 00:30:17 by qang              #+#    #+#             */
-/*   Updated: 2024/07/13 00:38:16 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/17 00:51:21 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "a.h"
+#include "builtins.h"
+#include "env.h"
+#include "libft.h"
 #include <stdlib.h>
+
+void		update_pwd(char **args, t_entab *table);
+static void	update_pwd_args(t_envar *path_node, char *arg, t_entab *table);
+static void	update_pwd_args_helper(t_envar *path_node, char *arg, char *curr);
+static void	add_path(t_envar *path_node, char *arg);
+static void	parse_prev_path(t_envar *path_node);
 
 static void	parse_prev_path(t_envar *path_node)
 {

@@ -6,12 +6,18 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 21:20:05 by qang              #+#    #+#             */
-/*   Updated: 2024/07/11 22:54:17 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/17 00:52:05 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "a.h"
+#include "env.h"
+#include "ft_dprintf.h"
+#include <stdbool.h>
 #include <stdlib.h>
+
+int			ft_export(char **args, t_entab *table);
+static bool	ft_is_valid_export(char *str);
+static void	ft_export_error(char *str, int *errno);
 
 static void	ft_export_error(char *str, int *errno)
 {
@@ -35,7 +41,7 @@ static bool	ft_is_valid_export(char *str)
 	return (true);
 }
 
-int	export(char **args, t_entab *table)
+int	ft_export(char **args, t_entab *table)
 {
 	int		i;
 	char	*temp;

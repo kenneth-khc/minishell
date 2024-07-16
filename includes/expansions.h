@@ -3,20 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   expansions.h                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
+/*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 21:15:47 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/09 21:24:55 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/17 01:08:41 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef EXPANSIONS_H
-#define EXPANSIONS_H
+# define EXPANSIONS_H
 
-#include "tokens.h"
-#include "a.h"
+# include "env.h"
+# include "tokens.h"
+# include <stdbool.h>
 
-void	expand(t_Token *token, char *expansion, char *expand_start, char *expand_end);
+void	expand(t_Token *token, char *expansion,
+			char *expand_start, char *expand_end);
 void	expand_tokens(t_Token_List *tokens, t_entab *env);
 char	*copy_var_val(char *key, t_entab *env);
 void	tilde_expansion(t_Token_List *tokens, t_entab *env);

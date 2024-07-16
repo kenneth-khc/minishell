@@ -6,12 +6,15 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 21:18:18 by qang              #+#    #+#             */
-/*   Updated: 2024/07/12 20:20:46 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/17 00:23:01 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "a.h"
+#include "env.h"
+#include "libft.h"
 #include <stdlib.h>
+
+int	unset(char **args, t_entab *table);
 
 int	unset(char **args, t_entab *table)
 {
@@ -36,7 +39,7 @@ int	unset(char **args, t_entab *table)
 			new = temp;
 		del_var(args[i], table);
 		add_var(new, table);
-		table->tail->state &= ~DISPLAY;
+		table->tail->state &= ~(DISPLAY | EXPORT);
 		free(new);
 	}
 	return (0);

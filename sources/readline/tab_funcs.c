@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/14 22:47:30 by qang              #+#    #+#             */
-/*   Updated: 2024/07/14 22:58:39 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/16 20:23:10 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	complete_line(char *str)
 	char	line[] = "";
 	if (strcmp(str, "") == 0)
 		return ;
-	dir = opendir(path);
+	dir = opendir(cwd);
 	if (dir == NULL)
 	{
 		dprintf(2, "Error while opening directory\n");

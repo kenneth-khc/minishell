@@ -3,19 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   expansions.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
+/*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 16:45:41 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/10 18:04:22 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/17 00:16:42 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
-#include <stdlib.h>
-#include "a.h"
+#include "env.h"
+#include "expansions.h"
 #include "libft.h"
 #include "tokens.h"
-#include "expansions.h"
+#include <stdlib.h>
+#include <unistd.h>
 
 bool	only_digits(const char *str)
 {

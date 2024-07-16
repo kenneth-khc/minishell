@@ -3,16 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   variable_expansions.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
+/*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 21:49:01 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/09 21:57:01 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/17 00:17:12 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tokens.h"
-#include "a.h"
+#include "env.h"
+#include "execution.h"
 #include "expansions.h"
+#include "libft.h"
+#include "tokens.h"
 #include <stdlib.h>
 
 void	parameter_expansion(t_Token_List *tokens, t_entab *env)

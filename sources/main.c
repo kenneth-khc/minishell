@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 05:13:16 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/16 14:59:51 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/17 01:21:50 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,8 @@
 #include "input.h"
 #include "tokens.h"
 #include "parser.h"
-#include "a.h"
+#include "execution.h"
 #include <readline/readline.h>
-// #include "serialize_tree.h"
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -30,7 +29,6 @@ int	main(int argc, char **argv, char **envp)
 	(void)argc;
 	(void)argv;
 	input = (t_Input){0};
-
 	parser.envtab = init_env_table(envp);
 	incr_shlvl(parser.envtab);
 	while (1)
@@ -44,7 +42,6 @@ int	main(int argc, char **argv, char **envp)
 		parser.token = tokens.head;
 		// root = parse(&parser, &tokens);
 		root = parse(&parser);
-		// export_tree(root);
 		if (root)
 			exec_ast(root);
 		clear_input(&input);

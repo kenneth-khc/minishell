@@ -1,21 +1,43 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ast_funcs.c                                        :+:      :+:    :+:   */
+/*   exec_ast.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 22:15:03 by qang              #+#    #+#             */
-/*   Updated: 2024/07/13 00:49:18 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/17 00:41:01 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tree.h"
+#include "execution.h"
 #include <fcntl.h>
 #include <sys/wait.h>
 #include <stdlib.h>
 
 void	exec_ast(t_Node *node);
+void	oror(t_Node *node);
+void	andand(t_Node *node);
+void	paip(t_Pipe_Node *node);
+void	subshell(t_Node *node);
+
+void	subshell(t_Node *node)
+{
+	int	pid;
+	int	status;
+
+	pid = forkpromax();
+	if (pid == 0)
+	{
+		exec_ast(node->left);
+		exit(get_exit_status());
+	}
+	else
+	{
+		waitpid(pid, &status, 0);
+		set_exit_status(WEXITSTATUS(status));
+	}
+}
 
 void	paip(t_Pipe_Node *node)
 {
@@ -45,23 +67,6 @@ void	paip(t_Pipe_Node *node)
 	waitpid(pid2, NULL, 0);
 }
 
-void	redir(t_Redir_Node *node)
-{
-	int	pid1;
-
-	pid1 = fork();
-	if (pid1 == 0)
-	{
-		node->newfd = open(node->file, node->flags, node->mode);
-		dup2(node->newfd, node->oldfd);
-		close(node->newfd);
-		if (node->left) // there could be no cmd to execute
-			exec_ast(node->left);
-		exit(0);
-	}
-	waitpid(pid1, NULL, 0);
-}
-
 void	andand(t_Node *node)
 {
 	exec_ast(node->left);
@@ -85,6 +90,10 @@ void	exec_ast(t_Node *node)
 		exec((t_Exec_Node *)node);
 	else if (node->type == Redir_Node)
 		redir((t_Redir_Node *)node);
+	else if (node->type == ASS_NODE)
+		ass_var((t_Ass_Node *)node);
+	else if (node->type == SUBSHELL_NODE)
+		subshell(node);
 	else if (node->type == Pipe_Node)
 		paip((t_Pipe_Node *)node);
 	else if (node->type == AND_AND_NODE)

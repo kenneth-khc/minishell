@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   definitions.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
+/*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/17 18:15:25 by kecheong          #+#    #+#             */
-/*   Updated: 2024/04/18 00:28:10 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/17 01:26:17 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,48 +28,48 @@ bool	is_blank(const char c)
 bool	is_metacharacter(const char c)
 {
 	return (is_blank(c)
-			|| c == '\n'
-			|| c == '|'
-			|| c == '&'
-			|| c == ';'
-			|| c == '('
-			|| c == ')'
-			|| c == '<'
-			|| c == '>');
+		|| c == '\n'
+		|| c == '|'
+		|| c == '&'
+		|| c == ';'
+		|| c == '('
+		|| c == ')'
+		|| c == '<'
+		|| c == '>');
 }
 
 /* A token that performs a control function */
 bool	is_control_operator(const char *str)
 {
 	return (ft_strcmp(str, "||")
-			|| ft_strcmp(str, "&&")
-			|| ft_strcmp(str, "&")
-			|| ft_strcmp(str, ";")
-			|| ft_strcmp(str, ";;")
-			|| ft_strcmp(str, ";&")
-			|| ft_strcmp(str, ";;&")
-			|| ft_strcmp(str, "|")
-			|| ft_strcmp(str, "|&")
-			|| ft_strcmp(str, "(")
-			|| ft_strcmp(str, ")"));
+		|| ft_strcmp(str, "&&")
+		|| ft_strcmp(str, "&")
+		|| ft_strcmp(str, ";")
+		|| ft_strcmp(str, ";;")
+		|| ft_strcmp(str, ";&")
+		|| ft_strcmp(str, ";;&")
+		|| ft_strcmp(str, "|")
+		|| ft_strcmp(str, "|&")
+		|| ft_strcmp(str, "(")
+		|| ft_strcmp(str, ")"));
 }
 
 /* A token that performs redirection */
 bool	is_redirection_operator(const char *str)
 {
 	return (ft_strcmp(str, "<")
-			|| ft_strcmp(str, ">")
-			|| ft_strcmp(str, ">|")
-			|| ft_strcmp(str, "<<")
-			|| ft_strcmp(str, ">>")
-			|| ft_strcmp(str, "<&")
-			|| ft_strcmp(str, ">&")
-			|| ft_strcmp(str, "<<-")
-			|| ft_strcmp(str, "<>"));
+		|| ft_strcmp(str, ">")
+		|| ft_strcmp(str, ">|")
+		|| ft_strcmp(str, "<<")
+		|| ft_strcmp(str, ">>")
+		|| ft_strcmp(str, "<&")
+		|| ft_strcmp(str, ">&")
+		|| ft_strcmp(str, "<<-")
+		|| ft_strcmp(str, "<>"));
 }
 
 bool	is_operator(const char *str)
 {
 	return (is_control_operator(str)
-			|| is_redirection_operator(str));
+		|| is_redirection_operator(str));
 }

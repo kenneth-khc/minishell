@@ -6,17 +6,21 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 00:11:02 by qang              #+#    #+#             */
-/*   Updated: 2024/07/16 15:01:59 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/17 00:46:47 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "a.h"
+#include "env.h"
+#include "libft.h"
 #include <limits.h>
 #include <stdlib.h>
+#include <unistd.h>
 
-char	**env_convert(t_entab *table);
-void	incr_shlvl(t_entab *table);
-void	special_pwd(t_envar *node, t_envar *new);
+char		**env_convert(t_entab *table);
+void		add_ass(char *str, t_entab *table);
+void		incr_shlvl(t_entab *table);
+void		special_pwd(t_envar *node, t_envar *new);
+static char	**convert(char **ret, t_envar *node, int size);
 
 static char	**convert(char **ret, t_envar *node, int size)
 {
@@ -75,6 +79,8 @@ void	incr_shlvl(t_entab *table)
 		free(shlvl->val);
 		shlvl->val = ft_itoa(lvl);
 	}
+	else
+		add_var("SHLVL=1", table);
 	if (!get_var("PWD", table))
 	{
 		if (getcwd(cwd, PATH_MAX) != NULL)

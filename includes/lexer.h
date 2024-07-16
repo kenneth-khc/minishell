@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexer.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
+/*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 09:44:52 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/08 18:23:38 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/17 01:06:16 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,13 @@
 # include "tokens.h"
 # include "input.h"
 
-
 typedef enum e_Word_State
 {
 	UNQUOTED,
 	WEAK_QUOTE,
 	STRONG_QUOTE,
 	ESCAPE
-} t_Word_State;
+}	t_Word_State;
 
 typedef struct s_Lexer
 {

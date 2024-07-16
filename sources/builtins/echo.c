@@ -6,11 +6,15 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 21:20:52 by qang              #+#    #+#             */
-/*   Updated: 2024/06/27 22:25:35 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/17 00:26:37 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "a.h"
+#include "env.h"
+#include "libft.h"
+#include <stdio.h>
+
+int	echo(char **args);
 
 int	echo(char **args)
 {

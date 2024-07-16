@@ -6,16 +6,15 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 21:06:03 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/16 14:58:23 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/17 00:17:41 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef TREE_H
 # define TREE_H
-# include <sys/types.h>
-//# include "a.h"
+# include "env.h"
 # include "libft.h"
-# include "a.h"
+# include <sys/types.h>
 
 typedef enum e_Node_Type
 {
@@ -105,6 +104,4 @@ typedef struct s_Ass_Node
 	char				*value; // variable value
 }	t_Ass_Node;
 
-void	exec_ast(t_Node *node);
-void	exec(t_Exec_Node *node);
 #endif
