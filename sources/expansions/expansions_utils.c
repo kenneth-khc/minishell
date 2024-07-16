@@ -37,7 +37,7 @@ char	*copy_var_val(char *key, t_entab *env)
 	char	*value;
 
 	envar = get_var(key, env);
-	if (envar)
+	if (envar && (envar->state & DISPLAY))
 		value = envar->val;
 	else
 		value = NULL;

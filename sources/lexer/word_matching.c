@@ -141,11 +141,11 @@ void	update_lexer_state(t_Lexer *lexer)
 void	set_word_flags(t_Token *token)
 {
 	const char	*word;
-	const char	*word_end;
+	//const char	*word_end;
 	const char	*eq;
 
 	word = token->lexeme;
-	word_end = word + ft_strlen(word) - 1;
+	//word_end = word + ft_strlen(word) - 1;
 	token->quotes = find_quotes(token);
 	//print_quote_list(token);
 	if (ft_strchr(word, '$'))

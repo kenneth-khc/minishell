@@ -68,11 +68,11 @@ void	store_quotes(t_Quote_List *list, t_Quotes *quotes)
 	i = 0;
 	while (i < list->pair_count - 1)
 	{
-		new[i] = list->quotes[i];
+		new[i] = list->pairs[i];
 		i++;
 	}
 	new[i] = quotes;
-	list->quotes = new;
+	list->pairs = new;
 }
 
 
@@ -86,7 +86,7 @@ void	print_quote_list(t_Token *token)
 	printf("Quotes: \n");
 	while (i < token->quotes.pair_count)
 	{
-		q = token->quotes.quotes[i];
+		q = token->quotes.pairs[i];
 		printf("Start: %p End: %p\n", q->start, q->end);
 		i++;
 	}
