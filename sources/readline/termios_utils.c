@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/14 22:37:56 by qang              #+#    #+#             */
-/*   Updated: 2024/07/14 22:51:38 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/15 15:48:05 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,9 @@ void	set_rl_term(struct termios *orig_termios)
 	term.c_iflag &= ~(IGNBRK | BRKINT | PARMRK | ISTRIP
 								| INLCR | IGNCR | ICRNL | IXON);
 	term.c_oflag = term.c_oflag;
-  //term.c_oflag &= ~OPOST;
-	term.c_lflag &= ~(ECHO | ECHONL | ICANON | ISIG | IEXTEN);
+  // term.c_oflag &= ~OPOST;
+	term.c_lflag &= ~(ECHO | ECHONL | ICANON | IEXTEN);
+  // term.c_lflag &= ~ISIG;
 	term.c_cflag &= ~(CSIZE | PARENB);
 	term.c_cflag |= CS8;
 	tcsetattr(STDIN_FILENO, TCSAFLUSH, &term);

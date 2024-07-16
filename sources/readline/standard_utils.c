@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/14 22:42:28 by qang              #+#    #+#             */
-/*   Updated: 2024/07/14 22:53:10 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/15 15:27:00 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,4 +40,9 @@ char	*append(char *str, char c)
 	new[len + 1] = '\0';
 	free(str);
 	return (new);
+}
+
+int ft_iscntrl(int c)
+{
+  return (c < 32 || c == 127);
 }

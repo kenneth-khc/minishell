@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/13 23:39:11 by qang              #+#    #+#             */
-/*   Updated: 2024/07/15 02:05:17 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/15 15:42:16 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,18 @@ typedef struct s_history
 	struct s_history	*next;
 }	t_history;
 
+typedef struct s_readline_info
+{
+  char	*line;
+  char  *prompt;
+  int		cur_x;
+  int		cur_y;
+  int   row;
+  int   col;
+  int   pad;
+  struct termios orig_termios;
+}	t_readline_info;
+
 void	push(t_history **a, t_history **b);
 void	add_history(char *str, t_history **lst);
 
@@ -34,6 +46,7 @@ void	get_term_size(int *row, int *col);
 /*standard utils*/
 int ft_putchar(int c);
 char	*append(char *str, char c);
+int ft_iscntrl(int c);
 
 /*termcap utils*/
 void	move_cursor(int row, int col);
