@@ -50,10 +50,10 @@ typedef struct s_Exec_Node
 	enum e_Node_Type	type;
 	struct s_Node		*left;
 	struct s_Node		*right;
+	t_entab				*table;
 	const char			*command; // Name of the command to execute
 	int					arg_count; // Number of arguments in the command
 	const char			**args; // Args of the cmd, first one being the cmdname
-	t_entab				*table;
 }	t_Exec_Node;
 
 t_Exec_Node		*create_exec_node(const char *cmd_name, t_entab *envtab);
@@ -67,6 +67,7 @@ typedef struct s_Redir_Node
 	enum e_Node_Type	type;
 	struct s_Node		*left;
 	struct s_Node		*right;
+	t_entab				*table;
 	int					oldfd; // the fd to be replaced
 	int					flags; // O_CREAT, O_APPEND etc
 	mode_t				mode; // permission bits for READ WRITE EXECUTE
@@ -101,6 +102,7 @@ typedef struct s_Ass_Node
 	enum e_Node_Type	type;
 	struct s_Node		*left;
 	struct s_Node		*right;
+	t_entab				*table;
 	char				*key; // variable identifier
 	char				*value; // variable value
 }	t_Ass_Node;

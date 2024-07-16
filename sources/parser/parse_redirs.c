@@ -29,6 +29,7 @@ t_Node	*parse_io_redirect(t_Parser *parser)
 	node = ft_calloc(1, sizeof(*node));
 	node->type = Redir_Node;
 	node->left = NULL;
+	node->table = parser->envtab;
 	if (peek(1, parser) == IO_NUMBER)
 	{
 		node->oldfd = ft_atoi(parser->token->lexeme);
