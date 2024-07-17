@@ -35,7 +35,8 @@ static void	re_prompt(int sig)
 	(void)sig;
 	write(1, "\n", 1);
 	rl_on_new_line();
-	rl_replace_line("", 0);
+// todo: fix readline linking
+//	rl_replace_line("", 0);
 	rl_redisplay();
 }
 

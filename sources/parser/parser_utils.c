@@ -48,7 +48,8 @@ enum e_Token_Types	peek(int k, t_Parser *parser)
 			curr = curr->next;
 			k--;
 		}
-		return (curr->type);
+		if (curr)
+			return (curr->type);
 	}
 	return (0);
 }

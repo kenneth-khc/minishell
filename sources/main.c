@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 05:13:16 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/17 01:21:50 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/17 10:39:56 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,10 @@ int	main(int argc, char **argv, char **envp)
 		init_signal();
 		get_input(&input);
 		tokens = scan(&input);
-		//print_tokens(&tokens);
+//		print_tokens(&tokens);
 		expand_tokens(&tokens, parser.envtab);
 		parser.tokens = &tokens;
 		parser.token = tokens.head;
-		// root = parse(&parser, &tokens);
 		root = parse(&parser);
 		if (root)
 			exec_ast(root);

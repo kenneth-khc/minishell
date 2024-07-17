@@ -6,7 +6,7 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 21:47:29 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/10 17:52:28 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/15 22:07:34 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,18 +137,17 @@ void	update_lexer_state(t_Lexer *lexer)
 }
 
 #include "debug.h"
+#include "quotes.h"
 void	set_word_flags(t_Token *token)
 {
 	const char	*word;
-	const char	*word_end;
+	//const char	*word_end;
 	const char	*eq;
 
 	word = token->lexeme;
-	word_end = word + ft_strlen(word) - 1;
-	if (*word == '\'' && *word_end == '\'')
-		token->word_flags |= W_STRONG_QUOTED;
-	else if (*word == '"' && *word_end == '"')
-		token->word_flags |= W_WEAK_QUOTED;
+	//word_end = word + ft_strlen(word) - 1;
+	token->quotes = find_quotes(token);
+	//print_quote_list(token);
 	if (ft_strchr(word, '$'))
 		token->word_flags |= W_HAS_DOLLAR;
 	if (ft_strchr(word, '='))

@@ -107,6 +107,7 @@ t_Node	*assignment_node(t_Parser *parser)
 	ass->key = ft_extract_substring(parser->token->lexeme, equal - 1);
 	end = parser->token->lexeme + ft_strlen(parser->token->lexeme) - 1;
 	ass->value = ft_extract_substring(equal + 1, end);
+	ass->table = parser->envtab;
 	ass->left = NULL;
 	return ((t_Node *)ass);
 }

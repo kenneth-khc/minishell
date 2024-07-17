@@ -2,7 +2,7 @@ MAKEFLAGS += --warn-undefined-variables
 NAME := minishell
 CC ?= cc
 CFLAGS := -Wall -Werror -Wextra
-LDFLAGS := -L libft -L/opt/homebrew/opt/readline/lib
+LDFLAGS := -L libft #-L/opt/homebrew/opt/readline/lib
 LDLIBS := -lreadline -lft
 
 fsan := -fsanitize=address

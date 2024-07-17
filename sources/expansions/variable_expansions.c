@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 21:49:01 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/17 00:17:12 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/17 10:40:17 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,66 +17,111 @@
 #include "tokens.h"
 #include <stdlib.h>
 
-void	parameter_expansion(t_Token_List *tokens, t_entab *env)
+void	parameter_expand(t_Token *token, t_entab *env)
 {
-	t_Token		*curr;
-	char		*dollar;
+	t_Chunk_List	chunks;
+	char			*s;
+	char			*e;
 
-	curr = tokens->head;
-	while (curr != NULL)
+	chunks = (t_Chunk_List){.head = NULL, .tail = NULL};
+	s = (char *)token->lexeme;
+	e = s;
+	while (s < (token->lexeme + ft_strlen(token->lexeme)))
 	{
-		while (curr->lexeme && curr->word_flags & W_HAS_DOLLAR && !(curr->word_flags & W_STRONG_QUOTED))
+		if (*e == '\0'
+			|| (is_quote(*e) && quote_to_remove(&token->quotes, e)))
 		{
-			dollar = ft_strchr(curr->lexeme, '$');
-			if (dollar && dollar[1] == '?')
-				expand_exit_status(curr, dollar);
-			else if (dollar && dollar[1] == '0')
-				expand(curr, SHELL, dollar, dollar + 1);
-			else if (dollar && is_identifier_character(dollar[1]))
-				expand_variable(env, curr, dollar);
-			else if (dollar && dollar[1] == '$')
-				expand_pid(curr, dollar);
-			else
-				curr->word_flags &= ~W_HAS_DOLLAR;
+			add_chunk(&chunks, ft_extract_substring(s, e - 1));
+			e++;
+			s = e;
+			continue ;
 		}
-		curr = curr->next;
+		else if (*e == '$' && should_expand(e, &token->quotes))
+		{
+			// key = get_key()
+			add_chunk(&chunks, ft_extract_substring(s, e - 1));
+			if (e && e[1] == '?')
+			{
+				add_chunk(&chunks, ft_itoa(get_exit_status()));
+				e += 2;
+				s = e;
+			}
+			else if (e && e[1] == '0')
+			{
+				add_chunk(&chunks, ft_strdup(SHELL));
+				e += 2;
+				s = e;
+			}
+			else if (e && e[1] == '$')
+			{
+				add_chunk(&chunks, ft_itoa(getpid()));
+				e += 2;
+				s = e;
+			}
+			else
+			{
+				expand_into_chunk_list(&chunks, env, e);
+				e++;
+				e = ft_strpbrk(e, is_not_identifier);
+				s = e;
+			}
+			continue ;
+		}
+		e++;
 	}
+	free((void *)token->lexeme);
+	token->lexeme = join_chunks(&chunks);
 }
 
-void	expand_exit_status(t_Token *token, char *dollar)
+char	*join_chunks(t_Chunk_List *chunks)
 {
-	char	*exit_status;
+	t_Chunk	*chunk;
+	size_t	total_len;
+	int		i;
+	char	*new_word;
 
-	exit_status = ft_itoa(get_exit_status());
-	expand(token, exit_status, dollar, dollar + 1);
-	free(exit_status);
+	i = 0;
+	chunk = chunks->head;
+	total_len = 0;
+	while (chunk != NULL)
+	{
+		i = 0;
+		if (chunk->str == NULL)
+		{
+			chunk = chunk->next;
+			continue ;
+		}
+		while (chunk->str[i] != '\0')
+		{
+			total_len++;
+			i++;
+		}
+		chunk = chunk->next;
+	}
+	chunk = chunks->head;
+	new_word = ft_calloc(total_len + 1, sizeof(*new_word));
+	int	j = 0;
+	while (chunk != NULL)
+	{
+		i = 0;
+		if (chunk->str == NULL)
+		{
+			chunk = chunk->next;
+			continue ;
+		}
+		while (chunk->str[i] != '\0')
+		{
+			new_word[j] = chunk->str[i];
+			i++;
+			j++;
+		}
+		chunk = chunk->next;
+	}
+	new_word[j] = '\0';
+	return (new_word);
 }
 
-void	expand_pid(t_Token *token, char *dollar)
-{
-	char	*pid;
-
-	pid = ft_itoa(getpid());
-	expand(token, pid, dollar, dollar + 1);
-	free(pid);
-}
-
-void	expand(t_Token *token, char *expansion, char *expand_start, char *expand_end)
-{
-	char	*front;
-	char	*back;
-	char	*lexeme_end;
-
-	front = ft_extract_substring(token->lexeme, expand_start - 1);
-	lexeme_end = (char *)token->lexeme + ft_strlen(token->lexeme) - 1;
-	back = ft_extract_substring(expand_end + 1, lexeme_end);
-	token->lexeme = ft_strjoin_multiple(3, front, expansion, back);
-	free(front);
-	free(back);
-	return ;
-}
-
-void	expand_variable(t_entab *env, t_Token *token, char *dollar)
+void	expand_into_chunk_list(t_Chunk_List *chunks, t_entab *env, char *dollar)
 {
 	char	*key_start;
 	char	*key_end;
@@ -86,26 +131,67 @@ void	expand_variable(t_entab *env, t_Token *token, char *dollar)
 	key_start = dollar + 1;
 	key_end = ft_strpbrk(key_start, is_not_identifier) - 1;
 	key = ft_extract_substring(key_start, key_end);
-	value = copy_var_val(key, env);
-	expand(token, value, key_start - 1, key_end);
+	if (key)
+	{
+		value = copy_var_val(key, env);
+		add_chunk(chunks, value);
+	}
+	else
+		value = NULL;
 	free(key);
 }
 
-// void	expand_shname(t_Token *token, char *dollar)
-// {
-// 	char	*front;
-// 	char	*back;
-// 	char	*expand_end;
-// 	char	*expanded;
-// 	char	*lex_end;
-//
-// 	front = ft_extract_substring(token->lexeme, dollar - 1);
-// 	expand_end = dollar + 1;
-// 	expanded = "bish";
-// 	lex_end = (char *) token->lexeme + ft_strlen(token->lexeme) - 1;
-// 	back = ft_extract_substring(expand_end + 1, lex_end);
-// 	token->lexeme = ft_strjoin_multiple(3, front, expanded, back);
-// 	free(front);
-// 	free(back);
-// }
+bool	quote_to_remove(t_Quote_List *quote_list, char *quote)
+{
+	int			i;
+	t_Quotes	*pair;
 
+	i = 0;
+	while (i < quote_list->pair_count)
+	{
+		pair = quote_list->pairs[i];
+		if (quote == pair->start || quote == pair->end)
+		{
+			return (true);
+		}
+		i++;
+	}
+	return (false);
+}
+
+void	add_chunk(t_Chunk_List *chunks, char *str)
+{
+	t_Chunk	*new_chunk;
+
+	new_chunk = ft_calloc(1, sizeof(*new_chunk));
+	new_chunk->str = str;
+	new_chunk->next = NULL;
+
+	if (chunks->head == NULL)
+		chunks->head = new_chunk;
+	if (chunks->tail)
+		chunks->tail->next = new_chunk;
+	chunks->tail = new_chunk;
+}
+
+#include "quotes.h"
+bool	should_expand(char *dollar, t_Quote_List *quote_list)
+{
+	int			i = 0;
+	t_Quotes	*pair;
+
+	while (i < quote_list->pair_count)
+	{
+		pair = quote_list->pairs[i];
+		if (dollar > pair->start
+			&& dollar < pair->end)
+		{
+			if (pair->quote == STRONG)
+				return (false);
+			else if (pair->quote == WEAK)
+				return (true);
+		}
+		i++;
+	}
+	return (true);
+}
