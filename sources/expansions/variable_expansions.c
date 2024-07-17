@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 21:49:01 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/17 10:40:17 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/18 05:49:17 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,121 +30,63 @@ bool	parameter_expand(t_Token *token, t_entab *env)
 	expanded = false;
 	while (s < (token->lexeme + ft_strlen(token->lexeme)))
 	{
-		if (*e == '\0'
-			|| (is_quote(*e) && quote_to_remove(&token->quotes, e)))
-		{
-			add_chunk(&chunks, ft_extract_substring(s, e - 1));
-			e++;
-			s = e;
-			continue ;
-		}
+		if (*e == '\0' || (is_quote(*e) && quote_to_remove(&token->quotes, e)))
+			chunkify_unexpanded_portion(&chunks, &s, &e);
 		else if (*e == '$' && should_expand(e, &token->quotes))
 		{
-			// key = get_key()
-			add_chunk(&chunks, ft_extract_substring(s, e - 1));
-			if (e && e[1] == '?')
-			{
-				add_chunk(&chunks, ft_itoa(get_exit_status()));
-				e += 2;
-				s = e;
-			}
-			else if (e && e[1] == '0')
-			{
-				add_chunk(&chunks, ft_strdup(SHELL));
-				e += 2;
-				s = e;
-			}
-			else if (e && e[1] == '$')
-			{
-				add_chunk(&chunks, ft_itoa(getpid()));
-				e += 2;
-				s = e;
-			}
-			else
-			{
-				expand_into_chunk_list(&chunks, env, e);
-				expanded = true;
-				e++;
-				e = ft_strpbrk(e, is_not_identifier);
-				s = e;
-			}
-			continue ;
+			chunkify_expansions(&chunks, env, &s, &e);
+			expanded = true;
 		}
-		e++;
+		else
+			e++;
 	}
 	free((void *)token->lexeme);
 	token->lexeme = join_chunks(&chunks);
 	return (expanded);
 }
 
-char	*join_chunks(t_Chunk_List *chunks)
+bool	special_parameter(char *dollar)
 {
-	t_Chunk	*chunk;
-	size_t	total_len;
-	int		i;
-	char	*new_word;
-
-	i = 0;
-	chunk = chunks->head;
-	total_len = 0;
-	while (chunk != NULL)
-	{
-		i = 0;
-		if (chunk->str == NULL)
-		{
-			chunk = chunk->next;
-			continue ;
-		}
-		while (chunk->str[i] != '\0')
-		{
-			total_len++;
-			i++;
-		}
-		chunk = chunk->next;
-	}
-	chunk = chunks->head;
-	new_word = ft_calloc(total_len + 1, sizeof(*new_word));
-	int	j = 0;
-	while (chunk != NULL)
-	{
-		i = 0;
-		if (chunk->str == NULL)
-		{
-			chunk = chunk->next;
-			continue ;
-		}
-		while (chunk->str[i] != '\0')
-		{
-			new_word[j] = chunk->str[i];
-			i++;
-			j++;
-		}
-		chunk = chunk->next;
-	}
-	new_word[j] = '\0';
-	return (new_word);
+	return (dollar[1] == '?'
+		|| dollar[1] == '0'
+		|| dollar[1] == '$');
 }
 
-void	expand_into_chunk_list(t_Chunk_List *chunks, t_entab *env, char *dollar)
+void	expand_special_parameters(t_Chunk_List *chunks, char *dollar)
 {
-	char	*key_start;
-	char	*key_end;
-	char	*key;
 	char	*value;
 
-	key_start = dollar + 1;
-	key_end = ft_strpbrk(key_start, is_not_identifier) - 1;
-	key = ft_extract_substring(key_start, key_end);
-	if (key)
+	value = NULL;
+	if (dollar)
 	{
-		value = copy_var_val(key, env);
+		if (dollar[1] == '?')
+			value = ft_itoa(get_exit_status());
+		else if (dollar[1] == '0')
+			value = ft_strdup(SHELL);
+		else if (dollar[1] == '$')
+			value = ft_itoa(getpid());
 		add_chunk(chunks, value);
 	}
-	else
-		value = NULL;
-	free(key);
 }
 
+/**
+ * A key is only a valid name if it starts with an underscore or alphabet.
+ * Treat the $ as literal and do not expand if it is not going to be a valid name.
+ * For some reason, it expands next to quotes though.
+**/
+bool	is_valid_key_start(char *dollar)
+{
+	return (dollar[1] == '_'
+		|| dollar[1] == '\''
+		|| dollar[1] == '"'
+		|| ft_isalpha(dollar[1]));
+}
+
+/**
+ * Check if the quote found is any of the original pair of unquoted quotes
+ * in the input
+ * If it is, skip over them as quote removal
+ **/
 bool	quote_to_remove(t_Quote_List *quote_list, char *quote)
 {
 	int			i;
@@ -163,22 +105,12 @@ bool	quote_to_remove(t_Quote_List *quote_list, char *quote)
 	return (false);
 }
 
-void	add_chunk(t_Chunk_List *chunks, char *str)
-{
-	t_Chunk	*new_chunk;
-
-	new_chunk = ft_calloc(1, sizeof(*new_chunk));
-	new_chunk->str = str;
-	new_chunk->next = NULL;
-
-	if (chunks->head == NULL)
-		chunks->head = new_chunk;
-	if (chunks->tail)
-		chunks->tail->next = new_chunk;
-	chunks->tail = new_chunk;
-}
-
 #include "quotes.h"
+/**
+ * Check if the dollar found belongs between any of the pair of quotes
+ * in the word
+ * If found between strong quotes (''), do not expand
+**/
 bool	should_expand(char *dollar, t_Quote_List *quote_list)
 {
 	int			i = 0;

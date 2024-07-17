@@ -82,6 +82,7 @@ void	read_and_expand(t_Redir_Node *node)
 	while (line != NULL && ft_strncmp(line, node->delim, ft_strlen(node->delim)) != 0)
 	{
 		// expanded_line = expand(line, NULL);
+		expanded_line = 0; // i had to do this because it was giving a warning for uninitialized use
 		write(node->newfd, expanded_line, ft_strlen(expanded_line));
 		free(line);
 		line = get_next_line(0);

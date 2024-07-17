@@ -32,6 +32,7 @@ t_Line	*make_line(char *str)
 	return (line);
 }
 
+#include "execution.h"
 void	get_input(t_Input *input)
 {
 	t_Line	*line;
@@ -54,7 +55,7 @@ void	get_input(t_Input *input)
 	if (read == NULL)
 	{
 		//printf("exit\n");
-		exit(EXIT_SUCCESS);
+		exit(get_exit_status());
 	}
 	add_history(read);
 	newline_appended = ft_strjoin(read, "\n");
