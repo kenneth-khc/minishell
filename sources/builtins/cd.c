@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/26 23:12:37 by qang              #+#    #+#             */
-/*   Updated: 2024/07/17 00:50:56 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/17 23:27:09 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include "env.h"
 #include "ft_dprintf.h"
 #include "libft.h"
+#include <stdio.h>
 #include <stdlib.h>
 
 int			cd(char **args, t_entab *table);
@@ -121,6 +122,8 @@ int	cd(char **args, t_entab *table)
 		else if (errno != 1)
 			ft_dprintf(2, "%s: cd: %s: No such file or directory\n",
 				SHELL, args[1]);
+		else
+			ft_dprintf(2, "%s: cd: %s: Permission denied\n", SHELL, args[1]);
 		return (1);
 	}
 	update_pwd(args, table);

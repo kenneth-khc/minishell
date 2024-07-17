@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/13 00:42:15 by qang              #+#    #+#             */
-/*   Updated: 2024/07/17 00:38:37 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/17 21:39:28 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	pipepromax(int fd[2])
 	err = pipe(fd);
 	if (err == -1)
 	{
-		ft_dprintf(2, "error");
+		ft_dprintf(2, "pipe error");
 		return ;
 	}
 }
@@ -36,7 +36,7 @@ int	forkpromax(void)
 	pid = fork();
 	if (pid < 0)
 	{
-		ft_dprintf(2, "error");
+		ft_dprintf(2, "fork error");
 		return (-1);
 	}
 	return (pid);

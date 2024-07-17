@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/05 01:54:16 by qang              #+#    #+#             */
-/*   Updated: 2024/07/17 00:35:24 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/17 23:43:34 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-t_envar	*copy_and_sort_env(t_entab *table);
-void	print_and_free_env(t_envar *chead);
+t_envar			*copy_and_sort_env(t_entab *table);
+void			print_and_free_env(t_envar *chead);
 static t_envar	*sorted_merge(t_envar *a, t_envar *b);
-static void	merge_sort(t_envar **head_ref);
-static void	split(t_envar *head, t_envar **front_ref, t_envar **back_ref);
+static void		merge_sort(t_envar **head_ref);
+static void		split(t_envar *head, t_envar **front_ref, t_envar **back_ref);
 
 /*chead = copy of head*/
 t_envar	*copy_and_sort_env(t_entab *table)

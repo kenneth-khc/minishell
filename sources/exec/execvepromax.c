@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 21:44:44 by qang              #+#    #+#             */
-/*   Updated: 2024/07/17 00:42:08 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/17 23:40:12 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,11 @@ static void	attempt_exec(DIR *dir, char *path, char **args, t_entab *table)
 		{
 			temp = ft_strjoin(path, "/");
 			ret = ft_strjoin(temp, args[0]);
+			if (access(ret, X_OK) == -1)
+			{
+				ft_dprintf(2, "%s: %s: Permission denied\n", SHELL, args[0]);
+				exit(126);
+			}
 			execve(ret, args, env_convert(table));
 			free(ret);
 			free(temp);

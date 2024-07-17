@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/13 00:48:55 by qang              #+#    #+#             */
-/*   Updated: 2024/07/17 00:33:03 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/17 23:40:34 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,12 +15,17 @@
 #include "execution.h"
 #include "ft_dprintf.h"
 #include <stdlib.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 void	child_process(t_Exec_Node *node, t_entab *table);
 void	exec(t_Exec_Node *node);
 
 void	child_process(t_Exec_Node *node, t_entab *table)
 {
+	struct stat	file_stats;
+
 	set_sig();
 	if (!ft_isbuiltin(node->command))
 	{
@@ -28,8 +33,17 @@ void	child_process(t_Exec_Node *node, t_entab *table)
 			&& access(node->command, X_OK) == 0)
 			execve((char *)node->command, (char **)node->args,
 				env_convert(table));
-		execvepromax((char **)node->args, table, get_var("PATH", table));
-		ft_dprintf(2, "%s: %s: command not found\n", SHELL, node->command);
+		else if (stat(node->command, &file_stats) == 0
+			&& S_ISDIR(file_stats.st_mode))
+		{
+			ft_dprintf(2, "%s: %s: is a directory\n", SHELL, node->command);
+			exit(126);
+		}
+		else
+		{
+			execvepromax((char **)node->args, table, get_var("PATH", table));
+			ft_dprintf(2, "%s: %s: command not found\n", SHELL, node->command);
+		}
 	}
 	exit(0);
 }

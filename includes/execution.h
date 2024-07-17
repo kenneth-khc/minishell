@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 23:33:10 by qang              #+#    #+#             */
-/*   Updated: 2024/07/17 00:58:19 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/17 19:11:14 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,4 +31,6 @@ void	pipepromax(int fd[2]);
 int		wait_for_child(int last_pid);
 void	close_pipe(int fd[2]);
 
+/*for redir*/
+char	*expand_line(char *line, t_entab *table);
 #endif
