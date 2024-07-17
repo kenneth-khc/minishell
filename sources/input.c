@@ -41,10 +41,19 @@ void	get_input(t_Input *input)
 	line = ft_calloc(1, sizeof(*line));
 	if (line == NULL)
 		error("calloc failed");
-	read = readline("bish> ");
+	//read = readline("bish> ");
+	if (isatty(fileno(stdin)))
+		read = readline("bish > ");
+	else
+	{
+		char *line;
+		line = get_next_line(fileno(stdin));
+		read = ft_strtrim(line, "\n");
+		free(line);
+	}
 	if (read == NULL)
 	{
-		printf("exit\n");
+		//printf("exit\n");
 		exit(EXIT_SUCCESS);
 	}
 	add_history(read);

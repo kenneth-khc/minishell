@@ -27,10 +27,38 @@ void	expand_tokens(t_Token_List *tokens, t_entab *env)
 	{
 		io_number(token);
 		tilde_expansion(token, env);
-		parameter_expand(token, env);
-		// do word split
+		if (parameter_expand(token, env))
+			word_splitting(token);
 		token = token->next;
 	}
+}
+
+#ifndef IFS
+#define IFS " \t\n"
+#endif
+#include <stdio.h>
+void	word_splitting(t_Token *token)
+{
+	char			**words;
+	char			**w;
+	t_Token_List	new_tokens;
+	t_Token			*new_token;
+
+	new_tokens = (t_Token_List){.head = NULL, .tail = NULL};
+	words = ft_split(token->lexeme, ' ');
+	if (words == NULL)
+		return ;
+	w = words;
+	while (*words)
+	{
+		new_token = create_token(WORD, *words);
+		add_token(&new_tokens, new_token);
+		words++;
+	}
+	new_tokens.tail->next = token->next;
+	token->prev->next = new_tokens.head;
+	token->next->prev = new_tokens.tail;
+	free(w);
 }
 
 void	tilde_expansion(t_Token *token, t_entab *env)

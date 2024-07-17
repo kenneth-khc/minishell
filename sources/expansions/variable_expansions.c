@@ -17,15 +17,17 @@
 #include "tokens.h"
 #include <stdlib.h>
 
-void	parameter_expand(t_Token *token, t_entab *env)
+bool	parameter_expand(t_Token *token, t_entab *env)
 {
 	t_Chunk_List	chunks;
 	char			*s;
 	char			*e;
+	bool			expanded;
 
 	chunks = (t_Chunk_List){.head = NULL, .tail = NULL};
 	s = (char *)token->lexeme;
 	e = s;
+	expanded = false;
 	while (s < (token->lexeme + ft_strlen(token->lexeme)))
 	{
 		if (*e == '\0'
@@ -61,6 +63,7 @@ void	parameter_expand(t_Token *token, t_entab *env)
 			else
 			{
 				expand_into_chunk_list(&chunks, env, e);
+				expanded = true;
 				e++;
 				e = ft_strpbrk(e, is_not_identifier);
 				s = e;
@@ -71,6 +74,7 @@ void	parameter_expand(t_Token *token, t_entab *env)
 	}
 	free((void *)token->lexeme);
 	token->lexeme = join_chunks(&chunks);
+	return (expanded);
 }
 
 char	*join_chunks(t_Chunk_List *chunks)
