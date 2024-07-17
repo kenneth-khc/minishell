@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 23:26:55 by qang              #+#    #+#             */
-/*   Updated: 2024/07/17 00:41:21 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/17 10:43:54 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@ void	ass_var(t_Ass_Node *node)
 
 	temp = ft_strjoin(node->key, "=");
 	temp1 = ft_strjoin(temp, node->value);
-	(void)temp1;
-	// add_ass(temp1, node->table);
+	add_ass(temp1, node->table);
+  free(temp);
+  free(temp1);
 }

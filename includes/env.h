@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 22:27:01 by qang              #+#    #+#             */
-/*   Updated: 2024/07/17 00:56:42 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/17 10:47:08 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,11 +60,12 @@ t_envar	*get_var(char *key, t_entab *table);
 t_entab	*init_env_table(char **env);
 void	free_env(t_entab *table);
 t_envar	*copy_env(t_envar *src);
-char	**env_convert(t_entab *table);
-void	incr_shlvl(t_entab *table);
-void	special_pwd(t_envar *node, t_envar *new);
 t_envar	*new_env_var(const char *str);
 void	free_env_list(t_envar *node);
+char	**env_convert(t_entab *table);
+void	add_ass(char *str, t_entab *table);
+void	incr_shlvl(t_entab *table);
+void	special_pwd(t_envar *node, t_envar *new);
 
 void	*mallocpromax(size_t size);
 #endif

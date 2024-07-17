@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:10:41 by qang              #+#    #+#             */
-/*   Updated: 2024/07/17 02:04:33 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/17 10:47:47 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 void		read_and_expand(t_Redir_Node *node);
 void		redir(t_Redir_Node *node);
 void		redir_delim(t_Redir_Node *node);
-static char	*expand(char *line, t_entab *table);
+// static char	*expand(char *line, t_entab *table);
 static char	*get_next_heredoc(void);
 
 static char	*get_next_heredoc(void)
@@ -34,39 +34,39 @@ static char	*get_next_heredoc(void)
 	free(num);
 	return (heredoc);
 }
-#include <stdio.h>
-static char	*expand(char *line, t_entab *table)
-{
-	char	*expanded_line;
-	char	*key;
-	char	*val;
-	int size = 0;
-	(void)table;
-	int i = 0;
-	int j;
+// #include <stdio.h>
+// static char	*expand(char *line, t_entab *table)
+// {
+// 	// char	*expanded_line;
+// 	char	*key;
+// 	t_envar	*val;
+// 	int size = 0;
+// 	(void)table;
+// 	int i = 0;
+// 	int j;
 
-	while (line[i])
-	{
-		if (line[i] == '$')
-		{
-			j = ++i;
-			while (line[j] && ft_isalnum(line[j]))
-				j++;
-			key = ft_substr(line, i, j - i);
-			val = get_var(key, table);
-			if (val)
-				size += ft_strlen(val);
-			free(key);
-			i = j;
-		}
-		else
-		{
-			size++;
-			i++;
-		}
-	}
-	return (NULL);
-}
+// 	while (line[i])
+// 	{
+// 		if (line[i] == '$')
+// 		{
+// 			j = ++i;
+// 			while (line[j] && ft_isalnum(line[j]))
+// 				j++;
+// 			key = ft_substr(line, i, j - i);
+// 			val = get_var(key, table);
+// 			if (val)
+// 				size += ft_strlen(val->val);
+// 			free(key);
+// 			i = j;
+// 		}
+// 		else
+// 		{
+// 			size++;
+// 			i++;
+// 		}
+// 	}
+// 	return (key + size);
+// }
 
 void	read_and_expand(t_Redir_Node *node)
 {
@@ -81,7 +81,7 @@ void	read_and_expand(t_Redir_Node *node)
 	}
 	while (line != NULL && ft_strncmp(line, node->delim, ft_strlen(node->delim)) != 0)
 	{
-		expanded_line = expand(line, NULL);
+		// expanded_line = expand(line, NULL);
 		write(node->newfd, expanded_line, ft_strlen(expanded_line));
 		free(line);
 		line = get_next_line(0);
