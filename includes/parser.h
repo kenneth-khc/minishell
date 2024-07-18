@@ -39,10 +39,6 @@ t_Node			*parse_command_suffix(t_Parser *parser,
 t_Exec_Node		*parse_command_name(t_Parser *parser); // what is the difference
 bool			parse_command_word(t_Parser *parser); // between a name and a word?
 t_Node			*parse_io_redirect(t_Parser *parser);
-t_Node			*parse_io_here(t_Parser *parser);
-t_Node			*parse_io_file(t_Parser *parser);
-t_Redir_Node	*input_redir(t_Parser *parser, int flags);
-t_Redir_Node	*output_redir(t_Parser *parser, int flags);
 bool			expect(t_Parser *parser, enum e_Token_Types expected);
 bool			accept(t_Parser *parser, enum e_Token_Types type);
 void			consume(t_Parser *parser);

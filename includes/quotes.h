@@ -34,7 +34,6 @@ typedef struct s_Quote_List
 
 typedef struct s_Token t_Token;
 
-bool	is_quote(char c);
 t_Quote_List	find_quotes(t_Token *token);
 t_Quotes	*find_next_pair(char *word, char **next_start);
 void	store_quotes(t_Quote_List *list, t_Quotes *quotes);

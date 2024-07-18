@@ -12,9 +12,9 @@
 
 #ifndef TREE_H
 # define TREE_H
-# include "env.h"
-# include "libft.h"
 # include <sys/types.h>
+# include <stdbool.h>
+# include "env.h"
 
 typedef enum e_Node_Type
 {
@@ -82,8 +82,13 @@ typedef struct s_Redir_Node
 	char				*delim;
 }	t_Redir_Node;
 
+typedef struct s_Parser t_Parser;
 t_Redir_Node	*create_redir_node(int oldfd, const char *filename,
 					int flags, mode_t mode);
+void	trunc_output_redir(t_Parser *parser, t_Redir_Node *node, bool oldfd_set);
+void	append_output_redir(t_Parser *parser, t_Redir_Node *node, bool oldfd_set);
+void	input_redir(t_Parser *parser, t_Redir_Node *node, bool oldfd_set);
+void	heredoc_redir(t_Parser *parser, t_Redir_Node *node, bool oldfd_set);
 
 /**
  * Node for piping

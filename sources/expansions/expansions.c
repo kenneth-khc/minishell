@@ -6,18 +6,21 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 16:45:41 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/18 07:07:57 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/18 15:49:28 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "env.h"
-#include "expansions.h"
-#include "libft.h"
-#include "tokens.h"
 #include <stdlib.h>
 #include <unistd.h>
-
+#include "libft.h"
+#include "env.h"
+#include "expansions.h"
+#include "tokens.h"
 #include "parser.h"
+
+static void	io_number(t_Token *token);
+static bool	only_digits(const char *str);
+
 void	expand_tokens(t_Token_List *tokens, t_entab *env)
 {
 	t_Token	*token;
@@ -35,10 +38,12 @@ void	expand_tokens(t_Token_List *tokens, t_entab *env)
 	}
 }
 
+// Internal field seperator should default to whitespaces
 #ifndef IFS
-#define IFS " \t\n"
+//# define IFS " \t\n"
+# define IFS ' '
 #endif
-#include <stdio.h>
+
 void	word_splitting(t_Token *token)
 {
 	char			**words;
@@ -47,7 +52,7 @@ void	word_splitting(t_Token *token)
 	t_Token			*new_token;
 
 	new_tokens = (t_Token_List){.head = NULL, .tail = NULL};
-	words = ft_split(token->lexeme, ' ');
+	words = ft_split(token->lexeme, IFS);
 	if (words == NULL)
 		return ;
 	w = words;
@@ -75,7 +80,13 @@ void	tilde_expansion(t_Token *token, t_entab *env)
 #ifndef OPEN_MAX
 # define OPEN_MAX 1024
 #endif
-void	io_number(t_Token *token)
+
+/**
+ * Looks at a token before a redirection operator,
+ * if it only consists of numbers and is within fd range
+ * it is a file descriptor.
+**/
+static void	io_number(t_Token *token)
 {
 	if (only_digits(token->lexeme)
 		&& is_redirection_token(token->next)
@@ -85,7 +96,7 @@ void	io_number(t_Token *token)
 	}
 }
 
-bool	only_digits(const char *str)
+static bool	only_digits(const char *str)
 {
 	while (*str)
 	{
@@ -95,4 +106,3 @@ bool	only_digits(const char *str)
 	}
 	return (true);
 }
-
