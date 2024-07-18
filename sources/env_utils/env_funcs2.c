@@ -6,17 +6,18 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 21:32:14 by qang              #+#    #+#             */
-/*   Updated: 2024/07/16 14:58:44 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/17 00:23:56 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "a.h"
+#include "env.h"
+#include "libft.h"
 #include <stdlib.h>
 
-t_envar	*copy_env(t_envar *src);
-void	del_var(char *key, t_entab *table);
-t_envar	*get_var(char *key, t_entab *table);
 int		print_sorted_env(t_entab *table);
+t_envar	*copy_env(t_envar *src);
+t_envar	*get_var(char *key, t_entab *table);
+void	del_var(char *key, t_entab *table);
 void	free_env_list(t_envar *node);
 
 int	print_sorted_env(t_entab *table)

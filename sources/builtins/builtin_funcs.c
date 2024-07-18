@@ -6,11 +6,18 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 19:35:04 by qang              #+#    #+#             */
-/*   Updated: 2024/07/06 22:04:39 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/17 00:52:22 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "a.h"
+#include "builtins.h"
+#include "env.h"
+#include "libft.h"
+#include <stdbool.h>
+
+bool	ft_isbuiltin(const char *command);
+int		length(char **arg);
+int		run_builtin(const char **cav, t_entab *table);
 
 int	length(char **arg)
 {
@@ -36,7 +43,7 @@ int	run_builtin(const char **cav, t_entab *table)
 	else if (ft_strcmp("pwd", av[0]) == 0)
 		errno = pwd(av, table);
 	else if (ft_strcmp("export", av[0]) == 0)
-		errno = export(av, table);
+		errno = ft_export(av, table);
 	else if (ft_strcmp("unset", av[0]) == 0)
 		errno = unset(av, table);
 	else if (ft_strcmp("env", av[0]) == 0)

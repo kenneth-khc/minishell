@@ -6,17 +6,19 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 21:24:13 by qang              #+#    #+#             */
-/*   Updated: 2024/07/13 00:40:06 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/17 01:32:59 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "a.h"
+#include "env.h"
+#include "libft.h"
 #include <stdlib.h>
 
-t_envar	*new_env_var(const char *str);
-void	add_var(char *str, t_entab *table);
-void	free_env(t_entab *table);
-t_entab	*init_env_table(char **env);
+t_entab		*init_env_table(char **env);
+t_envar		*new_env_var(const char *str);
+void		free_env(t_entab *table);
+void		add_var(char *str, t_entab *table);
+static void	update_var(t_envar *node, t_envar *new);
 
 static void	update_var(t_envar *node, t_envar *new)
 {

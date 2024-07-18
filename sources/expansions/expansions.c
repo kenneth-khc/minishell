@@ -3,21 +3,100 @@
 /*                                                        :::      ::::::::   */
 /*   expansions.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
+/*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 16:45:41 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/10 18:04:22 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/18 15:49:28 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <unistd.h>
 #include <stdlib.h>
-#include "a.h"
+#include <unistd.h>
 #include "libft.h"
-#include "tokens.h"
+#include "env.h"
 #include "expansions.h"
+#include "tokens.h"
+#include "parser.h"
 
-bool	only_digits(const char *str)
+static void	io_number(t_Token *token);
+static bool	only_digits(const char *str);
+
+void	expand_tokens(t_Token_List *tokens, t_entab *env)
+{
+	t_Token	*token;
+
+	token = tokens->head;
+	while (token)
+	{
+		io_number(token);
+		tilde_expansion(token, env);
+		if (parameter_expand(token, env))
+			word_splitting(token);
+		// todo: filename expansion
+		filename_expansion(token, env);
+		token = token->next;
+	}
+}
+
+// Internal field seperator should default to whitespaces
+#ifndef IFS
+//# define IFS " \t\n"
+# define IFS ' '
+#endif
+
+void	word_splitting(t_Token *token)
+{
+	char			**words;
+	char			**w;
+	t_Token_List	new_tokens;
+	t_Token			*new_token;
+
+	new_tokens = (t_Token_List){.head = NULL, .tail = NULL};
+	words = ft_split(token->lexeme, IFS);
+	if (words == NULL)
+		return ;
+	w = words;
+	while (*words)
+	{
+		new_token = create_token(WORD, *words);
+		add_token(&new_tokens, new_token);
+		words++;
+	}
+	if (new_tokens.tail)
+	{
+		new_tokens.tail->next = token->next;
+		token->prev->next = new_tokens.head;
+		token->next->prev = new_tokens.tail;
+	}
+	free(w);
+}
+
+void	tilde_expansion(t_Token *token, t_entab *env)
+{
+	if (token->word_flags & W_TILDE_EXPANSION)
+		token->lexeme = ft_strdup(get_var("HOME", env)->val);
+}
+
+#ifndef OPEN_MAX
+# define OPEN_MAX 1024
+#endif
+
+/**
+ * Looks at a token before a redirection operator,
+ * if it only consists of numbers and is within fd range
+ * it is a file descriptor.
+**/
+static void	io_number(t_Token *token)
+{
+	if (only_digits(token->lexeme)
+		&& is_redirection_token(token->next)
+		&& ft_atoi(token->lexeme) < OPEN_MAX)
+	{
+		token->type = IO_NUMBER;
+	}
+}
+
+static bool	only_digits(const char *str)
 {
 	while (*str)
 	{
@@ -27,70 +106,3 @@ bool	only_digits(const char *str)
 	}
 	return (true);
 }
-
-#include "parser.h"
-void	find_io_number(t_Token_List *tokens)
-{
-	t_Token	*tok;
-
-	tok = tokens->head;
-	while (tok != NULL)
-	{
-		if (only_digits(tok->lexeme)
-			&& is_redirection_token(tok->next)
-			&& ft_atoi(tok->lexeme) < OPEN_MAX)
-		{
-			tok->type = IO_NUMBER;
-		}
-		tok = tok->next;
-	}
-}
-
-void	expand_tokens(t_Token_List *tokens, t_entab *env)
-{
-	find_io_number(tokens);
-	tilde_expansion(tokens, env);
-	parameter_expansion(tokens, env);
-	quote_removal(tokens);
-}
-
-void	tilde_expansion(t_Token_List *tokens, t_entab *env)
-{
-	t_Token	*curr;
-
-	curr = tokens->head;
-	while (curr != NULL)
-	{
-		if (curr->word_flags & W_TILDE_EXPANSION)
-		{
-			curr->lexeme = ft_strdup(get_var("HOME", env)->val);
-		}
-		curr = curr->next;
-	}
-}
-
-// todo: word splitting
-// todo: filename expansion (*)
-// todo: pattern matching
-// todo: quote removal
-
-void	quote_removal(t_Token_List *tokens)
-{
-	t_Token	*tok;
-	char	*to_free;
-
-	tok = tokens->head;
-	while (tok)
-	{
-		if (tok->word_flags & W_WEAK_QUOTED
-			|| tok->word_flags & W_STRONG_QUOTED)
-		{
-			to_free = (char *)tok->lexeme;
-			tok->lexeme = ft_extract_substring(tok->lexeme + 1,
-									  tok->lexeme + ft_strlen(tok->lexeme) - 2);
-			free(to_free);
-		}
-		tok = tok->next;
-	}
-}
-

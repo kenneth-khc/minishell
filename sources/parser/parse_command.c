@@ -6,7 +6,7 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/26 16:20:58 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/10 18:16:31 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/18 16:26:35 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 #include "tree.h"
 #include "parser.h"
 #include <stdio.h>
-#include "debug.h"
 #include <stdlib.h>
 
 t_Node	*parse_command_args(t_Parser *parser)
@@ -50,27 +49,11 @@ t_Node	*parse_simple_command(t_Parser *parser)
 	prefix = parse_command_prefix(parser);
 	cmd = parse_command_args(parser);
 	suffix = parse_command_suffix(parser, prefix, (t_Exec_Node *)cmd);
-//	if (prefix) printf("yeh prefix\n");
-//	else printf("no prefix\n");
-//	if (cmd) printf("yeh cmd\n");
-//	else printf("no cmd\n");
-//	if (suffix) printf("yeh suffix\n");
-//	else printf("no suffix\n");
 	if (prefix)
 	{
 		ret = prefix;
 		if (cmd)
-		{
 			get_tail(prefix)->left = cmd;
-			/*
-			if (suffix)
-			{
-				// infinite loop here
-				get_tail(suffix)->left = cmd;
-				get_tail(prefix)->left = suffix;
-			}
-			*/
-		}
 	}
 	else if (cmd)
 	{
@@ -82,17 +65,8 @@ t_Node	*parse_simple_command(t_Parser *parser)
 		}
 	}
 	else if (suffix)
-	{
 		ret = suffix;
-	}
-	/*
-	if (exec_node->command == NULL)
-	{
-		ret = NULL;
-		free(exec_node);
-	}
-	*/
-	return (ret); // todo: add more expressions
+	return (ret);
 }
 
 t_Node	*assignment_node(t_Parser *parser)
@@ -107,16 +81,17 @@ t_Node	*assignment_node(t_Parser *parser)
 	ass->key = ft_extract_substring(parser->token->lexeme, equal - 1);
 	end = parser->token->lexeme + ft_strlen(parser->token->lexeme) - 1;
 	ass->value = ft_extract_substring(equal + 1, end);
+	ass->table = parser->envtab;
 	ass->left = NULL;
 	return ((t_Node *)ass);
 }
 
 bool	is_io_redirect(t_Parser *parser)
 {
-	return (peek(1, parser) == IO_NUMBER || is_redirection_token(parser->token));
+	return (peek(1, parser) == IO_NUMBER
+		|| is_redirection_token(parser->token));
 }
 
-#include "errors.h"
 t_Node	*parse_command_prefix(t_Parser *parser)
 {
 	t_Node	*root;
@@ -151,7 +126,8 @@ t_Node	*parse_command_prefix(t_Parser *parser)
 	return (root);
 }
 
-t_Node	*parse_command_suffix(t_Parser *parser, t_Node *prefix, t_Exec_Node *exec_node)
+t_Node	*parse_command_suffix(t_Parser *parser, t_Node *prefix,
+	t_Exec_Node *exec_node)
 {
 	t_Node	*root;
 	t_Node	*node;
@@ -161,8 +137,8 @@ t_Node	*parse_command_suffix(t_Parser *parser, t_Node *prefix, t_Exec_Node *exec
 	node = NULL;
 	curr = NULL;
 	// todo: there shouldn't be assignment words in suffix
-	while (peek(1, parser) == ASSIGNMENT_WORD ||
-		peek(1, parser) == WORD || is_io_redirect(parser))
+	while (peek(1, parser) == ASSIGNMENT_WORD
+		|| peek(1, parser) == WORD || is_io_redirect(parser))
 	{
 		// bandaid fix for now
 		if (peek(1, parser) == ASSIGNMENT_WORD)
@@ -174,7 +150,7 @@ t_Node	*parse_command_suffix(t_Parser *parser, t_Node *prefix, t_Exec_Node *exec
 				exec_node = create_exec_node(NULL, parser->envtab);
 			add_exec_arguments(exec_node, parser->token->lexeme);
 			consume(parser);
-		}	
+		}
 		if (is_io_redirect(parser))
 		{
 			node = parse_io_redirect(parser);
@@ -197,4 +173,3 @@ t_Node	*parse_command_suffix(t_Parser *parser, t_Node *prefix, t_Exec_Node *exec
 	}
 	return (root);
 }
-

@@ -6,11 +6,17 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 21:18:39 by qang              #+#    #+#             */
-/*   Updated: 2024/07/13 00:37:16 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/17 23:28:50 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "a.h"
+#include "env.h"
+#include "ft_dprintf.h"
+#include "libft.h"
+#include <stdio.h>
+
+int			print_env(char **args, t_entab *table);
+static void	print_val(t_envar *node);
 
 static void	print_val(t_envar *node)
 {
@@ -28,7 +34,8 @@ int	print_env(char **args, t_entab *table)
 	absfn = NULL;
 	node = table->head;
 	if (length(args) > 1)
-		printf("%s: env: %s: No such file or directory\n", SHELL, args[1]);
+		ft_dprintf(2, "%s: env: %s: No such file or directory\n",
+			SHELL, args[1]);
 	while (node)
 	{
 		if (ft_strcmp(node->key, "_") == 0)
@@ -37,7 +44,8 @@ int	print_env(char **args, t_entab *table)
 			node = node->next;
 			continue ;
 		}
-		if (node->val != NULL && (node->state & DISPLAY))
+		if (node->val != NULL
+			&& ((node->state & DISPLAY) && !(node->state & LOCAL)))
 			print_val(node);
 		node = node->next;
 	}

@@ -6,26 +6,24 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/26 23:47:44 by kecheong          #+#    #+#             */
-/*   Updated: 2024/06/26 23:49:19 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/18 16:28:37 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "tokens.h"
 #include <stdbool.h>
-#include <stdio.h>
 #include <unistd.h>
 #include "parser.h"
-#include "ft_dprintf.h"
 
 // Checks if a token is for redirection
 bool	is_redirection_token(t_Token *token)
 {
 	if (token)
 	{
-		return (token->type == LESSER ||
-			token->type == LESSER_LESSER ||
-			token->type == GREATER ||
-			token->type == GREATER_GREATER);
+		return (token->type == LESSER
+			|| token->type == LESSER_LESSER
+			|| token->type == GREATER
+			|| token->type == GREATER_GREATER);
 	}
 	return (false);
 }
@@ -33,7 +31,7 @@ bool	is_redirection_token(t_Token *token)
 bool	is_and_or(t_Parser *parser)
 {
 	return (peek(1, parser) == AND_AND
-			|| peek(1, parser) == OR_OR);
+		|| peek(1, parser) == OR_OR);
 }
 
 enum e_Token_Types	peek(int k, t_Parser *parser)
@@ -48,7 +46,8 @@ enum e_Token_Types	peek(int k, t_Parser *parser)
 			curr = curr->next;
 			k--;
 		}
-		return (curr->type);
+		if (curr)
+			return (curr->type);
 	}
 	return (0);
 }

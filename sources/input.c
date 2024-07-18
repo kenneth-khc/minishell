@@ -3,22 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   input.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
+/*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/09 21:04:33 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/06 17:40:23 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/18 15:34:44 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <readline/readline.h>
-#include <unistd.h>
-#include "libft.h"
-#include "input.h"
-#include "errors.h"
 #include <readline/history.h>
+#include <readline/readline.h>
+#include "errors.h"
+#include "get_next_line.h"
+#include "input.h"
+#include "libft.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "get_next_line.h"
+#include <unistd.h>
+#include "execution.h"
 
 t_Line	*make_line(char *str)
 {
@@ -41,10 +42,21 @@ void	get_input(t_Input *input)
 	line = ft_calloc(1, sizeof(*line));
 	if (line == NULL)
 		error("calloc failed");
-	read = readline("bish> ");
+	// read = readline("bish> ");
+	if (isatty(fileno(stdin)))
+		read = readline("bish > ");
+	else
+	{
+		char *line;
+		line = get_next_line(fileno(stdin));
+		read = ft_strtrim(line, "\n");
+		free(line);
+	}
 	if (read == NULL)
-		//printf("handle eof!\n"), exit(EXIT_FAILURE);
-		exit(EXIT_SUCCESS);
+	{
+		// printf("exit\n");
+		exit(get_exit_status());
+	}
 	add_history(read);
 	newline_appended = ft_strjoin(read, "\n");
 	free(read);
@@ -74,7 +86,7 @@ void	store_input(t_Input *input, t_Line *new_line)
 }
 
 // For unterminated lines, fix later
-t_Line	*get_input_line(int	fd)
+t_Line	*get_input_line(int fd)
 {
 	t_Line	*line;
 
@@ -101,4 +113,3 @@ void	clear_input(t_Input *input)
 	input->count = 0;
 	input->lines = NULL;
 }
-

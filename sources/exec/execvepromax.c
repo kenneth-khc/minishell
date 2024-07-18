@@ -6,14 +6,20 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 21:44:44 by qang              #+#    #+#             */
-/*   Updated: 2024/07/16 15:00:30 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/17 23:40:12 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "a.h"
+#include "env.h"
+#include "ft_dprintf.h"
+#include "libft.h"
 #include <dirent.h>
 #include <stdlib.h>
+#include <unistd.h>
 
+void		execvepromax(char **args, t_entab *table, t_envar *path_node);
+static void	attempt_exec(DIR *dir, char *path, char **args, t_entab *table);
+static char	*next_path(char **path);
 static void	print_error(char *command);
 
 static char	*next_path(char **path)
@@ -55,6 +61,11 @@ static void	attempt_exec(DIR *dir, char *path, char **args, t_entab *table)
 		{
 			temp = ft_strjoin(path, "/");
 			ret = ft_strjoin(temp, args[0]);
+			if (access(ret, X_OK) == -1)
+			{
+				ft_dprintf(2, "%s: %s: Permission denied\n", SHELL, args[0]);
+				exit(126);
+			}
 			execve(ret, args, env_convert(table));
 			free(ret);
 			free(temp);

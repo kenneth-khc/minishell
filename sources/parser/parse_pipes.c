@@ -6,7 +6,7 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/26 22:22:35 by kecheong          #+#    #+#             */
-/*   Updated: 2024/06/26 22:25:08 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/18 16:27:02 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,4 +37,3 @@ t_Node	*parse_pipe_sequence(t_Parser *parser)
 	}
 	return (left);
 }
-

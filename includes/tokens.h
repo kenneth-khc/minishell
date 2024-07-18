@@ -6,7 +6,7 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 09:25:32 by kecheong          #+#    #+#             */
-/*   Updated: 2024/04/18 21:38:14 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/18 15:19:51 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ typedef enum e_Token_Types
 	IO_NUMBER // for left operand of redirection
 } t_Token_Type;
 
+#include "quotes.h"
 /**
  * Representing a token.
  * Stores the type of the token and its lexeme.
@@ -48,18 +49,17 @@ typedef enum e_Token_Types
 typedef struct s_Token
 {
 	enum e_Token_Types	type;
-	const char			*lexeme;
+	char				*lexeme;
 	int					word_flags;
+	t_Quote_List		quotes;
 	struct s_Token		*next;
 	struct s_Token		*prev;
 }	t_Token;
 
 #define W_STRONG_QUOTED	       0b1
 #define W_WEAK_QUOTED	      0b10
-#define W_ASSIGNMENT	     0b100
-#define W_HAS_DOLLAR	    0b1000
-#define W_PARAM_EXPANSION  0b10000
-#define W_TILDE_EXPANSION 0b100000
+#define W_PARAM_EXPANSION  0b100
+#define W_TILDE_EXPANSION 0b1000
 
 /**
  * A list of all the tokens.
@@ -74,6 +74,7 @@ typedef struct s_Token_List
 t_Token	*create_token(int type, const char *lexeme);
 void	add_token(t_Token_List *tokens, t_Token *token);
 int		get_tokens_count(t_Token_List *tokens);
+void	free_tokens(t_Token_List *tokens);
 void	print_tokens(t_Token_List *tokens);
 char	*token_enum_to_str(t_Token *token);
 

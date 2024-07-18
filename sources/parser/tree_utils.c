@@ -82,3 +82,21 @@ t_Node	*get_tail(t_Node *node)
 	return (node);
 }
 
+void	free_tree(t_Node *node)
+{
+	t_Node		*temp;
+	t_Exec_Node	*enode;
+
+	temp = node;
+	if (node == NULL)
+		return ;
+	if (node->type == Exec_Node)
+	{
+		enode = (t_Exec_Node *)node;
+		free(enode->args);
+	}
+	free_tree(node->left);
+	free_tree(node->right);
+	free(temp);
+}
+

@@ -6,16 +6,15 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 21:06:03 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/16 14:58:23 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/18 15:25:19 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef TREE_H
 # define TREE_H
 # include <sys/types.h>
-//# include "a.h"
-# include "libft.h"
-# include "a.h"
+# include <stdbool.h>
+# include "env.h"
 
 typedef enum e_Node_Type
 {
@@ -50,10 +49,10 @@ typedef struct s_Exec_Node
 	enum e_Node_Type	type;
 	struct s_Node		*left;
 	struct s_Node		*right;
+	t_entab				*table;
 	const char			*command; // Name of the command to execute
 	int					arg_count; // Number of arguments in the command
 	const char			**args; // Args of the cmd, first one being the cmdname
-	t_entab				*table;
 }	t_Exec_Node;
 
 t_Exec_Node		*create_exec_node(const char *cmd_name, t_entab *envtab);
@@ -62,22 +61,34 @@ void			add_exec_arguments(t_Exec_Node *exec_node, const char *arg);
 /**
  * Node for redirection
  */
+typedef enum e_Direction
+{
+	INPUT,
+	OUTPUT
+}	t_Direction;
+
 typedef struct s_Redir_Node
 {
 	enum e_Node_Type	type;
 	struct s_Node		*left;
 	struct s_Node		*right;
+	t_entab				*table;
+	enum e_Direction	direction; // is it input or output redirection
 	int					oldfd; // the fd to be replaced
 	int					flags; // O_CREAT, O_APPEND etc
 	mode_t				mode; // permission bits for READ WRITE EXECUTE
 	const char			*file; // name of the file to open
-	int					newfd; // fd of the file opened
 	bool				heredoc;
 	char				*delim;
 }	t_Redir_Node;
 
+typedef struct s_Parser t_Parser;
 t_Redir_Node	*create_redir_node(int oldfd, const char *filename,
 					int flags, mode_t mode);
+void	trunc_output_redir(t_Parser *parser, t_Redir_Node *node, bool oldfd_set);
+void	append_output_redir(t_Parser *parser, t_Redir_Node *node, bool oldfd_set);
+void	input_redir(t_Parser *parser, t_Redir_Node *node, bool oldfd_set);
+void	heredoc_redir(t_Parser *parser, t_Redir_Node *node, bool oldfd_set);
 
 /**
  * Node for piping
@@ -101,10 +112,9 @@ typedef struct s_Ass_Node
 	enum e_Node_Type	type;
 	struct s_Node		*left;
 	struct s_Node		*right;
+	t_entab				*table;
 	char				*key; // variable identifier
 	char				*value; // variable value
 }	t_Ass_Node;
 
-void	exec_ast(t_Node *node);
-void	exec(t_Exec_Node *node);
 #endif

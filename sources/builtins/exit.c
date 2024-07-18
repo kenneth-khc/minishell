@@ -6,12 +6,19 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 19:42:59 by qang              #+#    #+#             */
-/*   Updated: 2024/07/13 00:38:42 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/17 00:51:46 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "a.h"
+#include "env.h"
+#include "ft_dprintf.h"
 #include <stdlib.h>
+
+int			exit_sh(char **arg, t_entab *table);
+static bool	is_valid(char *str);
+static int	ft_print_error(char *str, bool *valid);
+static int	skip_space_and_sign(char *str, long *sign);
+static long	ft_exitatol(char *str, bool *valid);
 
 static int	skip_space_and_sign(char *str, long *sign)
 {
@@ -82,7 +89,7 @@ int	exit_sh(char **arg, t_entab *table)
 
 	valid = true;
 	(void)table;
-	ft_dprintf(2, "exit\n");
+	//ft_dprintf(2, "exit\n");
 	if (length(arg) == 1)
 		exit(0);
 	if (length(arg) == 2)
