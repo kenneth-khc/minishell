@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 16:45:41 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/18 15:49:28 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/18 18:01:34 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@ void	expand_tokens(t_Token_List *tokens, t_entab *env)
 # define IFS ' '
 #endif
 
+	#include <stdio.h>
 void	word_splitting(t_Token *token)
 {
 	char			**words;
@@ -52,7 +53,7 @@ void	word_splitting(t_Token *token)
 	t_Token			*new_token;
 
 	new_tokens = (t_Token_List){.head = NULL, .tail = NULL};
-	words = ft_split(token->lexeme, IFS);
+	words = ft_split(token->lexeme, ' ');
 	if (words == NULL)
 		return ;
 	w = words;

@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 05:13:16 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/18 17:17:59 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/18 17:34:56 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include "execution.h"
 #include "lexer.h"
 #include "expansions.h"
+#include "serialize_tree.h"
 
 void	clean_up(t_Input *input, t_Token_List *tokens, t_Node *tree);
 
@@ -41,11 +42,12 @@ int	main(int argc, char **argv, char **envp)
 		parser.tokens = &tokens;
 		parser.token = tokens.head;
 		root = parse(&parser);
+		export_tree(root);
 		if (root)
 			exec_ast(root);
 		clean_up(&input, &tokens, root);
 	}
-	rl_clear_history();
+	//clear_history();
 }
 
 void	clean_up(t_Input *input, t_Token_List *tokens, t_Node *tree)
