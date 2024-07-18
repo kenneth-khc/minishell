@@ -6,7 +6,7 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 22:33:06 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/18 17:54:39 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/18 21:05:23 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,21 @@ char	*join_chunks(t_Chunk_List *chunks)
 	}
 	new_word[j] = '\0';
 	return (new_word);
+}
+
+void	free_chunks(t_Chunk_List *chunks)
+{
+	t_Chunk	*chunk;
+	t_Chunk	*temp;
+
+	chunk = chunks->head;
+	while (chunk)
+	{
+		temp = chunk;
+		chunk = chunk->next;
+		free(temp->str);
+		free(temp);
+	}
 }
 
 void	expand_parameter(t_Chunk_List *chunks, t_entab *env, char *dollar)

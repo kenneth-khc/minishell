@@ -56,20 +56,38 @@ int	get_tokens_count(t_Token_List *tokens)
 	return (count);
 }
 
+void	free_token(t_Token *token)
+{
+	free_quote_list(&token->quotes);
+	free(token->lexeme);
+	free(token);
+}
+
 void	free_tokens(t_Token_List *tokens)
 {
 	t_Token	*curr;
-	t_Token	*prev;
+	t_Token	*temp;
 
 	curr = tokens->head;
 	while (curr != NULL)
 	{
-		free(curr->lexeme);
-		curr->lexeme = NULL;
-		prev = curr;
+		temp = curr;
 		curr = curr->next;
-		free(prev);
+		free_token(temp);
 	}
+}
+
+void	free_quote_list(t_Quote_List *list)
+{
+	int	i;
+
+	i = 0;
+	while (i < list->pair_count)
+	{
+		free(list->pairs[i]);
+		i++;
+	}
+	free(list->pairs);
 }
 
 // void	print_tokens(t_Token_List *tokens)
@@ -91,24 +109,24 @@ void	free_tokens(t_Token_List *tokens)
 // 	printf("\n\n");
 // }
 //
-// char	*token_enum_to_str(t_Token *token)
-// {
-// 	const char *types[] = {
-// 		"WORD",
-// 		"PIPE",
-// 		"OR_OR",
-// 		"AND_AND",
-// 		"LESSER",
-// 		"LESSER_LESSER",
-// 		"GREATER",
-// 		"GREATER_GREATER",
-// 		"STAR",
-// 		"OPEN_PARAN",
-// 		"CLOSE_PARAN",
-// 		"SEMICOLON",
-// 		"END_OF_LINE",
-// 		"HASH"
-// 	};
-//
-// 	return (ft_strdup(types[token->type - 256]));
-// }
+ char	*token_enum_to_str(t_Token *token)
+ {
+ 	const char *types[] = {
+ 		"WORD",
+ 		"PIPE",
+ 		"OR_OR",
+ 		"AND_AND",
+ 		"LESSER",
+ 		"LESSER_LESSER",
+ 		"GREATER",
+ 		"GREATER_GREATER",
+ 		"STAR",
+ 		"OPEN_PARAN",
+ 		"CLOSE_PARAN",
+ 		"SEMICOLON",
+ 		"END_OF_LINE",
+ 		"HASH"
+ 	};
+
+ 	return (ft_strdup(types[token->type - 256]));
+ }

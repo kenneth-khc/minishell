@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 16:45:41 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/18 18:01:34 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/18 21:01:17 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,9 @@ void	expand_tokens(t_Token_List *tokens, t_entab *env)
 		io_number(token);
 		tilde_expansion(token, env);
 		if (parameter_expand(token, env))
+		{
 			word_splitting(token);
+		}
 		// todo: filename expansion
 		filename_expansion(token, env);
 		token = token->next;
@@ -66,8 +68,14 @@ void	word_splitting(t_Token *token)
 	if (new_tokens.tail)
 	{
 		new_tokens.tail->next = token->next;
-		token->prev->next = new_tokens.head;
-		token->next->prev = new_tokens.tail;
+		if (token->prev)
+		{
+			token->prev->next = new_tokens.head;
+		}
+		if (token->next)
+		{
+			token->next->prev = new_tokens.tail;
+		}
 	}
 	free(w);
 }

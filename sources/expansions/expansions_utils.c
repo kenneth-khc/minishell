@@ -6,7 +6,7 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 21:15:19 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/18 15:49:36 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/18 21:09:52 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,6 @@ char	*copy_var_val(char *key, t_entab *env)
 	else
 		value = NULL;
 	if (value)
-		ft_strdup(value);
+		value = ft_strdup(value);
 	return (value);
 }

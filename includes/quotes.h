@@ -38,5 +38,6 @@ t_Quote_List	find_quotes(t_Token *token);
 t_Quotes	*find_next_pair(char *word, char **next_start);
 void	store_quotes(t_Quote_List *list, t_Quotes *quotes);
 void	print_quote_list(t_Token *token);
+void	free_quote_list(t_Quote_List *list);
 
 #endif

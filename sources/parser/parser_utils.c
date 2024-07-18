@@ -62,7 +62,7 @@ void	consume(t_Parser *parser)
 
 bool	accept(t_Parser *parser, enum e_Token_Types type)
 {
-	if (parser->token->type == type)
+	if (parser->token && parser->token->type == type)
 	{
 		consume(parser);
 		return (true);

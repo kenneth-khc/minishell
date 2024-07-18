@@ -40,6 +40,7 @@ bool	is_valid_key_start(char *dollar);
 bool	parameter_expand(t_Token *token, t_entab *env);
 void	chunkify_unexpanded_portion(t_Chunk_List *chunks, char **start, char **end);
 bool	chunkify_expansions(t_Chunk_List *chunks, t_entab *env, char **start, char **end);
+void	free_chunks(t_Chunk_List *chunks);
 size_t	count_total_chunk_len(t_Chunk_List *chunks);
 bool	quote_to_remove(t_Quote_List *quote_list, char *quote);
 void	filename_expansion(t_Token *token, t_entab *env);

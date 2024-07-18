@@ -24,7 +24,7 @@ void	error(const char *str)
 
 void	syntax_error(t_Parser *parser, const char *err_msg)
 {
-	(void)parser;
 	ft_dprintf(STDERR_FILENO, "%s: syntax error: %s\n", "bish", err_msg);
+	parser->syntax_ok = false;
 	return ;
 }
