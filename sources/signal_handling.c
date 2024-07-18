@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 22:09:08 by qang              #+#    #+#             */
-/*   Updated: 2024/07/17 01:20:37 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/18 15:23:49 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,7 @@ static void	re_prompt(int sig)
 	(void)sig;
 	write(1, "\n", 1);
 	rl_on_new_line();
-// todo: fix readline linking
-//	rl_replace_line("", 0);
+	rl_replace_line("", 0);
 	rl_redisplay();
 }
 

@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:10:41 by qang              #+#    #+#             */
-/*   Updated: 2024/07/17 23:42:03 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/18 15:19:23 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,8 @@
 #include <unistd.h>
 
 void		redir(t_Redir_Node *node);
-static void	check_permissions(char *newfile, char *oldfile);
-static void	read_and_expand(t_Redir_Node *node);
+static void	check_permissions(char *newfile, t_Direction direction);
+static void	read_and_expand(t_Redir_Node *node, int fd);
 static void	redir_delim(t_Redir_Node *node);
 static char	*get_next_heredoc(void);
 
@@ -37,7 +37,7 @@ static char	*get_next_heredoc(void)
 	return (heredoc);
 }
 
-static void	read_and_expand(t_Redir_Node *node)
+static void	read_and_expand(t_Redir_Node *node, int fd)
 {
 	char	*line;
 	char	*expanded_line;
@@ -54,7 +54,7 @@ static void	read_and_expand(t_Redir_Node *node)
 		&& ft_strncmp(line, node->delim, ft_strlen(node->delim)) != 0)
 	{
 		expanded_line = expand_line(line, node->table);
-		write(node->newfd, expanded_line, ft_strlen(expanded_line));
+		write(fd, expanded_line, ft_strlen(expanded_line));
 		free(line);
 		free(expanded_line);
 		write(1, ">", 1);
@@ -66,64 +66,68 @@ static void	redir_delim(t_Redir_Node *node)
 {
 	int		pid;
 	char	*next_heredoc;
+	int		fd;
 
 	pid = forkpromax();
 	if (pid == 0)
 	{
 		next_heredoc = get_next_heredoc();
-		node->newfd = open(next_heredoc, O_CREAT | O_RDWR | O_TRUNC, 0644);
-		if (node->newfd < 0)
+		fd = open(next_heredoc, O_CREAT | O_RDWR | O_TRUNC, 0644);
+		if (fd < 0)
 		{
 			ft_dprintf(2, "Error while opening file\n");
 			exit(1);
 		}
-		read_and_expand(node);
-		close(node->newfd);
-		node->newfd = open(next_heredoc, O_RDONLY, 0644);
+		read_and_expand(node, fd);
+		close(fd);
+		fd = open(next_heredoc, O_RDONLY, 0644);
 		unlink(next_heredoc);
-		dup2(node->newfd, node->oldfd);
-		close(node->newfd);
+		dup2(fd, node->oldfd);
+		close(fd);
 		if (node->left)
 			exec_ast(node->left);
-		exit(0);
+		else
+			exit(0);
 	}
-	waitpid(pid, NULL, 0);
+	wait_for_child(pid);
 }
 
-static void	check_permissions(char *newfile, char *oldfile)
+static void	check_permissions(char *newfile, t_Direction direction)
 {
 	struct stat	file_stats;
 
-	if (stat(newfile, &file_stats) == 0)
+	if (direction == OUTPUT)
 	{
-		if (S_ISDIR(file_stats.st_mode))
+		if (stat(newfile, &file_stats) == 0 && S_ISDIR(file_stats.st_mode))
 		{
 			ft_dprintf(2, "%s: %s: Is a directory\n", SHELL, newfile);
-			exit(126);
+			exit(1);
 		}
-		else if (access(newfile, W_OK) == -1)
+		else if (access(newfile, F_OK) == 0 && access(newfile, W_OK) != 0)
 		{
 			ft_dprintf(2, "%s: %s: Permission denied\n", SHELL, newfile);
-			exit(126);
+			exit(1);
 		}
+		return ;
 	}
-	if (stat(oldfile, &file_stats) != 0)
+	if (stat(newfile, &file_stats) != 0)
 	{
-		ft_dprintf(2, "%s: %s: No such file or directory\n", SHELL, oldfile);
-		exit(126);
+		ft_dprintf(2, "%s: %s: No such file or directory\n", SHELL, newfile);
+		exit(1);
 	}
-	if (access(oldfile, R_OK) == -1)
+	if (access(newfile, R_OK) != 0)
 	{
-		ft_dprintf(2, "%s: %s: Permission denied\n", SHELL, oldfile);
-		exit(126);
+		ft_dprintf(2, "%s: %s: Permission denied\n", SHELL, newfile);
+		exit(1);
 	}
 }
 
 void	redir(t_Redir_Node *node)
 {
 	int	pid1;
+	int	fd;
 
-	if (node->delim)
+	if (node->heredoc)
 	{
 		redir_delim(node);
 		return ;
@@ -131,13 +135,14 @@ void	redir(t_Redir_Node *node)
 	pid1 = forkpromax();
 	if (pid1 == 0)
 	{
-		check_permissions((char *)node->file, (char *)node->file);
-		node->newfd = open(node->file, node->flags, node->mode);
-		dup2(node->newfd, node->oldfd);
-		close(node->newfd);
+		check_permissions((char *)node->file, node->direction);
+		fd = open(node->file, node->flags, node->mode);
+		dup2(fd, node->oldfd);
+		close(fd);
 		if (node->left)
 			exec_ast(node->left);
-		exit(0);
+		else
+			exit(0);
 	}
-	waitpid(pid1, NULL, 0);
+	wait_for_child(pid1);
 }
