@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 11:07:13 by qang              #+#    #+#             */
-/*   Updated: 2024/07/17 23:39:27 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/18 10:27:35 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,8 @@ static char	*get_type(char *str, t_entab *table)
 	{
 		if (*(str + 1) == '?')
 			return (ft_itoa(get_exit_status()));
+		else if (*(str + 1) == ' ')
+			return (ft_strdup("$ "));
 		else if (!ft_isalpha(*(str + 1)))
 			return (ft_strdup(""));
 		else
@@ -74,7 +76,7 @@ static char	*get_type(char *str, t_entab *table)
 			if (get_var(temp1, table) == NULL)
 				return (ft_strdup(""));
 			else
-				get_node_val(temp1, table);
+				return (get_node_val(temp1, table));
 		}
 	}
 	return (ft_strdup(""));
