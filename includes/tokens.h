@@ -75,6 +75,7 @@ t_Token	*create_token(int type, const char *lexeme);
 void	add_token(t_Token_List *tokens, t_Token *token);
 int		get_tokens_count(t_Token_List *tokens);
 void	free_tokens(t_Token_List *tokens);
+void	free_token(t_Token *token);
 void	print_tokens(t_Token_List *tokens);
 char	*token_enum_to_str(t_Token *token);
 

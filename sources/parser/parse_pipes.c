@@ -14,6 +14,8 @@
 #include "parser.h"
 #include "libft.h"
 #include "errors.h"
+#include "tokens.h"
+#include <stdio.h>
 
 t_Node	*parse_pipe_sequence(t_Parser *parser)
 {

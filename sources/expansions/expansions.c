@@ -66,8 +66,14 @@ void	word_splitting(t_Token *token)
 	if (new_tokens.tail)
 	{
 		new_tokens.tail->next = token->next;
-		token->prev->next = new_tokens.head;
-		token->next->prev = new_tokens.tail;
+		if (token->prev)
+		{
+			token->prev->next = new_tokens.head;
+		}
+		if (token->next)
+		{
+			token->next->prev = new_tokens.tail;
+		}
 	}
 	free(w);
 }

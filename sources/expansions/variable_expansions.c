@@ -27,7 +27,7 @@ bool	parameter_expand(t_Token *token, t_entab *env)
 	bool			expanded;
 
 	chunks = (t_Chunk_List){.head = NULL, .tail = NULL};
-	s = (char *)token->lexeme;
+	s = token->lexeme;
 	e = s;
 	expanded = false;
 	while (s < (token->lexeme + ft_strlen(token->lexeme)))
@@ -44,6 +44,7 @@ bool	parameter_expand(t_Token *token, t_entab *env)
 	}
 	free(token->lexeme);
 	token->lexeme = join_chunks(&chunks);
+	free_chunks(&chunks);
 	return (expanded);
 }
 
