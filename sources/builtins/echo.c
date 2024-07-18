@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 21:20:52 by qang              #+#    #+#             */
-/*   Updated: 2024/07/18 14:01:23 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/18 15:50:01 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static int	skip_flags(char **args, int *newline)
 	int	j;
 
 	i = 1;
-	while (args[i] && ft_strncmp(args[i], "-n", 2) == 0 && args[i + 1])
+	while (args[i] && ft_strncmp(args[i], "-n", 2) == 0)
 	{
 		j = 1;
 		if (args[i][j + 1] != '\0' && args[i][j + 1] != 'n')

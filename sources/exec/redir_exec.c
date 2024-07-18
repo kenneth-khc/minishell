@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:10:41 by qang              #+#    #+#             */
-/*   Updated: 2024/07/18 17:15:41 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/18 17:18:08 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,10 +87,9 @@ static void	redir_delim(t_Redir_Node *node)
 		close(fd);
 		if (node->left)
 			exec_ast(node->left);
-		else
-			exit(0);
+		exit(0);
 	}
-	wait_for_child(pid);
+	set_exit_status(wait_for_child(pid));
 }
 
 static void	check_permissions(char *newfile, t_Direction direction)
@@ -141,9 +140,11 @@ void	redir(t_Redir_Node *node)
 		dup2(fd, node->oldfd);
 		close(fd);
 		if (node->left)
+		{
 			exec_ast(node->left);
-		else
-			exit(0);
+			close(node->oldfd);
+		}
+		exit(0);
 	}
-	wait_for_child(pid1);
+	set_exit_status(wait_for_child(pid1));
 }

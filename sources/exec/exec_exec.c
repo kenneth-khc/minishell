@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/13 00:48:55 by qang              #+#    #+#             */
-/*   Updated: 2024/07/17 23:40:34 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/18 15:40:20 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ void	child_process(t_Exec_Node *node, t_entab *table)
 		{
 			execvepromax((char **)node->args, table, get_var("PATH", table));
 			ft_dprintf(2, "%s: %s: command not found\n", SHELL, node->command);
+			exit(127);
 		}
 	}
 	exit(0);

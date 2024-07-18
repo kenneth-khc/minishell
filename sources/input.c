@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/09 21:04:33 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/18 06:20:54 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/18 15:34:44 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,7 @@ void	get_input(t_Input *input)
 	line = ft_calloc(1, sizeof(*line));
 	if (line == NULL)
 		error("calloc failed");
-	read = readline("bish> ");
-	/*
+	// read = readline("bish> ");
 	if (isatty(fileno(stdin)))
 		read = readline("bish > ");
 	else
@@ -53,10 +52,9 @@ void	get_input(t_Input *input)
 		read = ft_strtrim(line, "\n");
 		free(line);
 	}
-	*/
 	if (read == NULL)
 	{
-		printf("exit\n");
+		// printf("exit\n");
 		exit(get_exit_status());
 	}
 	add_history(read);
