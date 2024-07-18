@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 00:11:02 by qang              #+#    #+#             */
-/*   Updated: 2024/07/17 10:55:19 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/18 18:34:50 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ char	**env_convert(t_entab *table)
 			i++;
 		node = node->next;
 	}
-	ret = (char **)malloc(sizeof(char *) * (i + 1));
+	ret = (char **)mallocpromax(sizeof(char *) * (i + 1));
 	convert(ret, table->head, i);
 	ret[i] = 0;
 	return (ret);

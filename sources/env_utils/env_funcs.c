@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 21:24:13 by qang              #+#    #+#             */
-/*   Updated: 2024/07/17 01:32:59 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/18 18:34:12 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ t_envar	*new_env_var(const char *str)
 	char	*val;
 	t_envar	*new;
 
-	new = malloc(sizeof(t_envar));
+	new = mallocpromax(sizeof(t_envar));
 	temp = ft_strchr(str, '=');
 	key = ft_substr(str, 0, temp - str);
 	if (temp == NULL)
@@ -115,7 +115,7 @@ t_entab	*init_env_table(char **env)
 	t_entab	*table;
 
 	i = -1;
-	table = malloc(sizeof(t_entab));
+	table = mallocpromax(sizeof(t_entab));
 	prev = NULL;
 	temp = NULL;
 	while (env[++i])
