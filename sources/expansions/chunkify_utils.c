@@ -3,15 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   chunkify_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
+/*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 15:32:18 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/18 15:32:41 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/18 17:53:51 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
 #include "expansions.h"
+#include "libft.h"
+
+void	add_chunk(t_Chunk_List *chunks, char *str);
+size_t	count_total_chunk_len(t_Chunk_List *chunks);
 
 void	add_chunk(t_Chunk_List *chunks, char *str)
 {
@@ -47,4 +50,3 @@ size_t	count_total_chunk_len(t_Chunk_List *chunks)
 	}
 	return (total_len);
 }
-

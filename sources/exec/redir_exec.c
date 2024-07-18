@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:10:41 by qang              #+#    #+#             */
-/*   Updated: 2024/07/18 17:18:08 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/18 17:40:21 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,9 @@
 #include "ft_dprintf.h"
 #include "get_next_line.h"
 #include <fcntl.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <sys/wait.h>
 #include <unistd.h>
 
 void		redir(t_Redir_Node *node);
-static void	check_permissions(char *newfile, t_Direction direction);
 static void	read_and_expand(t_Redir_Node *node, int fd);
 static void	redir_delim(t_Redir_Node *node);
 static char	*get_next_heredoc(void);
@@ -90,36 +86,6 @@ static void	redir_delim(t_Redir_Node *node)
 		exit(0);
 	}
 	set_exit_status(wait_for_child(pid));
-}
-
-static void	check_permissions(char *newfile, t_Direction direction)
-{
-	struct stat	file_stats;
-
-	if (direction == OUTPUT)
-	{
-		if (stat(newfile, &file_stats) == 0 && S_ISDIR(file_stats.st_mode))
-		{
-			ft_dprintf(2, "%s: %s: Is a directory\n", SHELL, newfile);
-			exit(1);
-		}
-		else if (access(newfile, F_OK) == 0 && access(newfile, W_OK) != 0)
-		{
-			ft_dprintf(2, "%s: %s: Permission denied\n", SHELL, newfile);
-			exit(1);
-		}
-		return ;
-	}
-	if (stat(newfile, &file_stats) != 0)
-	{
-		ft_dprintf(2, "%s: %s: No such file or directory\n", SHELL, newfile);
-		exit(1);
-	}
-	if (access(newfile, R_OK) != 0)
-	{
-		ft_dprintf(2, "%s: %s: Permission denied\n", SHELL, newfile);
-		exit(1);
-	}
 }
 
 void	redir(t_Redir_Node *node)

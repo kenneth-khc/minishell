@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 21:06:03 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/18 15:25:19 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/18 17:48:42 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,13 +82,17 @@ typedef struct s_Redir_Node
 	char				*delim;
 }	t_Redir_Node;
 
-typedef struct s_Parser t_Parser;
+typedef struct s_Parser	t_Parser;
 t_Redir_Node	*create_redir_node(int oldfd, const char *filename,
 					int flags, mode_t mode);
-void	trunc_output_redir(t_Parser *parser, t_Redir_Node *node, bool oldfd_set);
-void	append_output_redir(t_Parser *parser, t_Redir_Node *node, bool oldfd_set);
-void	input_redir(t_Parser *parser, t_Redir_Node *node, bool oldfd_set);
-void	heredoc_redir(t_Parser *parser, t_Redir_Node *node, bool oldfd_set);
+void			trunc_output_redir(t_Parser *parser, t_Redir_Node *node,
+					bool oldfd_set);
+void			append_output_redir(t_Parser *parser, t_Redir_Node *node,
+					bool oldfd_set);
+void			input_redir(t_Parser *parser, t_Redir_Node *node,
+					bool oldfd_set);
+void			heredoc_redir(t_Parser *parser, t_Redir_Node *node,
+					bool oldfd_set);
 
 /**
  * Node for piping

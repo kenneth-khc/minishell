@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 21:20:05 by qang              #+#    #+#             */
-/*   Updated: 2024/07/18 17:07:17 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/18 17:37:45 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ static void	ft_export_error(char *str, int *errno)
 	ft_dprintf(2, "%s: export: `%s': not a valid identifier\n", SHELL, str);
 	*errno = 1;
 }
-#include <stdio.h>
+
 static bool	ft_is_valid_export(char *str)
 {
 	int	i;

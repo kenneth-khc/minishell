@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 21:02:06 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/05 20:01:51 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/18 17:53:02 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ t_Redir_Node	*create_redir_node(int oldfd, const char *filename,
 int flags, mode_t mode)
 {
 	t_Redir_Node	*node;
-	
+
 	node = ft_calloc(1, sizeof(*node));
 	node->type = Redir_Node;
 	node->left = NULL;
@@ -47,13 +47,12 @@ int flags, mode_t mode)
 	node->file = (char *)filename;
 	node->flags = flags;
 	node->mode = mode;
-
 	return (node);
 }
 
 void	add_exec_arguments(t_Exec_Node *exec_node, const char *arg)
 {
-	int	i;
+	int			i;
 	int			old_count;
 	const char	**temp;
 
@@ -99,4 +98,3 @@ void	free_tree(t_Node *node)
 	free_tree(node->right);
 	free(temp);
 }
-

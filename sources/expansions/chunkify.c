@@ -3,16 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   chunkify.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
+/*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 22:33:06 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/18 15:32:44 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/18 17:54:49 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
 #include "expansions.h"
 #include "definitions.h"
+#include "libft.h"
+
+void	chunkify_unexpanded_portion(t_Chunk_List *chunks,
+			char **start, char **end);
+bool	chunkify_expansions(t_Chunk_List *chunks, t_entab *env,
+			char **start, char **end);
+char	*join_chunks(t_Chunk_List *chunks);
+void	expand_parameter(t_Chunk_List *chunks, t_entab *env, char *dollar);
 
 void	chunkify_unexpanded_portion(t_Chunk_List *chunks,
 	char **start, char **end)
