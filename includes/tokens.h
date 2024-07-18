@@ -6,7 +6,7 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 09:25:32 by kecheong          #+#    #+#             */
-/*   Updated: 2024/04/18 21:38:14 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/18 15:19:51 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,7 @@ typedef enum e_Token_Types
 typedef struct s_Token
 {
 	enum e_Token_Types	type;
-	const char			*lexeme;
+	char				*lexeme;
 	int					word_flags;
 	t_Quote_List		quotes;
 	struct s_Token		*next;
@@ -58,10 +58,8 @@ typedef struct s_Token
 
 #define W_STRONG_QUOTED	       0b1
 #define W_WEAK_QUOTED	      0b10
-#define W_ASSIGNMENT	     0b100
-#define W_HAS_DOLLAR	    0b1000
-#define W_PARAM_EXPANSION  0b10000
-#define W_TILDE_EXPANSION 0b100000
+#define W_PARAM_EXPANSION  0b100
+#define W_TILDE_EXPANSION 0b1000
 
 /**
  * A list of all the tokens.

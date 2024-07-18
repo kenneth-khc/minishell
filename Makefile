@@ -2,7 +2,7 @@ MAKEFLAGS += --warn-undefined-variables
 NAME := minishell
 CC ?= cc
 CFLAGS := -Wall -Werror -Wextra
-LDFLAGS := -L libft #-L/opt/homebrew/opt/readline/lib
+LDFLAGS := -L libft -L/goinfre/qang/.brew/opt/readline/lib
 LDLIBS := -lreadline -lft
 
 fsan := -fsanitize=address
@@ -12,7 +12,7 @@ c_reset := \e[0m
 
 libft_dir := libft
 libft := $(libft_dir)/libft.a
-includes ?= -I includes -I libft/includes -I/opt/homebrew/opt/readline/include
+includes ?= -I includes -I libft/includes -I/goinfre/qang/.brew/opt/readline/include
 src_dir := sources
 src_dirs := $(src_dir) $(src_dir)/lexer $(src_dir)/parser $(src_dir)/builtins $(src_dir)/exec $(src_dir)/expansions $(src_dir)/env_utils
 srcs := $(foreach dir, $(src_dirs), $(wildcard $(dir)/*.c))

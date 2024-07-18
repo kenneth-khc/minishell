@@ -6,11 +6,12 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 23:26:55 by qang              #+#    #+#             */
-/*   Updated: 2024/07/17 23:39:43 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/18 17:13:26 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "execution.h"
+#include "libft.h"
 
 void	ass_var(t_Ass_Node *node);
 

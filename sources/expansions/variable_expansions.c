@@ -6,16 +6,18 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 21:49:01 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/18 06:51:51 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/18 15:53:41 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdlib.h>
 #include "env.h"
 #include "execution.h"
 #include "expansions.h"
 #include "libft.h"
 #include "tokens.h"
-#include <stdlib.h>
+#include "quotes.h"
+#include "definitions.h"
 
 bool	parameter_expand(t_Token *token, t_entab *env)
 {
@@ -40,7 +42,7 @@ bool	parameter_expand(t_Token *token, t_entab *env)
 		else
 			e++;
 	}
-	free((void *)token->lexeme);
+	free(token->lexeme);
 	token->lexeme = join_chunks(&chunks);
 	return (expanded);
 }
@@ -71,7 +73,8 @@ void	expand_special_parameters(t_Chunk_List *chunks, char *dollar)
 
 /**
  * A key is only a valid name if it starts with an underscore or alphabet.
- * Treat the $ as literal and do not expand if it is not going to be a valid name.
+ * Treat the $ as literal and do not expand if it is not
+ * going to be a valid name.
  * For some reason, $"" $'' expands.
 **/
 bool	is_valid_key_start(char *dollar)
@@ -105,7 +108,6 @@ bool	quote_to_remove(t_Quote_List *quote_list, char *quote)
 	return (false);
 }
 
-#include "quotes.h"
 /**
  * Check if the dollar found belongs between any of the pair of quotes
  * in the word
@@ -113,9 +115,10 @@ bool	quote_to_remove(t_Quote_List *quote_list, char *quote)
 **/
 bool	should_expand(char *dollar, t_Quote_List *quote_list)
 {
-	int			i = 0;
+	int			i;
 	t_Quotes	*pair;
 
+	i = 0;
 	while (i < quote_list->pair_count)
 	{
 		pair = quote_list->pairs[i];

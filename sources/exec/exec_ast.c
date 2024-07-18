@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 22:15:03 by qang              #+#    #+#             */
-/*   Updated: 2024/07/17 00:41:01 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/18 17:10:33 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <fcntl.h>
 #include <sys/wait.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 void	exec_ast(t_Node *node);
 void	oror(t_Node *node);

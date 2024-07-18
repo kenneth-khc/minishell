@@ -23,14 +23,13 @@ typedef enum e_Word_State
 	UNQUOTED,
 	WEAK_QUOTE,
 	STRONG_QUOTE,
-	ESCAPE
 }	t_Word_State;
 
 typedef struct s_Lexer
 {
 	t_Line			*line; // the current line being processed
-	char			*start_char; // start of the token to be grabbed
-	char			*end_char; // end of the token to be grabbed
+	char			*start; // start of the token to be grabbed
+	char			*end; // end of the token to be grabbed
 	t_Word_State	state; // whether it is currently unquoted or quoted
 	bool			terminated; // are quotes properly terminated
 }	t_Lexer;
@@ -42,10 +41,8 @@ typedef struct s_Match_Table
 }	t_Match_Table;
 
 t_Token_List	scan(t_Input *input);
-void	init_matches(t_Match_Table (*matches)[TOKEN_TYPES]);
 bool	is_metacharacter(const char c);
 bool	is_blank(const char c);
-bool	end_of_line(t_Token *token);
 void	skip_comment(t_Lexer *lexer);
 void	match(t_Input *input, t_Lexer *lexer, t_Token_List *tokens);
 

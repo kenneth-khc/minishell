@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 05:13:16 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/17 22:40:56 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/18 17:15:19 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int	main(int argc, char **argv, char **envp)
 			exec_ast(root);
 		clean_up(&input, &tokens, root);
 	}
-	clear_history();
+	rl_clear_history();
 }
 
 void	clean_up(t_Input *input, t_Token_List *tokens, t_Node *tree)

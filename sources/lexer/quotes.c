@@ -6,21 +6,23 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 21:16:09 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/15 22:07:19 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/18 15:24:47 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdio.h>
+#include "definitions.h"
 #include "quotes.h"
 #include "tokens.h"
-#include <stdio.h>
 #include "libft.h"
 
 t_Quote_List	find_quotes(t_Token *token)
 {
 	struct s_Quote_List	list;
-	char			*word = (char*)token->lexeme;
-	t_Quotes		*quotes;
+	struct s_Quotes		*quotes;
+	char				*word;
 
+	word = token->lexeme;
 	list = (struct s_Quote_List){0, NULL};
 	quotes = find_next_pair(word, &word);
 	while (quotes != NULL
@@ -32,14 +34,9 @@ t_Quote_List	find_quotes(t_Token *token)
 	return (list);
 }
 
-bool	is_quote(char c)
-{
-	return (c == '"' || c == '\'');
-}
-
 t_Quotes	*find_next_pair(char *word, char **next_start)
 {
-	t_Quotes	*quotes;(void)quotes;
+	t_Quotes	*quotes;
 	char		*s;
 
 	s = ft_strpbrk(word, is_quote);
@@ -75,21 +72,20 @@ void	store_quotes(t_Quote_List *list, t_Quotes *quotes)
 	list->pairs = new;
 }
 
-
-void	print_quote_list(t_Token *token)
-{
-	printf("Start: %p End: %p\n", token->lexeme, token->lexeme + ft_strlen(token->lexeme) - 1);
-	
-	int	i = 0;
-	t_Quotes	*q;
-
-	printf("Quotes: \n");
-	while (i < token->quotes.pair_count)
-	{
-		q = token->quotes.pairs[i];
-		printf("Start: %p End: %p\n", q->start, q->end);
-		i++;
-	}
-	printf("\n");
-}
-
+// void	print_quote_list(t_Token *token)
+// {
+// 	printf("Start: %p End: %p\n", token->lexeme,
+//		token->lexeme + ft_strlen(token->lexeme) - 1);
+// 	
+// 	int	i = 0;
+// 	t_Quotes	*q;
+//
+// 	printf("Quotes: \n");
+// 	while (i < token->quotes.pair_count)
+// 	{
+// 		q = token->quotes.pairs[i];
+// 		printf("Start: %p End: %p\n", q->start, q->end);
+// 		i++;
+// 	}
+// 	printf("\n");
+// }
