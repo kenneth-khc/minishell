@@ -19,6 +19,7 @@
 #include "libft.h"
 #include "tokens.h"
 
+#include "errors.h"
 t_Node	*parse_io_redirect(t_Parser *parser)
 {
 	t_Redir_Node	*node;
@@ -41,6 +42,8 @@ t_Node	*parse_io_redirect(t_Parser *parser)
 		trunc_output_redir(parser, node, oldfd_set);
 	else if (accept(parser, GREATER_GREATER))
 		append_output_redir(parser, node, oldfd_set);
+	if (peek(1, parser) != WORD)
+		syntax_error(parser, "expected redirectee");
 	return ((t_Node *)node);
 }
 

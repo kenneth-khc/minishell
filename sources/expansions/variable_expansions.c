@@ -19,6 +19,7 @@
 #include "quotes.h"
 #include "definitions.h"
 
+bool	dollar_prefix_string(char *dollar, t_Quote_List *quote_list);
 bool	parameter_expand(t_Token *token, t_entab *env)
 {
 	t_Chunk_List	chunks;
@@ -34,6 +35,11 @@ bool	parameter_expand(t_Token *token, t_entab *env)
 	{
 		if (*e == '\0' || (is_quote(*e) && quote_to_remove(&token->quotes, e)))
 			chunkify_unexpanded_portion(&chunks, &s, &e);
+		else if (*e == '$' && dollar_prefix_string(e, &token->quotes))
+		{
+			e += 1;
+			s = e;
+		}
 		else if (*e == '$' && should_expand(e, &token->quotes))
 		{
 			expanded = chunkify_expansions(&chunks, env, &s, &e);
@@ -109,11 +115,29 @@ bool	quote_to_remove(t_Quote_List *quote_list, char *quote)
 	return (false);
 }
 
+bool	dollar_prefix_string(char *dollar, t_Quote_List *quote_list)
+{
+	int			i;
+	t_Quotes	*pair;
+
+	i = 0;
+	while (i < quote_list->pair_count)
+	{
+		pair = quote_list->pairs[i];
+		if (dollar + 1 == pair->start
+			&& pair->end > pair->start)
+			return (true);
+		i++;
+	}
+	return (false);
+}
+
 /**
  * Check if the dollar found belongs between any of the pair of quotes
  * in the word
  * If found between strong quotes (''), do not expand
 **/
+#include <stdio.h>
 bool	should_expand(char *dollar, t_Quote_List *quote_list)
 {
 	int			i;

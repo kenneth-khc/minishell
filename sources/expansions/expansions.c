@@ -32,9 +32,8 @@ void	expand_tokens(t_Token_List *tokens, t_entab *env)
 		tilde_expansion(token, env);
 		if (parameter_expand(token, env))
 		{
-			;
+			word_splitting(token);
 		}
-			//word_splitting(token);
 		// todo: filename expansion
 		filename_expansion(token, env);
 		token = token->next;

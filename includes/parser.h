@@ -23,9 +23,10 @@ typedef struct s_Parser
 	t_Token_List	*tokens; // list of tokens
 	t_Token			*token; // current token the parser is looking at
 	t_entab			*envtab; // environment table
-	t_Node			*root; // root of the tree constructed so far
+	bool			syntax_ok;
 }	t_Parser;
 
+void			init_parser(t_Parser *parser, t_Token_List *tokens, t_entab *env);
 t_Node			*parse(t_Parser *parser);
 t_Node			*parse_subshell(t_Parser *parser);
 t_Node			*parse_list(t_Parser *parser);
