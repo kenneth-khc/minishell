@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 15:32:18 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/18 17:53:51 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/18 18:17:10 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,9 @@ size_t	count_total_chunk_len(t_Chunk_List *chunks)
 
 	total_len = 0;
 	chunk = chunks->head;
-	i = 0;
 	while (chunk != NULL)
 	{
+		i = 0;
 		while (chunk->str && chunk->str[i] != '\0')
 		{
 			total_len++;
