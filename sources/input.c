@@ -6,19 +6,20 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/09 21:04:33 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/17 01:25:28 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/18 06:20:54 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <readline/history.h>
+#include <readline/readline.h>
 #include "errors.h"
 #include "get_next_line.h"
 #include "input.h"
 #include "libft.h"
-#include <readline/history.h>
-#include <readline/readline.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include "execution.h"
 
 t_Line	*make_line(char *str)
 {
@@ -41,7 +42,8 @@ void	get_input(t_Input *input)
 	line = ft_calloc(1, sizeof(*line));
 	if (line == NULL)
 		error("calloc failed");
-	//read = readline("bish> ");
+	read = readline("bish> ");
+	/*
 	if (isatty(fileno(stdin)))
 		read = readline("bish > ");
 	else
@@ -51,10 +53,11 @@ void	get_input(t_Input *input)
 		read = ft_strtrim(line, "\n");
 		free(line);
 	}
+	*/
 	if (read == NULL)
 	{
-		//printf("exit\n");
-		exit(EXIT_SUCCESS);
+		printf("exit\n");
+		exit(get_exit_status());
 	}
 	add_history(read);
 	newline_appended = ft_strjoin(read, "\n");

@@ -16,7 +16,6 @@
 #include <fcntl.h>
 #include <sys/fcntl.h>
 #include <unistd.h>
-#include "debug.h"
 #include "libft.h"
 #include "tokens.h"
 
@@ -155,13 +154,13 @@ t_Node	*parse_io_here(t_Parser *parser)
 		}
 		else
 		{
-			cerr("missing heredoc end");
+			//cerr("missing heredoc end");
 			return (NULL);
 		}
 	}
 	else
 	{
-		cerr("not heredoc");
+		//cerr("not heredoc");
 		return (NULL);
 	}
 }

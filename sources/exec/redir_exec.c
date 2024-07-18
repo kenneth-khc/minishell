@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:10:41 by qang              #+#    #+#             */
-/*   Updated: 2024/07/18 15:19:23 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/18 15:26:50 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ static void	read_and_expand(t_Redir_Node *node, int fd)
 	char	*line;
 	char	*expanded_line;
 
+	expand_line = NULL;
 	write(1, ">", 1);
 	line = get_next_line(0);
 	if (line == NULL)

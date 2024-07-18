@@ -57,6 +57,22 @@ int	get_tokens_count(t_Token_List *tokens)
 	return (count);
 }
 
+void	free_tokens(t_Token_List *tokens)
+{
+	t_Token	*curr;
+	t_Token	*prev;
+
+	curr = tokens->head;
+	while (curr != NULL)
+	{
+		free((void *)curr->lexeme);
+		curr->lexeme = NULL;
+		prev = curr;
+		curr = curr->next;
+		free(prev);
+	}
+}
+
 void	print_tokens(t_Token_List *tokens)
 {
 	int			i;

@@ -13,6 +13,8 @@
 #include "input.h"
 #include "libft.h"
 
+char	*get_history(t_Input *input);
+
 char	*get_history(t_Input *input)
 {
 	int		i;

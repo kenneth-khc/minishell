@@ -23,10 +23,11 @@
  */
 t_Token_List	scan(t_Input *input)
 {
-	t_Line	*line = input->lines[0];
+	t_Line			*line;
 	t_Lexer			lexer;
 	t_Token_List	tokens;
 
+	line = input->lines[0];
 	lexer = (t_Lexer){.line = line,
 		.start_char = line->start,
 		.end_char = line->start,
@@ -47,31 +48,23 @@ t_Token_List	scan(t_Input *input)
 
 void	match(t_Input *input, t_Lexer *lexer, t_Token_List *tokens)
 {
-	int	i = 0;
-	t_Match_Table const *ptr;
-	static t_Match_Table	matches[TOKEN_TYPES] = {
-		{"\n", END_OF_LINE},
-		{"||", OR_OR},
-		{"|", PIPE},
-		{"&&", AND_AND},
-		{"<<", LESSER_LESSER},
-		{"<", LESSER},
-		{">>", GREATER_GREATER},
-		{">", GREATER},
-		{"*", STAR},
-		{"(", OPEN_PARAN},
-		{")", CLOSE_PARAN},
-		{";", SEMICOLON},
-		{"#", HASH}
-	};
+	int						i;
+	t_Match_Table const		*match;
+	static t_Match_Table	matches[TOKEN_TYPES];
+	t_Token					*new_token;
 
+	if (matches[0].lexeme == NULL)
+		init_matches(&matches);
+	i = 0;
 	while (i < TOKEN_TYPES)
 	{
-		ptr = &matches[i];
-		if (ft_strncmp(lexer->start_char, ptr->lexeme, ft_strlen(ptr->lexeme)) == 0)
+		match = &matches[i];
+		if (ft_strncmp(lexer->start_char, match->lexeme,
+				ft_strlen(match->lexeme)) == 0)
 		{
-			add_token(tokens, create_token(ptr->type, ft_strdup(ptr->lexeme)));
-			lexer->start_char += ft_strlen(ptr->lexeme);
+			new_token = create_token(match->type, ft_strdup(match->lexeme));
+			add_token(tokens, new_token);
+			lexer->start_char += ft_strlen(match->lexeme);
 			lexer->end_char = lexer->start_char;
 			return ;
 		}
@@ -82,6 +75,26 @@ void	match(t_Input *input, t_Lexer *lexer, t_Token_List *tokens)
 
 bool	end_of_line(t_Token *token)
 {
-	return (token && token->type == END_OF_LINE);
+	return (token && token->type == END_OF_LINE && token->next == NULL);
 }
 
+void	init_matches(t_Match_Table (*matches)[TOKEN_TYPES])
+{
+	const t_Match_Table	temp[TOKEN_TYPES] = {
+	{"\n", END_OF_LINE},
+	{"||", OR_OR},
+	{"|", PIPE},
+	{"&&", AND_AND},
+	{"<<", LESSER_LESSER},
+	{"<", LESSER},
+	{">>", GREATER_GREATER},
+	{">", GREATER},
+	{"*", STAR},
+	{"(", OPEN_PARAN},
+	{")", CLOSE_PARAN},
+	{";", SEMICOLON},
+	{"#", HASH}
+	};
+
+	ft_memcpy(matches, temp, sizeof(temp));
+}

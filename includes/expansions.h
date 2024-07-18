@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 21:15:47 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/17 10:39:21 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/18 07:04:13 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,18 @@ void	expand(t_Token *token, char *expansion, char *expand_start, char *expand_en
 bool	only_digits(const char *str);
 void	io_number(t_Token *token);
 void	expand_tokens(t_Token_List *tokens, t_entab *env);
+bool	special_parameter(char *dollar);
+void	expand_special_parameters(t_Chunk_List *chunks, char *dollar);
 void	tilde_expansion(t_Token *token, t_entab *env);
 void	word_splitting(t_Token *token);
+bool	is_valid_key_start(char *dollar);
 bool	parameter_expand(t_Token *token, t_entab *env);
+void	chunkify_unexpanded_portion(t_Chunk_List *chunks, char **start, char **end);
+bool	chunkify_expansions(t_Chunk_List *chunks, t_entab *env, char **start, char **end);
 bool	quote_to_remove(t_Quote_List *quote_list, char *quote);
+void	filename_expansion(t_Token *token, t_entab *env);
 void	add_chunk(t_Chunk_List *chunks, char *str);
-void	expand_into_chunk_list(t_Chunk_List *chunks, t_entab *env, char *dollar);
+void	expand_parameter(t_Chunk_List *chunks, t_entab *env, char *dollar);
 char	*join_chunks(t_Chunk_List *chunks);
 char	*copy_var_val(char *key, t_entab *env);
 bool	word_is_quoted(t_Token *token);

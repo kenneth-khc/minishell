@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 21:06:03 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/18 14:39:36 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/18 15:25:19 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,9 @@ typedef struct s_Exec_Node
 t_Exec_Node		*create_exec_node(const char *cmd_name, t_entab *envtab);
 void			add_exec_arguments(t_Exec_Node *exec_node, const char *arg);
 
+/**
+ * Node for redirection
+ */
 typedef enum e_Direction
 {
 	INPUT,
