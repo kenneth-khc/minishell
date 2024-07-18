@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 16:45:41 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/18 06:00:01 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/18 07:07:57 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ void	expand_tokens(t_Token_List *tokens, t_entab *env)
 		if (parameter_expand(token, env))
 			word_splitting(token);
 		// todo: filename expansion
+		filename_expansion(token, env);
 		token = token->next;
 	}
 }

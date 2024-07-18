@@ -10,14 +10,15 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
-#include "libft.h"
-#include <stdlib.h>
+#include <readline/readline.h>
 #include "input.h"
 #include "tokens.h"
 #include "parser.h"
 #include "execution.h"
-#include <readline/readline.h>
+#include "lexer.h"
+#include "expansions.h"
+
+void	clean_up(t_Input *input, t_Token_List *tokens, t_Node *tree);
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -36,51 +37,20 @@ int	main(int argc, char **argv, char **envp)
 		init_signal();
 		get_input(&input);
 		tokens = scan(&input);
-//		print_tokens(&tokens);
 		expand_tokens(&tokens, parser.envtab);
 		parser.tokens = &tokens;
 		parser.token = tokens.head;
 		root = parse(&parser);
 		if (root)
 			exec_ast(root);
-		clear_input(&input);
-		free_tokens(&tokens);
-		free_tree(root);
+		clean_up(&input, &tokens, root);
 	}
 	clear_history();
 }
 
-void	free_tokens(t_Token_List *tokens)
+void	clean_up(t_Input *input, t_Token_List *tokens, t_Node *tree)
 {
-	t_Token	*curr;
-	t_Token	*prev;
-
-	curr = tokens->head;
-	while (curr != NULL)
-	{
-		free((void *)curr->lexeme);
-		curr->lexeme = NULL;
-		prev = curr;
-		curr = curr->next;
-		free(prev);
-	}
+	clear_input(input);
+	free_tokens(tokens);
+	free_tree(tree);
 }
-
-void	free_tree(t_Node *node)
-{
-	t_Node	*temp;
-	t_Exec_Node	*enode;
-
-	temp = node;
-	if (node == NULL)
-		return ;
-	if (node->type == Exec_Node)
-	{
-		enode = (t_Exec_Node *)node;
-		free(enode->args);
-	}
-	free_tree(node->left);
-	free_tree(node->right);
-	free(temp);
-}
-

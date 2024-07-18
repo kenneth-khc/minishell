@@ -61,17 +61,23 @@ void			add_exec_arguments(t_Exec_Node *exec_node, const char *arg);
 /**
  * Node for redirection
  */
+typedef enum e_Direction
+{
+	INPUT,
+	OUTPUT
+}	t_Direction;
+
 typedef struct s_Redir_Node
 {
 	enum e_Node_Type	type;
 	struct s_Node		*left;
 	struct s_Node		*right;
 	t_entab				*table;
+	enum e_Direction	direction; // is it input or output redirection
 	int					oldfd; // the fd to be replaced
 	int					flags; // O_CREAT, O_APPEND etc
 	mode_t				mode; // permission bits for READ WRITE EXECUTE
 	const char			*file; // name of the file to open
-	int					newfd; // fd of the file opened
 	bool				heredoc;
 	char				*delim;
 }	t_Redir_Node;

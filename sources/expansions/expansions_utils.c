@@ -11,8 +11,9 @@
 /* ************************************************************************** */
 
 #include <stdbool.h>
-#include "minishell.h"
 #include "tokens.h"
+#include "libft.h"
+#include "env.h"
 
 bool	is_identifier_character(char c)
 {

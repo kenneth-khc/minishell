@@ -6,7 +6,7 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 22:33:06 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/18 05:45:05 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/18 06:49:55 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	chunkify_unexpanded_portion(t_Chunk_List *chunks, char **start, char **end)
 	*start = *end;
 }
 
-void	chunkify_expansions(t_Chunk_List *chunks, t_entab *env, char **start, char **end)
+bool	chunkify_expansions(t_Chunk_List *chunks, t_entab *env, char **start, char **end)
 {
 	char	*s;
 	char	*e;
@@ -37,18 +37,20 @@ void	chunkify_expansions(t_Chunk_List *chunks, t_entab *env, char **start, char 
 	{
 		expand_special_parameters(chunks, e);
 		*end += 2;
+		return (true);
 	}
 	else if (is_valid_key_start(e))
 	{
 		expand_parameter(chunks, env, e);
 		*end = ft_strpbrk(e + 1, is_not_identifier);
+		return (true);
 	}
 	else
 	{
 		add_chunk(chunks, ft_extract_substring(e, e));
 		*end += 1;
 	}
-	*start = *end;
+	return (false);
 }
 
 void	add_chunk(t_Chunk_List *chunks, char *str)

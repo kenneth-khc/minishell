@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 21:49:01 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/18 05:49:17 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/18 06:51:51 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,8 @@ bool	parameter_expand(t_Token *token, t_entab *env)
 			chunkify_unexpanded_portion(&chunks, &s, &e);
 		else if (*e == '$' && should_expand(e, &token->quotes))
 		{
-			chunkify_expansions(&chunks, env, &s, &e);
-			expanded = true;
+			expanded = chunkify_expansions(&chunks, env, &s, &e);
+			s = e;
 		}
 		else
 			e++;
@@ -72,13 +72,13 @@ void	expand_special_parameters(t_Chunk_List *chunks, char *dollar)
 /**
  * A key is only a valid name if it starts with an underscore or alphabet.
  * Treat the $ as literal and do not expand if it is not going to be a valid name.
- * For some reason, it expands next to quotes though.
+ * For some reason, $"" $'' expands.
 **/
 bool	is_valid_key_start(char *dollar)
 {
 	return (dollar[1] == '_'
-		|| dollar[1] == '\''
-		|| dollar[1] == '"'
+		//|| dollar[1] == '"'
+		//|| dollar[1] == '\''
 		|| ft_isalpha(dollar[1]));
 }
 

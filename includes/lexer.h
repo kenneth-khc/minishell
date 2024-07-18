@@ -41,6 +41,8 @@ typedef struct s_Match_Table
 	enum e_Token_Types	type;
 }	t_Match_Table;
 
+t_Token_List	scan(t_Input *input);
+void	init_matches(t_Match_Table (*matches)[TOKEN_TYPES]);
 bool	is_metacharacter(const char c);
 bool	is_blank(const char c);
 bool	end_of_line(t_Token *token);

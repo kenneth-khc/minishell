@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 21:15:47 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/18 05:42:32 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/18 07:04:13 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,9 @@ void	word_splitting(t_Token *token);
 bool	is_valid_key_start(char *dollar);
 bool	parameter_expand(t_Token *token, t_entab *env);
 void	chunkify_unexpanded_portion(t_Chunk_List *chunks, char **start, char **end);
-void	chunkify_expansions(t_Chunk_List *chunks, t_entab *env, char **start, char **end);
+bool	chunkify_expansions(t_Chunk_List *chunks, t_entab *env, char **start, char **end);
 bool	quote_to_remove(t_Quote_List *quote_list, char *quote);
+void	filename_expansion(t_Token *token, t_entab *env);
 void	add_chunk(t_Chunk_List *chunks, char *str);
 void	expand_parameter(t_Chunk_List *chunks, t_entab *env, char *dollar);
 char	*join_chunks(t_Chunk_List *chunks);

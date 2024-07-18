@@ -15,7 +15,6 @@
 #include "tree.h"
 #include "parser.h"
 #include <stdio.h>
-#include "debug.h"
 #include <stdlib.h>
 
 t_Node	*parse_command_args(t_Parser *parser)

@@ -136,7 +136,6 @@ void	update_lexer_state(t_Lexer *lexer)
 	}
 }
 
-#include "debug.h"
 #include "quotes.h"
 void	set_word_flags(t_Token *token)
 {

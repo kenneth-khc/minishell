@@ -6,7 +6,7 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 16:16:06 by kecheong          #+#    #+#             */
-/*   Updated: 2024/06/26 22:31:49 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/18 06:03:21 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,7 @@
 #include "parser.h"
 #include "tree.h"
 #include "tokens.h"
-#include "debug.h"
 #include "errors.h"
-
-#define BLUE "\e[0;34m\0"
 
 t_Node	*parse(t_Parser *parser)
 {
