@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 05:13:16 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/18 17:34:56 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/18 21:06:16 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 #include "expansions.h"
 //#include "serialize_tree.h"
 
-//const char*	__asan_default_options() {return "detect_leaks=0";}
+const char*	__asan_default_options() {return "detect_leaks=0";}
 
 void	clean_up(t_Input *input, t_Token_List *tokens, t_Node *tree);
 
