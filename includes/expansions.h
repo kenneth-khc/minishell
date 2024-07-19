@@ -35,7 +35,7 @@ void	expand_tokens(t_Token_List *tokens, t_entab *env);
 bool	special_parameter(char *dollar);
 void	expand_special_parameters(t_Chunk_List *chunks, char *dollar);
 void	tilde_expansion(t_Token *token, t_entab *env);
-void	word_splitting(t_Token *token);
+void	word_splitting(t_Token *token, t_Token_List *tokens);
 bool	is_valid_key_start(char *dollar);
 bool	parameter_expand(t_Token *token, t_entab *env);
 void	chunkify_unexpanded_portion(t_Chunk_List *chunks, char **start, char **end);

@@ -17,6 +17,7 @@
 #include "execution.h"
 #include "lexer.h"
 #include "expansions.h"
+//#include "serialize_tree.h"
 
 const char	*__asan_default_options(void)
 {
@@ -46,6 +47,7 @@ int	main(int argc, char **argv, char **envp)
 		expand_tokens(&tokens, env);
 		init_parser(&parser, &tokens, env);
 		root = parse(&parser);
+//		export_tree(root);
 		if (root && parser.syntax_ok)
 			exec_ast(root);
 		clean_up(&input, &tokens, root);

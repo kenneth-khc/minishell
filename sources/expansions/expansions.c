@@ -21,6 +21,7 @@
 static void	io_number(t_Token *token);
 static bool	only_digits(const char *str);
 
+#include "tokens.h"
 void	expand_tokens(t_Token_List *tokens, t_entab *env)
 {
 	t_Token	*token;
@@ -32,7 +33,8 @@ void	expand_tokens(t_Token_List *tokens, t_entab *env)
 		tilde_expansion(token, env);
 		if (parameter_expand(token, env))
 		{
-			word_splitting(token);
+			print_tokens(tokens);
+			word_splitting(token, tokens);
 		}
 		// todo: filename expansion
 		filename_expansion(token, env);
@@ -47,7 +49,7 @@ void	expand_tokens(t_Token_List *tokens, t_entab *env)
 #endif
 
 	#include <stdio.h>
-void	word_splitting(t_Token *token)
+void	word_splitting(t_Token *token, t_Token_List *tokens)
 {
 	char			**words;
 	char			**w;
@@ -72,6 +74,8 @@ void	word_splitting(t_Token *token)
 		{
 			token->prev->next = new_tokens.head;
 		}
+		else
+			tokens->head = new_tokens.head;
 		if (token->next)
 		{
 			token->next->prev = new_tokens.tail;

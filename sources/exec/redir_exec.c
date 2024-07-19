@@ -96,6 +96,11 @@ static void	check_permissions(char *newfile, t_Direction direction)
 {
 	struct stat	file_stats;
 
+	if (stat(newfile, &file_stats) != 0)
+	{
+		ft_dprintf(2, "%s: %s: No such file or directory\n", SHELL, newfile);
+		exit(1);
+	}
 	if (direction == OUTPUT)
 	{
 		if (stat(newfile, &file_stats) == 0 && S_ISDIR(file_stats.st_mode))
@@ -110,11 +115,6 @@ static void	check_permissions(char *newfile, t_Direction direction)
 		}
 		return ;
 	}
-	if (stat(newfile, &file_stats) != 0)
-	{
-		ft_dprintf(2, "%s: %s: No such file or directory\n", SHELL, newfile);
-		exit(1);
-	}
 	if (access(newfile, R_OK) != 0)
 	{
 		ft_dprintf(2, "%s: %s: Permission denied\n", SHELL, newfile);
@@ -122,6 +122,7 @@ static void	check_permissions(char *newfile, t_Direction direction)
 	}
 }
 
+#include <stdio.h>
 void	redir(t_Redir_Node *node)
 {
 	int	pid1;

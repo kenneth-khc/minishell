@@ -103,7 +103,6 @@ static void	init_matches(t_Match_Table (*matches)[TOKEN_TYPES])
 	{"*", STAR},
 	{"(", OPEN_PARAN},
 	{")", CLOSE_PARAN},
-	{";", SEMICOLON},
 	{"#", HASH}
 	};
 

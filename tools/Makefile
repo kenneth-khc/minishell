@@ -1,5 +1,5 @@
 MAKEFLAGS += --warn-undefined-variables
-NAME := visualize_minishell
+NAME := minishell
 CC ?= cc
 CFLAGS := -Wall -Werror -Wextra
 
@@ -16,7 +16,7 @@ green := \e[0;32m
 c_reset := \e[0m
 
 pwd := $(shell pwd)
-includes := -I $(pwd) -I $(pwd)/../includes -I $(pwd)/../libft/includes -I $(pwd)../readline/include
+includes := -I $(pwd) -I $(pwd)/../includes -I $(pwd)/../libft/includes -I $(pwd)/../readline/include/
 export includes
 
 srcs := cJSON.c serialize_tree.c

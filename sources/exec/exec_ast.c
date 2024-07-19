@@ -40,6 +40,7 @@ void	subshell(t_Node *node)
 	}
 }
 
+void	child_process(t_Exec_Node *node, t_entab *table);
 void	paip(t_Pipe_Node *node)
 {
 	int	fd[2];
