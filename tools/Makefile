@@ -7,7 +7,7 @@ minishell_dir := ../
 minishell_objs_dir := $(minishell_dir)/objects/
 minishell_objs := $(minishell_objs_dir)/*.o $(minishell_objs_dir)/*/*.o
 
-LDFLAGS := -L $(minishell_dir)/libft
+LDFLAGS := -L $(minishell_dir)/libft -L $(minishell_dir)/readline/lib
 LDLIBS := -lreadline -lft
 
 fsan := -fsanitize=address
@@ -16,7 +16,7 @@ green := \e[0;32m
 c_reset := \e[0m
 
 pwd := $(shell pwd)
-includes := -I $(pwd) -I $(pwd)/../includes -I $(pwd)/../libft/includes
+includes := -I $(pwd) -I $(pwd)/../includes -I $(pwd)/../libft/includes -I $(pwd)../readline/include
 export includes
 
 srcs := cJSON.c serialize_tree.c
