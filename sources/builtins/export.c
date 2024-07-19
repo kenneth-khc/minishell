@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 21:20:05 by qang              #+#    #+#             */
-/*   Updated: 2024/07/18 17:37:45 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/18 20:24:28 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ static void	append_var(char *arg, t_entab *table)
 		free(val);
 		val = ft_strjoin(key, temp);
 		add_var(val, table);
+    free(temp);
 	}
 	else
 		append_node(val, node);

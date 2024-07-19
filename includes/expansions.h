@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 21:15:47 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/18 17:45:01 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/19 22:33:49 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define EXPANSIONS_H
 
 # include "env.h"
+# include "libft.h"
 # include "tokens.h"
 # include <stdbool.h>
 
@@ -53,4 +54,8 @@ char	*copy_var_val(char *key, t_entab *env);
 void	quote_removal(t_Token_List *tokens);
 bool	is_identifier_character(char c);
 
+char	**match_expression(char *str);
+bool  match_pattern(char *pattern, char *str);
+void  unmatch(t_list **list, char *pattern);
+char  **list_to_string(t_list *node, char *str);
 #endif

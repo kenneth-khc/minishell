@@ -6,10 +6,11 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:10:41 by qang              #+#    #+#             */
-/*   Updated: 2024/07/18 17:40:21 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/19 22:34:34 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "env.h"
 #include "execution.h"
 #include "ft_dprintf.h"
 #include "get_next_line.h"
@@ -37,19 +38,15 @@ static void	read_and_expand(t_Redir_Node *node, int fd)
 {
 	char	*line;
 	char	*expanded_line;
+  int   i;
 
+  i = 0;
 	expanded_line = NULL;
 	write(1, ">", 1);
 	line = get_next_line(0);
-	if (line == NULL)
+	while (line != NULL && ft_strcmp(line, node->delim) != 10)
 	{
-		ft_dprintf(2, "%s: warning: here-document at line %d ", SHELL, 0);
-		ft_dprintf(2, "delimited by end-of-file (wanted `%s')\n", node->delim);
-		exit(0);
-	}
-	while (line != NULL
-		&& ft_strncmp(line, node->delim, ft_strlen(node->delim)) != 0)
-	{
+    i++;
 		expanded_line = expand_line(line, node->table);
 		write(fd, expanded_line, ft_strlen(expanded_line));
 		free(line);
@@ -57,6 +54,13 @@ static void	read_and_expand(t_Redir_Node *node, int fd)
 		write(1, ">", 1);
 		line = get_next_line(0);
 	}
+	if (line == NULL)
+	{
+		ft_dprintf(2, "%s: warning: here-document at line %d ", SHELL, i);
+		ft_dprintf(2, "delimited by end-of-file (wanted `%s')\n", node->delim);
+		exit(0);
+	}
+  free(line);
 }
 
 static void	redir_delim(t_Redir_Node *node)
@@ -68,6 +72,7 @@ static void	redir_delim(t_Redir_Node *node)
 	pid = forkpromax();
 	if (pid == 0)
 	{
+    set_sig();
 		next_heredoc = get_next_heredoc();
 		fd = open(next_heredoc, O_CREAT | O_RDWR | O_TRUNC, 0644);
 		if (fd < 0)
@@ -85,7 +90,11 @@ static void	redir_delim(t_Redir_Node *node)
 			exec_ast(node->left);
 		exit(0);
 	}
-	set_exit_status(wait_for_child(pid));
+  else
+  {
+    ignore_sigs();
+    set_exit_status(wait_for_child(pid));
+  }
 }
 
 void	redir(t_Redir_Node *node)
@@ -112,5 +121,9 @@ void	redir(t_Redir_Node *node)
 		}
 		exit(0);
 	}
-	set_exit_status(wait_for_child(pid1));
+  else
+  {
+    ignore_sigs();
+	  set_exit_status(wait_for_child(pid1));
+  }
 }
