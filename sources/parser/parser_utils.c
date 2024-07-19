@@ -30,54 +30,97 @@ bool	is_redirection_token(t_Token *token)
 
 bool	is_and_or(t_Parser *parser)
 {
-	return (peek(1, parser) == AND_AND
-		|| peek(1, parser) == OR_OR);
+	return (peek(parser) == AND_AND
+		|| peek(parser) == OR_OR);
 }
 
-enum e_Token_Types	peek(int k, t_Parser *parser)
+// enum e_Token_Types	peek(int k, t_Parser *parser)
+// {
+// 	t_Token	*curr;
+//
+// 	if (k > 0 && k <= get_tokens_count(parser->tokens))
+// 	{
+// 		curr = parser->token;
+// 		while (k > 1)
+// 		{
+// 			curr = curr->next;
+// 			k--;
+// 		}
+// 		if (curr)
+// 			return (curr->type);
+// 	}
+// 	return (0);
+// }
+//
+// void	consume(t_Parser *parser)
+// {
+// 	if (parser->token)
+// 	{
+// 		parser->token = parser->token->next;
+// 	}
+// }
+//
+// bool	accept(t_Parser *parser, enum e_Token_Types type)
+// {
+// 	if (parser->token && parser->token->type == type)
+// 	{
+// 		consume(parser);
+// 		return (true);
+// 	}
+// 	return (false);
+// }
+//
+// bool	expect(t_Parser *parser, enum e_Token_Types expected)
+// {
+// 	if (accept(parser, expected))
+// 	{
+// 		return (true);
+// 	}
+// 	else
+// 	{
+// 		return (false);
+// 	}
+// }
+
+#include "errors.h"
+
+enum e_Token_Types	peek(t_Parser *parser)
 {
-	t_Token	*curr;
-
-	if (k > 0 && k <= get_tokens_count(parser->tokens))
-	{
-		curr = parser->token;
-		while (k > 1)
-		{
-			curr = curr->next;
-			k--;
-		}
-		if (curr)
-			return (curr->type);
-	}
-	return (0);
+	if (parser->token)
+		return (parser->token->type);
+	else
+		return (0);
 }
 
-void	consume(t_Parser *parser)
+bool	expect(t_Parser *parser, enum e_Token_Types expected, const char *errmsg)
+{
+	if (peek(parser) == expected)
+		return (true);
+	else
+	{
+		syntax_error(parser, errmsg);
+		return (false);
+	}
+}
+
+t_Token	*consume(t_Parser *parser)
 {
 	if (parser->token)
 	{
 		parser->token = parser->token->next;
+		return (parser->token->prev);
 	}
+	else
+		return (NULL);
 }
 
 bool	accept(t_Parser *parser, enum e_Token_Types type)
 {
-	if (parser->token && parser->token->type == type)
+	if (peek(parser) == type)
 	{
 		consume(parser);
 		return (true);
 	}
-	return (false);
-}
-
-bool	expect(t_Parser *parser, enum e_Token_Types expected)
-{
-	if (accept(parser, expected))
-	{
-		return (true);
-	}
 	else
-	{
 		return (false);
-	}
 }

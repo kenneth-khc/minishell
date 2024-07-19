@@ -23,7 +23,7 @@ t_Node	*parse_pipe_sequence(t_Parser *parser)
 	t_Node	*temp;
 
 	left = parse_simple_command(parser);
-	while (peek(1, parser) == PIPE)
+	while (peek(parser) == PIPE)
 	{
 		consume(parser);
 		temp = ft_calloc(1, sizeof(*temp));

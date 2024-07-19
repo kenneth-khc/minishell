@@ -42,8 +42,6 @@ t_Node	*parse_io_redirect(t_Parser *parser)
 		trunc_output_redir(parser, node, oldfd_set);
 	else if (accept(parser, GREATER_GREATER))
 		append_output_redir(parser, node, oldfd_set);
-	if (peek(1, parser) != WORD)
-		syntax_error(parser, "expected redirectee");
 	return ((t_Node *)node);
 }
 
@@ -52,10 +50,13 @@ void	trunc_output_redir(t_Parser *parser, t_Redir_Node *node, bool oldfd_set)
 	if (oldfd_set == false)
 		node->oldfd = STDOUT_FILENO;
 	node->direction = OUTPUT;
-	node->file = parser->token->lexeme;
 	node->flags = O_WRONLY | O_CREAT | O_TRUNC;
 	node->mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
-	consume(parser);
+	if (expect(parser, WORD, "expected filename for output redirection"))
+	{
+		node->file = parser->token->lexeme;
+		consume(parser);
+	}
 }
 
 void	append_output_redir(t_Parser *parser, t_Redir_Node *node,
@@ -65,9 +66,12 @@ void	append_output_redir(t_Parser *parser, t_Redir_Node *node,
 		node->oldfd = STDOUT_FILENO;
 	node->direction = OUTPUT;
 	node->flags = O_WRONLY | O_CREAT | O_APPEND;
-	node->file = parser->token->lexeme;
 	node->mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
-	consume(parser);
+	if (expect(parser, WORD, "expected filename for output redirection"))
+	{
+		node->file = parser->token->lexeme;
+		consume(parser);
+	}
 }
 
 void	input_redir(t_Parser *parser, t_Redir_Node *node, bool oldfd_set)
@@ -76,9 +80,12 @@ void	input_redir(t_Parser *parser, t_Redir_Node *node, bool oldfd_set)
 		node->oldfd = STDIN_FILENO;
 	node->direction = INPUT;
 	node->flags = O_RDONLY;
-	node->file = parser->token->lexeme;
 	node->mode = 0;
-	consume(parser);
+	if (expect(parser, WORD, "expected filename for input redirection"))
+	{
+		node->file = parser->token->lexeme;
+		consume(parser);
+	}
 }
 
 void	heredoc_redir(t_Parser *parser, t_Redir_Node *node, bool oldfd_set)
@@ -90,6 +97,10 @@ void	heredoc_redir(t_Parser *parser, t_Redir_Node *node, bool oldfd_set)
 	node->flags = O_WRONLY | O_CREAT | O_TRUNC;
 	node->mode = 0644;
 	node->heredoc = true;
-	node->delim = parser->token->lexeme;
-	consume(parser);
+	if (expect(parser, WORD, "expected delimiter word for heredoc"))
+	{
+		node->delim = parser->token->lexeme;
+		consume(parser);
+	}
 }
+
