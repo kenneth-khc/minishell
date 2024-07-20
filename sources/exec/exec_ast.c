@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 22:15:03 by qang              #+#    #+#             */
-/*   Updated: 2024/07/18 17:10:33 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/20 10:49:49 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,7 +80,7 @@ void	andand(t_Node *node)
 void	oror(t_Node *node)
 {
 	exec_ast(node->left);
-	if (get_exit_status() == 0)
+	if (get_exit_status() == 0 || get_exit_status() == 130)
 		return ;
 	exec_ast(node->right);
 }

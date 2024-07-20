@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:10:41 by qang              #+#    #+#             */
-/*   Updated: 2024/07/19 22:34:34 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/20 12:13:16 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #include <unistd.h>
 
 void		redir(t_Redir_Node *node);
-static void	read_and_expand(t_Redir_Node *node, int fd);
+static void	write_heredoc(t_Redir_Node *node, int fd);
 static void	redir_delim(t_Redir_Node *node);
 static char	*get_next_heredoc(void);
 
@@ -34,19 +34,19 @@ static char	*get_next_heredoc(void)
 	return (heredoc);
 }
 
-static void	read_and_expand(t_Redir_Node *node, int fd)
+static void	write_heredoc(t_Redir_Node *node, int fd)
 {
-	char	*line;
-	char	*expanded_line;
-  int   i;
+	char												*line;
+	char												*expanded_line;
+	int													i;
 
-  i = 0;
+	i = 0;
 	expanded_line = NULL;
 	write(1, ">", 1);
 	line = get_next_line(0);
 	while (line != NULL && ft_strcmp(line, node->delim) != 10)
 	{
-    i++;
+		i++;
 		expanded_line = expand_line(line, node->table);
 		write(fd, expanded_line, ft_strlen(expanded_line));
 		free(line);
@@ -60,7 +60,7 @@ static void	read_and_expand(t_Redir_Node *node, int fd)
 		ft_dprintf(2, "delimited by end-of-file (wanted `%s')\n", node->delim);
 		exit(0);
 	}
-  free(line);
+	free(line);
 }
 
 static void	redir_delim(t_Redir_Node *node)
@@ -72,17 +72,12 @@ static void	redir_delim(t_Redir_Node *node)
 	pid = forkpromax();
 	if (pid == 0)
 	{
-    set_sig();
+		init_signal();
 		next_heredoc = get_next_heredoc();
-		fd = open(next_heredoc, O_CREAT | O_RDWR | O_TRUNC, 0644);
-		if (fd < 0)
-		{
-			ft_dprintf(2, "Error while opening file\n");
-			exit(1);
-		}
-		read_and_expand(node, fd);
+		fd = openpromax(next_heredoc, O_CREAT | O_RDWR | O_TRUNC, 0644);
+		write_heredoc(node, fd);
 		close(fd);
-		fd = open(next_heredoc, O_RDONLY, 0644);
+		fd = openpromax(next_heredoc, O_RDONLY, 0644);
 		unlink(next_heredoc);
 		dup2(fd, node->oldfd);
 		close(fd);
@@ -90,11 +85,11 @@ static void	redir_delim(t_Redir_Node *node)
 			exec_ast(node->left);
 		exit(0);
 	}
-  else
-  {
-    ignore_sigs();
-    set_exit_status(wait_for_child(pid));
-  }
+	else
+	{
+		ignore_sigs();
+		set_exit_status(wait_for_child(pid));
+	}
 }
 
 void	redir(t_Redir_Node *node)
@@ -111,19 +106,16 @@ void	redir(t_Redir_Node *node)
 	if (pid1 == 0)
 	{
 		check_permissions((char *)node->file, node->direction);
-		fd = open(node->file, node->flags, node->mode);
+		fd = openpromax((char *)node->file, node->flags, node->mode);
 		dup2(fd, node->oldfd);
 		close(fd);
 		if (node->left)
-		{
 			exec_ast(node->left);
-			close(node->oldfd);
-		}
 		exit(0);
 	}
-  else
-  {
-    ignore_sigs();
-	  set_exit_status(wait_for_child(pid1));
-  }
+	else
+	{
+		ignore_sigs();
+		set_exit_status(wait_for_child(pid1));
+	}
 }
