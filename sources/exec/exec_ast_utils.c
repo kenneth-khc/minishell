@@ -12,7 +12,6 @@
 
 #include "ft_dprintf.h"
 #include <sys/wait.h>
-#include <stdlib.h>
 
 int			get_exit_status(void);
 int			wait_for_child(int last_pid);

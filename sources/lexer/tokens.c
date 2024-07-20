@@ -56,59 +56,79 @@ int	get_tokens_count(t_Token_List *tokens)
 	return (count);
 }
 
+void	free_token(t_Token *token)
+{
+	free_quote_list(&token->quotes);
+	free(token->lexeme);
+	free(token);
+}
+
 void	free_tokens(t_Token_List *tokens)
 {
 	t_Token	*curr;
-	t_Token	*prev;
+	t_Token	*temp;
 
 	curr = tokens->head;
 	while (curr != NULL)
 	{
-		free(curr->lexeme);
-		curr->lexeme = NULL;
-		prev = curr;
+		temp = curr;
 		curr = curr->next;
-		free(prev);
+		free_token(temp);
 	}
 }
 
-// void	print_tokens(t_Token_List *tokens)
-// {
-// 	int			i;
-// 	t_Token		*curr;
-//
-// 	i = 0;
-// 	curr = tokens->head;
-// 	while (curr != NULL)
-// 	{
-// 		printf("Token %d:\n", ++i);
-// 		printf("%s\n", token_enum_to_str(curr));
-// 		printf("%s\n", curr->lexeme);
-// 		printf("\n");
-// 		printf("↓\n\n");
-// 		curr = curr->next;
-// 	}
-// 	printf("\n\n");
-// }
-//
-// char	*token_enum_to_str(t_Token *token)
-// {
-// 	const char *types[] = {
-// 		"WORD",
-// 		"PIPE",
-// 		"OR_OR",
-// 		"AND_AND",
-// 		"LESSER",
-// 		"LESSER_LESSER",
-// 		"GREATER",
-// 		"GREATER_GREATER",
-// 		"STAR",
-// 		"OPEN_PARAN",
-// 		"CLOSE_PARAN",
-// 		"SEMICOLON",
-// 		"END_OF_LINE",
-// 		"HASH"
-// 	};
-//
-// 	return (ft_strdup(types[token->type - 256]));
-// }
+void	free_quote_list(t_Quote_List *list)
+{
+	int	i;
+
+	i = 0;
+	while (i < list->pair_count)
+	{
+		free(list->pairs[i]);
+		i++;
+	}
+	free(list->pairs);
+}
+
+#include <stdio.h>
+void	print_tokens(t_Token_List *tokens)
+{
+	int			i;
+	t_Token		*curr;
+
+	i = 0;
+	curr = tokens->head;
+	while (curr != NULL)
+	{
+		printf("Token %d:\n", ++i);
+		printf("%s\n", token_enum_to_str(curr));
+		printf("%s\n", curr->lexeme);
+		printf("\n");
+		printf("↓\n\n");
+		curr = curr->next;
+	}
+	printf("\n\n");
+}
+
+ char	*token_enum_to_str(t_Token *token)
+ {
+ 	const char *types[] = {
+ 		"WORD",
+ 		"PIPE",
+ 		"OR_OR",
+ 		"AND_AND",
+ 		"LESSER",
+ 		"LESSER_LESSER",
+ 		"GREATER",
+ 		"GREATER_GREATER",
+ 		"STAR",
+ 		"OPEN_PARAN",
+ 		"CLOSE_PARAN",
+ 		"END_OF_LINE",
+ 		"HASH",
+		"ASSIGNMENT_WORD",
+		"IO_NUMBER"
+ 	};
+
+ 	return (ft_strdup(types[token->type - 256]));
+ }

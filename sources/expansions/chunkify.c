@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 22:33:06 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/18 18:17:14 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/20 22:50:19 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,21 @@ char	*join_chunks(t_Chunk_List *chunks)
 	}
 	new_word[j] = '\0';
 	return (new_word);
+}
+
+void	free_chunks(t_Chunk_List *chunks)
+{
+	t_Chunk	*chunk;
+	t_Chunk	*temp;
+
+	chunk = chunks->head;
+	while (chunk)
+	{
+		temp = chunk;
+		chunk = chunk->next;
+		free(temp->str);
+		free(temp);
+	}
 }
 
 void	expand_parameter(t_Chunk_List *chunks, t_entab *env, char *dollar)

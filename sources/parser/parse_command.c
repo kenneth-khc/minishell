@@ -23,7 +23,7 @@ t_Node	*parse_command_args(t_Parser *parser)
 	t_Exec_Node	*exec_node;
 
 	exec_node = create_exec_node(NULL, parser->envtab);
-	while (peek(1, parser) == WORD)
+	while (peek(parser) == WORD)
 	{
 		add_exec_arguments(exec_node, parser->token->lexeme);
 		consume(parser);
@@ -88,7 +88,7 @@ t_Node	*assignment_node(t_Parser *parser)
 
 bool	is_io_redirect(t_Parser *parser)
 {
-	return (peek(1, parser) == IO_NUMBER
+	return (peek(parser) == IO_NUMBER
 		|| is_redirection_token(parser->token));
 }
 
@@ -101,9 +101,9 @@ t_Node	*parse_command_prefix(t_Parser *parser)
 	node = NULL;
 	curr = NULL;
 	root = NULL;
-	while (peek(1, parser) == ASSIGNMENT_WORD || is_io_redirect(parser))
+	while (peek(parser) == ASSIGNMENT_WORD || is_io_redirect(parser))
 	{
-		if (peek(1, parser) == ASSIGNMENT_WORD)
+		if (peek(parser) == ASSIGNMENT_WORD)
 		{
 			node = assignment_node(parser);
 			consume(parser);
@@ -137,14 +137,14 @@ t_Node	*parse_command_suffix(t_Parser *parser, t_Node *prefix,
 	node = NULL;
 	curr = NULL;
 	// todo: there shouldn't be assignment words in suffix
-	while (peek(1, parser) == ASSIGNMENT_WORD
-		|| peek(1, parser) == WORD || is_io_redirect(parser))
+	while (peek(parser) == ASSIGNMENT_WORD
+		|| peek(parser) == WORD || is_io_redirect(parser))
 	{
 		// bandaid fix for now
-		if (peek(1, parser) == ASSIGNMENT_WORD)
+		if (peek(parser) == ASSIGNMENT_WORD)
 			parser->token->type = WORD;
 		//
-		if (peek(1, parser) == WORD)
+		if (peek(parser) == WORD)
 		{
 			if (exec_node == NULL)
 				exec_node = create_exec_node(NULL, parser->envtab);

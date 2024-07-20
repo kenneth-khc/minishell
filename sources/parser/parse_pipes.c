@@ -14,6 +14,8 @@
 #include "parser.h"
 #include "libft.h"
 #include "errors.h"
+#include "tokens.h"
+#include <stdio.h>
 
 t_Node	*parse_pipe_sequence(t_Parser *parser)
 {
@@ -21,7 +23,7 @@ t_Node	*parse_pipe_sequence(t_Parser *parser)
 	t_Node	*temp;
 
 	left = parse_simple_command(parser);
-	while (parser->token->type == PIPE)
+	while (peek(parser) == PIPE)
 	{
 		consume(parser);
 		temp = ft_calloc(1, sizeof(*temp));
@@ -30,7 +32,7 @@ t_Node	*parse_pipe_sequence(t_Parser *parser)
 		temp->right = parse_list(parser);
 		if (temp->right == NULL)
 		{
-			syntax_error(parser, "missing command to pipe to\n");
+			syntax_error(parser, "expected command to pipe to");
 			return (NULL);
 		}
 		left = temp;
