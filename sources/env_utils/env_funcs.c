@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 21:24:13 by qang              #+#    #+#             */
-/*   Updated: 2024/07/18 18:34:12 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/20 22:46:00 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,23 +22,28 @@ static void	update_var(t_envar *node, t_envar *new);
 
 static void	update_var(t_envar *node, t_envar *new)
 {
-	char	*temp;
-
 	if (ft_strcmp(new->key, "PWD") == 0)
-		special_pwd(node, new);
+	{
+		if (node->pwd)
+		{
+			free(node->pwd);
+			node->pwd = new->val;
+		}
+		else
+			node->pwd = new->val;
+	}
 	else
 	{
-		temp = node->val;
 		if (new->val)
 		{
+			if (node->val)
+				free(node->val);
 			node->val = new->val;
-			if (temp)
-				free(temp);
 		}
 		node->state = new->state;
-		free(new->key);
-		free(new);
 	}
+	free(new->key);
+	free(new);
 }
 
 void	add_var(char *str, t_entab *table)

@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 21:15:47 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/20 13:55:05 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/20 15:06:59 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,6 @@ void	quote_removal(t_Token_List *tokens);
 bool	is_identifier_character(char c);
 
 char	**match_expression(char *str);
-void  unmatch(t_list **list, char *pattern);
-char  **list_to_string(t_list *node, char *str);
+void	unmatch(t_list **list, char *pattern);
+char	**list_to_string(t_list *node, char *str);
 #endif
