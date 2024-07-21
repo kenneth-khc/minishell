@@ -23,6 +23,15 @@ t_Node	*create_node(enum e_Node_Type type)
 	return (node);
 }
 
+t_Node	*node(enum e_Node_Type type)
+{
+	t_Node	*node;
+
+	node = ft_calloc(1, sizeof(*node));
+	node->type = type;
+	return (node);
+}
+
 t_Exec_Node	*create_exec_node(const char *cmd_name, t_entab *envtab)
 {
 	t_Exec_Node	*node;

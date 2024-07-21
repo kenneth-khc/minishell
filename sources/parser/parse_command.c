@@ -6,16 +6,86 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/26 16:20:58 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/18 16:26:35 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/21 19:19:38 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdio.h>
+#include <stdlib.h>
 #include "libft.h"
 #include "tokens.h"
 #include "tree.h"
 #include "parser.h"
-#include <stdio.h>
-#include <stdlib.h>
+
+t_Node	*make_command_tree(t_Node *prefix, t_Node *cmd, t_Node *suffix);
+
+t_Node	*parse_simple_command(t_Parser *parser)
+{
+	t_Node	*prefix;
+	t_Node	*suffix;
+	t_Node	*ret;
+	t_Node	*cmd;
+
+	prefix = parse_command_prefix(parser);
+	cmd = parse_command_args(parser);
+	suffix = parse_command_suffix(parser, prefix, (t_Exec_Node *)cmd);
+	ret = make_command_tree(prefix, cmd, suffix);
+	return (ret);
+}
+
+t_Node	*parse_command_prefix(t_Parser *parser)
+{
+	t_Node	*root;
+	t_Node	*node;
+	t_Node	*curr;
+
+	node = NULL;
+	curr = NULL;
+	root = NULL;
+	while (peek(parser) == ASSIGNMENT_WORD || is_io_redirect(parser))
+	{
+		if (peek(parser) == ASSIGNMENT_WORD)
+			node = assignment_node(parser);
+		else if (is_io_redirect(parser))
+			node = parse_io_redirect(parser);
+		if (root == NULL)
+		{
+			root = node;
+			curr = root;
+		}
+		else
+		{
+			curr->left = node;
+			curr = node;
+		}
+	}
+	return (root);
+}
+
+t_Node	*make_command_tree(t_Node *prefix, t_Node *cmd, t_Node *suffix)
+{
+	t_Node	*ret;
+
+	ret = NULL;
+	if (prefix)
+	{
+		ret = prefix;
+		if (cmd)
+			get_tail(prefix)->left = cmd;
+	}
+	else if (cmd)
+	{
+		ret = cmd;
+		if (suffix)
+		{
+			get_tail(suffix)->left = cmd;
+			ret = suffix;
+		}
+	}
+	else if (suffix)
+		ret = suffix;
+	return (ret);
+}
 
 t_Node	*parse_command_args(t_Parser *parser)
 {
@@ -38,94 +108,6 @@ t_Node	*parse_command_args(t_Parser *parser)
 	return (ret);
 }
 
-t_Node	*parse_simple_command(t_Parser *parser)
-{
-	t_Node	*prefix;
-	t_Node	*suffix;
-	t_Node	*ret;
-	t_Node	*cmd;
-
-	ret = NULL;
-	prefix = parse_command_prefix(parser);
-	cmd = parse_command_args(parser);
-	suffix = parse_command_suffix(parser, prefix, (t_Exec_Node *)cmd);
-	if (prefix)
-	{
-		ret = prefix;
-		if (cmd)
-			get_tail(prefix)->left = cmd;
-	}
-	else if (cmd)
-	{
-		ret = cmd;
-		if (suffix)
-		{
-			get_tail(suffix)->left = cmd;
-			ret = suffix;
-		}
-	}
-	else if (suffix)
-		ret = suffix;
-	return (ret);
-}
-
-t_Node	*assignment_node(t_Parser *parser)
-{
-	t_Ass_Node	*ass;
-	const char	*equal;
-	const char	*end;
-
-	ass = ft_calloc(1, sizeof(*ass));
-	equal = ft_strchr(parser->token->lexeme, '=');
-	ass->type = ASS_NODE;
-	ass->key = ft_extract_substring(parser->token->lexeme, equal - 1);
-	end = parser->token->lexeme + ft_strlen(parser->token->lexeme) - 1;
-	ass->value = ft_extract_substring(equal + 1, end);
-	ass->table = parser->envtab;
-	ass->left = NULL;
-	return ((t_Node *)ass);
-}
-
-bool	is_io_redirect(t_Parser *parser)
-{
-	return (peek(parser) == IO_NUMBER
-		|| is_redirection_token(parser->token));
-}
-
-t_Node	*parse_command_prefix(t_Parser *parser)
-{
-	t_Node	*root;
-	t_Node	*node;
-	t_Node	*curr;
-
-	node = NULL;
-	curr = NULL;
-	root = NULL;
-	while (peek(parser) == ASSIGNMENT_WORD || is_io_redirect(parser))
-	{
-		if (peek(parser) == ASSIGNMENT_WORD)
-		{
-			node = assignment_node(parser);
-			consume(parser);
-		}
-		else if (is_io_redirect(parser))
-		{
-			node = parse_io_redirect(parser);
-		}
-		if (root == NULL)
-		{
-			root = node;
-			curr = root;
-		}
-		else
-		{
-			curr->left = node;
-			curr = node;
-		}
-	}
-	return (root);
-}
-
 t_Node	*parse_command_suffix(t_Parser *parser, t_Node *prefix,
 	t_Exec_Node *exec_node)
 {
@@ -140,11 +122,7 @@ t_Node	*parse_command_suffix(t_Parser *parser, t_Node *prefix,
 	while (peek(parser) == ASSIGNMENT_WORD
 		|| peek(parser) == WORD || is_io_redirect(parser))
 	{
-		// bandaid fix for now
-		if (peek(parser) == ASSIGNMENT_WORD)
-			parser->token->type = WORD;
-		//
-		if (peek(parser) == WORD)
+		if (peek(parser) == ASSIGNMENT_WORD || peek(parser) == WORD)
 		{
 			if (exec_node == NULL)
 				exec_node = create_exec_node(NULL, parser->envtab);

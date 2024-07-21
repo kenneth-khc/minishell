@@ -6,84 +6,18 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/26 23:47:44 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/18 16:28:37 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/21 18:22:17 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "tokens.h"
 #include <stdbool.h>
-#include <unistd.h>
+#include "ft_dprintf.h"
+#include "tokens.h"
 #include "parser.h"
 
-// Checks if a token is for redirection
-bool	is_redirection_token(t_Token *token)
-{
-	if (token)
-	{
-		return (token->type == LESSER
-			|| token->type == LESSER_LESSER
-			|| token->type == GREATER
-			|| token->type == GREATER_GREATER);
-	}
-	return (false);
-}
-
-bool	is_and_or(t_Parser *parser)
-{
-	return (peek(parser) == AND_AND
-		|| peek(parser) == OR_OR);
-}
-
-// enum e_Token_Types	peek(int k, t_Parser *parser)
-// {
-// 	t_Token	*curr;
-//
-// 	if (k > 0 && k <= get_tokens_count(parser->tokens))
-// 	{
-// 		curr = parser->token;
-// 		while (k > 1)
-// 		{
-// 			curr = curr->next;
-// 			k--;
-// 		}
-// 		if (curr)
-// 			return (curr->type);
-// 	}
-// 	return (0);
-// }
-//
-// void	consume(t_Parser *parser)
-// {
-// 	if (parser->token)
-// 	{
-// 		parser->token = parser->token->next;
-// 	}
-// }
-//
-// bool	accept(t_Parser *parser, enum e_Token_Types type)
-// {
-// 	if (parser->token && parser->token->type == type)
-// 	{
-// 		consume(parser);
-// 		return (true);
-// 	}
-// 	return (false);
-// }
-//
-// bool	expect(t_Parser *parser, enum e_Token_Types expected)
-// {
-// 	if (accept(parser, expected))
-// 	{
-// 		return (true);
-// 	}
-// 	else
-// 	{
-// 		return (false);
-// 	}
-// }
-
-#include "errors.h"
-
+/**
+ * Lookahead 1 in the token stream
+**/
 enum e_Token_Types	peek(t_Parser *parser)
 {
 	if (parser->token)
@@ -92,21 +26,30 @@ enum e_Token_Types	peek(t_Parser *parser)
 		return (0);
 }
 
-bool	expect(t_Parser *parser, enum e_Token_Types expected, const char *errmsg)
+/**
+ * If the token is not what we expected, throw a syntax error
+ **/
+bool	expect(t_Parser *parser, enum e_Token_Types expected,
+			const char *errmsg)
 {
 	if (peek(parser) == expected)
 		return (true);
 	else
 	{
-		syntax_error(parser, errmsg);
+		syntax_error(parser, errmsg, parser->token);
 		return (false);
 	}
 }
 
+/**
+ * Advance 1 through the token stream
+ * Keep track of the just consumed token for error reporting
+**/
 t_Token	*consume(t_Parser *parser)
 {
 	if (parser->token)
 	{
+		parser->consumed = parser->token;
 		parser->token = parser->token->next;
 		return (parser->token->prev);
 	}
@@ -114,6 +57,9 @@ t_Token	*consume(t_Parser *parser)
 		return (NULL);
 }
 
+/**
+ * If the current token is what we want, consume it else return false
+**/
 bool	accept(t_Parser *parser, enum e_Token_Types type)
 {
 	if (peek(parser) == type)
@@ -123,4 +69,30 @@ bool	accept(t_Parser *parser, enum e_Token_Types type)
 	}
 	else
 		return (false);
+}
+
+/**
+ * If a syntax error is found, print a descriptive error message to stderr
+ * for the user
+ * Only the first syntax error found is printed
+**/
+void	syntax_error(t_Parser *parser, const char *err_msg, t_Token *got)
+{
+	const char	*symbol;
+
+	if (parser->syntax_ok)
+	{
+		ft_dprintf(STDERR_FILENO, "%s: syntax error: %s", SHELL, err_msg);
+		if (got)
+		{
+			if (got->type == END_OF_LINE)
+				symbol = "newline";
+			else
+				symbol = got->lexeme;
+			ft_dprintf(STDERR_FILENO, ", got `%s` instead", symbol);
+		}
+		ft_dprintf(STDERR_FILENO, "\n");
+		parser->syntax_ok = false;
+	}
+	return ;
 }

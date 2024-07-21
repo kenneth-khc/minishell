@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 05:13:16 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/20 22:53:46 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/21 19:19:37 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 #include "execution.h"
 #include "lexer.h"
 #include "expansions.h"
-//#include "serialize_tree.h"
+#include "serialize_tree.h"
 
 const char	*__asan_default_options(void)
 {
@@ -28,6 +28,7 @@ void	clean_up(t_Input *input, t_Token_List *tokens, t_Node *tree);
 
 int	main(int argc, char **argv, char **envp)
 {
+	(void)argc;(void)argv;(void)envp;
 	t_Token_List	tokens;
 	t_Input			input;
 	t_Parser		parser;
@@ -47,7 +48,7 @@ int	main(int argc, char **argv, char **envp)
 		expand_tokens(&tokens, env);
 		init_parser(&parser, &tokens, env);
 		root = parse(&parser);
-//		export_tree(root);
+		export_tree(root);
 		if (root && parser.syntax_ok)
 			exec_ast(root);
 		clean_up(&input, &tokens, root);

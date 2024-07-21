@@ -6,7 +6,7 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/14 12:57:43 by kecheong          #+#    #+#             */
-/*   Updated: 2024/04/14 12:58:22 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/21 15:35:52 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,3 @@ void	error(const char *str)
 	exit(EXIT_FAILURE);
 }
 
-void	syntax_error(t_Parser *parser, const char *err_msg)
-{
-	ft_dprintf(STDERR_FILENO, "%s: syntax error: %s\n", "bish", err_msg);
-	parser->syntax_ok = false;
-	return ;
-}

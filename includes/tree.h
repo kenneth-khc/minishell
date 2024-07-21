@@ -41,6 +41,8 @@ typedef struct s_Node
 	struct s_Node		*right;
 }	t_Node;
 
+t_Node	*node(enum e_Node_Type type);
+
 /**
  * Node for executing commands
  */
@@ -82,17 +84,11 @@ typedef struct s_Redir_Node
 	char				*delim;
 }	t_Redir_Node;
 
+t_Redir_Node	*redir_node(t_entab *env);
+
 typedef struct s_Parser	t_Parser;
 t_Redir_Node	*create_redir_node(int oldfd, const char *filename,
 					int flags, mode_t mode);
-void			trunc_output_redir(t_Parser *parser, t_Redir_Node *node,
-					bool oldfd_set);
-void			append_output_redir(t_Parser *parser, t_Redir_Node *node,
-					bool oldfd_set);
-void			input_redir(t_Parser *parser, t_Redir_Node *node,
-					bool oldfd_set);
-void			heredoc_redir(t_Parser *parser, t_Redir_Node *node,
-					bool oldfd_set);
 
 /**
  * Node for piping
@@ -120,5 +116,7 @@ typedef struct s_Ass_Node
 	char				*key; // variable identifier
 	char				*value; // variable value
 }	t_Ass_Node;
+
+t_Node	*assignment_node(t_Parser *parser);
 
 #endif

@@ -14,13 +14,13 @@ libft := $(libft_dir)/libft.a
 includes ?= -I includes -I libft/includes
 
 ARCH := $(shell uname -m)
-ifeq ($(ARCH), x86_64)
-	LDFLAGS += -L readline/x86/lib/
-	includes += -I readline/x86/include/
-else
+# ifeq ($(ARCH), x86_64)
+	# LDFLAGS += -L readline/x86/lib/
+	# includes += -I readline/x86/include/
+# else
 	LDFLAGS += -L readline/arm/lib/
 	includes += -I readline/x86/include/
-endif
+# endif
 
 src_dir := sources
 src_dirs := $(src_dir) $(src_dir)/lexer $(src_dir)/parser $(src_dir)/builtins $(src_dir)/exec $(src_dir)/expansions $(src_dir)/env_utils

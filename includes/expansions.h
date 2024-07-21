@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 21:15:47 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/20 22:49:05 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/21 18:05:30 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,6 @@ void	expand_parameter(t_Chunk_List *chunks, t_entab *env, char *dollar);
 char	*join_chunks(t_Chunk_List *chunks);
 char	*copy_var_val(char *key, t_entab *env);
 void	quote_removal(t_Token_List *tokens);
-bool	is_identifier_character(char c);
 
 char	**match_expression(char *str);
 void	unmatch(t_list **list, char *pattern);

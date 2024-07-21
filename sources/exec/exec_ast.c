@@ -87,6 +87,8 @@ void	oror(t_Node *node)
 
 void	exec_ast(t_Node *node)
 {
+	if (node == NULL)
+		return ;
 	if (node->type == Exec_Node)
 		exec((t_Exec_Node *)node);
 	else if (node->type == Redir_Node)

@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/13 00:48:55 by qang              #+#    #+#             */
-/*   Updated: 2024/07/20 12:11:14 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/21 19:14:28 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 void	child_process(t_Exec_Node *node, t_entab *table);
 void	exec(t_Exec_Node *node);
 
+#include <stdio.h>
 void	child_process(t_Exec_Node *node, t_entab *table)
 {
 	struct stat	file_stats;
