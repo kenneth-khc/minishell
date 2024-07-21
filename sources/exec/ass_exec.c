@@ -27,4 +27,5 @@ void	ass_var(t_Ass_Node *node)
 	add_ass(temp1, node->table);
 	free(temp);
 	free(temp1);
+	exec_ast(node->left);
 }

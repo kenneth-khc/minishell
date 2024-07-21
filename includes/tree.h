@@ -57,7 +57,7 @@ typedef struct s_Exec_Node
 	const char			**args; // Args of the cmd, first one being the cmdname
 }	t_Exec_Node;
 
-t_Exec_Node		*create_exec_node(const char *cmd_name, t_entab *envtab);
+t_Exec_Node	*exec_node(const char *cmd, t_entab *env);
 void			add_exec_arguments(t_Exec_Node *exec_node, const char *arg);
 
 /**
@@ -87,8 +87,6 @@ typedef struct s_Redir_Node
 t_Redir_Node	*redir_node(t_entab *env);
 
 typedef struct s_Parser	t_Parser;
-t_Redir_Node	*create_redir_node(int oldfd, const char *filename,
-					int flags, mode_t mode);
 
 /**
  * Node for piping

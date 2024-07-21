@@ -110,25 +110,24 @@ void	print_tokens(t_Token_List *tokens)
 	printf("\n\n");
 }
 
- char	*token_enum_to_str(t_Token *token)
- {
- 	const char *types[] = {
- 		"WORD",
- 		"PIPE",
- 		"OR_OR",
- 		"AND_AND",
- 		"LESSER",
- 		"LESSER_LESSER",
- 		"GREATER",
- 		"GREATER_GREATER",
- 		"STAR",
- 		"OPEN_PARAN",
- 		"CLOSE_PARAN",
- 		"END_OF_LINE",
- 		"HASH",
+char	*token_enum_to_str(t_Token *token)
+{
+	const char *types[] = {
+		"WORD",
+		"PIPE",
+		"OR_OR",
+		"AND_AND",
+		"LESSER",
+		"LESSER_LESSER",
+		"GREATER",
+		"GREATER_GREATER",
+		"STAR",
+		"OPEN_PARAN",
+		"CLOSE_PARAN",
+		"END_OF_LINE",
+		"HASH",
 		"ASSIGNMENT_WORD",
-		"IO_NUMBER"
- 	};
+		""};
 
- 	return (ft_strdup(types[token->type - 256]));
- }
+	return (ft_strdup(types[token->type - 256]));
+}
