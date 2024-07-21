@@ -1,4 +1,4 @@
-prefix=/Users/kecheong/minishell/readline
+prefix=/Users/kecheong/minishell/readline/x86
 exec_prefix=${prefix}
 libdir=${exec_prefix}/lib
 includedir=${prefix}/include
