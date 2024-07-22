@@ -28,7 +28,6 @@ void	clean_up(t_Input *input, t_Token_List *tokens, t_Node *tree);
 
 int	main(int argc, char **argv, char **envp)
 {
-	(void)argc;(void)argv;(void)envp;
 	t_Token_List	tokens;
 	t_Input			input;
 	t_Parser		parser;
@@ -48,12 +47,11 @@ int	main(int argc, char **argv, char **envp)
 		expand_tokens(&tokens, env);
 		init_parser(&parser, &tokens, env);
 		root = parse(&parser);
-//		export_tree(root);
 		if (root && parser.syntax_ok)
 			exec_ast(root);
 		clean_up(&input, &tokens, root);
 	}
-	//clear_history();
+	rl_clear_history();
 }
 
 void	init_parser(t_Parser *parser, t_Token_List *tokens, t_entab *env)

@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include <stdlib.h>
+#include <stdio.h>
 #include "tokens.h"
 #include "libft.h"
 
@@ -41,56 +42,24 @@ void	add_token(t_Token_List *tokens, t_Token *token)
 	tokens->tail = token;
 }
 
-int	get_tokens_count(t_Token_List *tokens)
-{
-	int		count;
-	t_Token	*curr;
-
-	count = 0;
-	curr = tokens->head;
-	while (curr != NULL)
-	{
-		count++;
-		curr = curr->next;
-	}
-	return (count);
-}
-
-void	free_token(t_Token *token)
-{
-	free_quote_list(&token->quotes);
-	free(token->lexeme);
-	free(token);
-}
-
 void	free_tokens(t_Token_List *tokens)
 {
 	t_Token	*curr;
-	t_Token	*temp;
+	t_Token	*token;
 
 	curr = tokens->head;
 	while (curr != NULL)
 	{
-		temp = curr;
-		curr = curr->next;
-		free_token(temp);
+		token = curr;
+		curr = token->next;
+		free_quote_list(&token->quotes);
+		free(token->lexeme);
+		free(token);
 	}
+	tokens->head = NULL;
+	tokens->tail = NULL;
 }
 
-void	free_quote_list(t_Quote_List *list)
-{
-	int	i;
-
-	i = 0;
-	while (i < list->pair_count)
-	{
-		free(list->pairs[i]);
-		i++;
-	}
-	free(list->pairs);
-}
-
-#include <stdio.h>
 void	print_tokens(t_Token_List *tokens)
 {
 	int			i;
@@ -112,7 +81,7 @@ void	print_tokens(t_Token_List *tokens)
 
 char	*token_enum_to_str(t_Token *token)
 {
-	const char *types[] = {
+	const char	*types[] = {
 		"WORD",
 		"PIPE",
 		"OR_OR",

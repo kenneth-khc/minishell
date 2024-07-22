@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include "definitions.h"
 #include "quotes.h"
 #include "tokens.h"
@@ -72,20 +73,15 @@ void	store_quotes(t_Quote_List *list, t_Quotes *quotes)
 	list->pairs = new;
 }
 
-// void	print_quote_list(t_Token *token)
-// {
-// 	printf("Start: %p End: %p\n", token->lexeme,
-//		token->lexeme + ft_strlen(token->lexeme) - 1);
-// 	
-// 	int	i = 0;
-// 	t_Quotes	*q;
-//
-// 	printf("Quotes: \n");
-// 	while (i < token->quotes.pair_count)
-// 	{
-// 		q = token->quotes.pairs[i];
-// 		printf("Start: %p End: %p\n", q->start, q->end);
-// 		i++;
-// 	}
-// 	printf("\n");
-// }
+void	free_quote_list(t_Quote_List *list)
+{
+	int	i;
+
+	i = 0;
+	while (i < list->pair_count)
+	{
+		free(list->pairs[i]);
+		i++;
+	}
+	free(list->pairs);
+}
