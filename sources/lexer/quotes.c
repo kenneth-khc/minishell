@@ -6,7 +6,7 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 21:16:09 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/18 15:24:47 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/23 09:29:56 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,29 @@ void	store_quotes(t_Quote_List *list, t_Quotes *quotes)
 	}
 	new[i] = quotes;
 	list->pairs = new;
+}
+
+/**
+ * Check if the quote found is any of the original pair of unquoted quotes
+ * in the input
+ * If it is, skip over them as quote removal
+ **/
+bool	quote_to_remove(t_Quote_List *quote_list, char *quote)
+{
+	int			i;
+	t_Quotes	*pair;
+
+	i = 0;
+	while (i < quote_list->pair_count)
+	{
+		pair = quote_list->pairs[i];
+		if (quote == pair->start || quote == pair->end)
+		{
+			return (true);
+		}
+		i++;
+	}
+	return (false);
 }
 
 void	free_quote_list(t_Quote_List *list)

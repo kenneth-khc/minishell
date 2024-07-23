@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 22:33:06 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/20 22:50:19 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/23 10:15:12 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,51 +14,36 @@
 #include "definitions.h"
 #include "libft.h"
 
-void	chunkify_unexpanded_portion(t_Chunk_List *chunks,
-			char **start, char **end);
-bool	chunkify_expansions(t_Chunk_List *chunks, t_entab *env,
-			char **start, char **end);
 char	*join_chunks(t_Chunk_List *chunks);
 void	expand_parameter(t_Chunk_List *chunks, t_entab *env, char *dollar);
 
-void	chunkify_unexpanded_portion(t_Chunk_List *chunks,
-	char **start, char **end)
+void	chunkify_unexpanded_portion(t_Chunk_List *chunks, t_Range *p)
 {
-	char	*s;
-	char	*e;
-
-	s = *start;
-	e = *end;
-	add_chunk(chunks, ft_extract_substring(s, e - 1));
-	*end += 1;
-	*start = *end;
+	add_chunk(chunks, ft_extract_substring(p->start, p->end - 1));
+	p->end += 1;
+	p->start = p->end;
 }
 
 bool	chunkify_expansions(t_Chunk_List *chunks, t_entab *env,
-	char **start, char **end)
+	t_Range *p)
 {
-	char	*s;
-	char	*e;
-
-	s = *start;
-	e = *end;
-	add_chunk(chunks, ft_extract_substring(s, e - 1));
-	if (special_parameter(e))
+	add_chunk(chunks, ft_extract_substring(p->start, p->end - 1));
+	if (special_parameter(p->end))
 	{
-		expand_special_parameters(chunks, e);
-		*end += 2;
+		expand_special_parameters(chunks, p->end);
+		p->end += 2;
 		return (true);
 	}
-	else if (is_valid_key_start(e))
+	else if (is_valid_key_start(p->end))
 	{
-		expand_parameter(chunks, env, e);
-		*end = ft_strpbrk(e + 1, is_not_identifier);
+		expand_parameter(chunks, env, p->end);
+		p->end = ft_strpbrk(p->end + 1, is_not_identifier);
 		return (true);
 	}
 	else
 	{
-		add_chunk(chunks, ft_extract_substring(e, e));
-		*end += 1;
+		add_chunk(chunks, ft_extract_substring(p->end, p->end));
+		p->end += 1;
 	}
 	return (false);
 }

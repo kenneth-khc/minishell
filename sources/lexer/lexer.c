@@ -6,7 +6,7 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 17:58:19 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/10 17:55:09 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/23 11:43:27 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,6 @@ static void	init_matches(t_Match_Table (*matches)[TOKEN_TYPES])
 	{"<", LESSER},
 	{">>", GREATER_GREATER},
 	{">", GREATER},
-	{"*", STAR},
 	{"(", OPEN_PARAN},
 	{")", CLOSE_PARAN},
 	{"#", HASH}

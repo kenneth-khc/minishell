@@ -19,7 +19,7 @@
  * A word is defined as a sequence of characters that is delimited by blanks
  * and metacharacters, unless the blanks and metacharacters are quoted.
  **/
-#define TOKEN_TYPES 12
+#define TOKEN_TYPES 11
 typedef enum e_Token_Types
 {
 	WORD = 256,
@@ -30,7 +30,6 @@ typedef enum e_Token_Types
 	LESSER_LESSER,		// <<
 	GREATER,			// >
 	GREATER_GREATER,	// >>
-	STAR,				// *
 	OPEN_PARAN,			// (
 	CLOSE_PARAN,		// )
 	END_OF_LINE,		// \n

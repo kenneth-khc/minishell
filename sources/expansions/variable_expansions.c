@@ -6,10 +6,11 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 21:49:01 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/18 17:49:23 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/23 10:15:02 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include "env.h"
 #include "execution.h"
@@ -20,33 +21,25 @@
 #include "definitions.h"
 
 bool	dollar_prefix_string(char *dollar, t_Quote_List *quote_list);
+
 bool	parameter_expand(t_Token *token, t_entab *env)
 {
 	t_Chunk_List	chunks;
-	char			*s;
-	char			*e;
+	t_Range			p;
 	bool			expanded;
 
 	chunks = (t_Chunk_List){.head = NULL, .tail = NULL};
-	s = token->lexeme;
-	e = s;
+	p = (t_Range){.start = token->lexeme, .end = token->lexeme};
 	expanded = false;
-	while (s < (token->lexeme + ft_strlen(token->lexeme)))
+	while (p.start < (token->lexeme + ft_strlen(token->lexeme)))
 	{
-		if (*e == '\0' || (is_quote(*e) && quote_to_remove(&token->quotes, e)))
-			chunkify_unexpanded_portion(&chunks, &s, &e);
-		else if (*e == '$' && dollar_prefix_string(e, &token->quotes))
-		{
-			e += 1;
-			s = e;
-		}
-		else if (*e == '$' && should_expand(e, &token->quotes))
-		{
-			expanded = chunkify_expansions(&chunks, env, &s, &e);
-			s = e;
-		}
+		if (*p.end == '\0'
+			|| (is_quote(*p.end) && quote_to_remove(&token->quotes, p.end)))
+			chunkify_unexpanded_portion(&chunks, &p);
+		else if (*p.end == '$')
+			expanded = check_expansions(&p, &token->quotes, env, &chunks);
 		else
-			e++;
+			p.end++;
 	}
 	free(token->lexeme);
 	token->lexeme = join_chunks(&chunks);
@@ -76,86 +69,4 @@ void	expand_special_parameters(t_Chunk_List *chunks, char *dollar)
 			value = ft_itoa(getpid());
 		add_chunk(chunks, value);
 	}
-}
-
-/**
- * A key is only a valid name if it starts with an underscore or alphabet.
- * Treat the $ as literal and do not expand if it is not
- * going to be a valid name.
- * For some reason, $"" $'' expands.
-**/
-bool	is_valid_key_start(char *dollar)
-{
-	return (dollar[1] == '_'
-		//|| dollar[1] == '"'
-		//|| dollar[1] == '\''
-		|| ft_isalpha(dollar[1]));
-}
-
-/**
- * Check if the quote found is any of the original pair of unquoted quotes
- * in the input
- * If it is, skip over them as quote removal
- **/
-bool	quote_to_remove(t_Quote_List *quote_list, char *quote)
-{
-	int			i;
-	t_Quotes	*pair;
-
-	i = 0;
-	while (i < quote_list->pair_count)
-	{
-		pair = quote_list->pairs[i];
-		if (quote == pair->start || quote == pair->end)
-		{
-			return (true);
-		}
-		i++;
-	}
-	return (false);
-}
-
-bool	dollar_prefix_string(char *dollar, t_Quote_List *quote_list)
-{
-	int			i;
-	t_Quotes	*pair;
-
-	i = 0;
-	while (i < quote_list->pair_count)
-	{
-		pair = quote_list->pairs[i];
-		if (dollar + 1 == pair->start
-			&& pair->end > pair->start)
-			return (true);
-		i++;
-	}
-	return (false);
-}
-
-/**
- * Check if the dollar found belongs between any of the pair of quotes
- * in the word
- * If found between strong quotes (''), do not expand
-**/
-#include <stdio.h>
-bool	should_expand(char *dollar, t_Quote_List *quote_list)
-{
-	int			i;
-	t_Quotes	*pair;
-
-	i = 0;
-	while (i < quote_list->pair_count)
-	{
-		pair = quote_list->pairs[i];
-		if (dollar > pair->start
-			&& dollar < pair->end)
-		{
-			if (pair->quote == STRONG)
-				return (false);
-			else if (pair->quote == WEAK)
-				return (true);
-		}
-		i++;
-	}
-	return (true);
 }
