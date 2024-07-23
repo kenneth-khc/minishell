@@ -6,7 +6,7 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 21:47:29 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/18 15:21:46 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/23 08:57:44 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,9 +32,9 @@
 * At this point, all operators have been checked for. The remaining token
 * can only be a word, where quotes and escapes have to be handled carefully.
 **/
+
 void	match_word(t_Lexer *lexer, t_Token_List *tokens, t_Input *input)
 {
-	t_Token	*word;
 	char	*lexeme;
 	t_Line	*next_line;
 
@@ -42,10 +42,12 @@ void	match_word(t_Lexer *lexer, t_Token_List *tokens, t_Input *input)
 	if (lexer->terminated)
 	{
 		lexeme = ft_extract_substring(lexer->start, lexer->end);
-		word = create_token(WORD, lexeme);
-		add_token(tokens, word);
-		set_word_flags(word);
-		word->quotes = find_quotes(word);
+		if (io_number(lexeme, lexer->end))
+			add_token(tokens, create_token(IO_NUMBER, lexeme));
+		else
+			add_token(tokens, create_token(WORD, lexeme));
+		set_word_flags(tokens->tail);
+		tokens->tail->quotes = find_quotes(tokens->tail);
 		lexer->start = lexer->end + 1;
 		lexer->end = lexer->start;
 	}

@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 09:44:52 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/18 17:48:56 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/23 08:57:39 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,8 @@ void			match_word(t_Lexer *lexer, t_Token_List *tokens,
 void			advance_word(t_Lexer *lexer);
 void			join_input_lines(t_Lexer *lexer, t_Input *input);
 void			update_lexer_state(t_Lexer *lexer);
+bool			io_number(char *lexeme, char *delim);
+
 void			set_word_flags(t_Token *token);
 bool			is_valid_name(const char *start, const char *end);
 

@@ -1,24 +1,36 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   errors.c                                           :+:      :+:    :+:   */
+/*   word_matching_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/04/14 12:57:43 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/21 15:35:52 by kecheong         ###   ########.fr       */
+/*   Created: 2024/07/23 08:56:27 by kecheong          #+#    #+#             */
+/*   Updated: 2024/07/23 08:58:28 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include "parser.h"
-#include "ft_dprintf.h"
+#include <stdbool.h>
+#include "libft.h"
 
-void	error(const char *str)
+#ifndef OPEN_MAX
+# define OPEN_MAX 1024
+#endif
+
+static bool	only_digits(const char *str)
 {
-	printf("%s\n", str);
-	exit(EXIT_FAILURE);
+	while (*str)
+	{
+		if (!ft_isdigit(*str))
+			return (false);
+		str++;
+	}
+	return (true);
 }
 
+bool	io_number(char *lexeme, char *delim)
+{
+	return (only_digits(lexeme)
+		&& (*delim == '>' || *delim == '<')
+		&& ft_atoi(lexeme) < OPEN_MAX);
+}

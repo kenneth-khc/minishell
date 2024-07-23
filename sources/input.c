@@ -10,15 +10,14 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <readline/history.h>
-#include <readline/readline.h>
-#include "errors.h"
-#include "get_next_line.h"
-#include "input.h"
-#include "libft.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <readline/history.h>
+#include <readline/readline.h>
+#include "get_next_line.h"
+#include "input.h"
+#include "libft.h"
 #include "execution.h"
 
 t_Line	*make_line(char *str)
@@ -26,8 +25,6 @@ t_Line	*make_line(char *str)
 	t_Line	*line;
 
 	line = ft_calloc(1, sizeof(*line));
-	if (line == NULL)
-		error("calloc failed");
 	line->start = str;
 	line->len = ft_strlen(str);
 	return (line);
@@ -40,8 +37,6 @@ void	get_input(t_Input *input)
 	char	*newline_appended;
 
 	line = ft_calloc(1, sizeof(*line));
-	if (line == NULL)
-		error("calloc failed");
 	// read = readline("bish> ");
 	if (isatty(fileno(stdin)))
 		read = readline("bish > ");
@@ -73,8 +68,6 @@ void	store_input(t_Input *input, t_Line *new_line)
 	i = 0;
 	input->count++;
 	arr = ft_calloc(1, sizeof(t_Line **) * input->count);
-	if (arr == NULL)
-		error("calloc failed\n");
 	while (i < input->count - 1)
 	{
 		arr[i] = input->lines[i];
@@ -91,8 +84,6 @@ t_Line	*get_input_line(int fd)
 	t_Line	*line;
 
 	line = ft_calloc(1, sizeof(*line));
-	if (line == NULL)
-		error("calloc failed");
 	line->start = get_next_line(fd);
 	line->len = ft_strlen(line->start);
 	return (line);

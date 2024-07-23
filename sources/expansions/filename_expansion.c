@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include <dirent.h>
+#include <stdio.h>
 #include "tokens.h"
 #include "env.h"
 #include "libft.h"
@@ -61,8 +62,6 @@ char	*expand_asterisk(char *path, t_entab *table)
 	closedir(dir);
 	return (ret);
 }
-
-#include <stdio.h>
 
 void	filename_expansion(t_Token *token, t_entab *env)
 {
