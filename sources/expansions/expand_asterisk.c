@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 19:53:19 by qang              #+#    #+#             */
-/*   Updated: 2024/07/23 11:20:42 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/23 16:20:21 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,8 @@ static void	rfill_helper(t_list **node, DIR *dir, char *str, char *path)
 		}
 		else
 			expr = ft_strjoin(path, entry->d_name);
-		recursive_fill(node, str + 1, expr);
+    printf("expr: %s\n", expr);
+		recursive_fill(node, ft_strchr(str, '/') + 1, expr);
 		free(expr);
 		entry = readdir(dir);
 	}

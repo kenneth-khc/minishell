@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 23:57:06 by qang              #+#    #+#             */
-/*   Updated: 2024/07/23 11:42:04 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/23 16:20:10 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 char		**list_to_string(t_list *node, char *str);
 void		unmatch(t_list **list, char *pattern);
-static bool	match_pattern(char *pattern, char *str, int pat_i, int str_i);
+// static bool	match_pattern(char *pattern, char *str, int pat_i, int str_i);
 
 char	**list_to_string(t_list *node, char *str)
 {
@@ -46,6 +46,40 @@ char	**list_to_string(t_list *node, char *str)
 	return (ret);
 }
 
+static bool	match_pattern(char *pattern, char *str)
+{
+	int pat_i = 0;
+	int str_i = 0;
+	int star_idx = -1;
+	int match_idx = 0;
+
+	while (str[str_i])
+	{
+		if (pattern[pat_i] == '*')
+		{
+			star_idx = pat_i;
+			match_idx = str_i;
+			pat_i++;
+		}
+		else if (pattern[pat_i] == str[str_i])
+		{
+			pat_i++;
+			str_i++;
+		}
+		else if (star_idx != -1)
+		{
+			pat_i = star_idx + 1;
+			match_idx++;
+			str_i = match_idx;
+		}
+		else
+			return false;
+	}
+	while (pattern[pat_i] == '*')
+			pat_i++;
+	return pattern[pat_i] == '\0';
+}
+
 void	unmatch(t_list **list, char *pattern)
 {
 	t_list	*prev;
@@ -57,7 +91,7 @@ void	unmatch(t_list **list, char *pattern)
 	node = *list;
 	while (node)
 	{
-		if (!match_pattern(pattern, node->content, 0, 0))
+		if (!match_pattern(pattern, node->content))
 		{
 			next = node->next;
 			if (prev == NULL)
@@ -73,32 +107,4 @@ void	unmatch(t_list **list, char *pattern)
 			node = node->next;
 		}
 	}
-}
-
-static bool	match_pattern(char *pattern, char *str, int pat_i, int str_i)
-{
-	while (pattern[pat_i] && str[str_i])
-	{
-		if (pattern[pat_i] == '*')
-		{
-			while (pattern[pat_i + 1] == '*')
-				pat_i++;
-			if (pattern[pat_i + 1] == '\0')
-				return (true);
-			while (str[str_i] && pattern[pat_i + 1] != str[str_i])
-				str_i++;
-			if (pattern[pat_i + 1] == str[str_i])
-				pat_i++;
-			else
-				return (false);
-		}
-		if (pattern[pat_i] == str[str_i])
-		{
-			pat_i++;
-			str_i++;
-		}
-		else
-			return (false);
-	}
-	return (pattern[pat_i] == '\0' && str[str_i] == '\0');
 }

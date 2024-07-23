@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 21:49:01 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/23 10:15:02 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/23 15:18:50 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,14 @@ bool	parameter_expand(t_Token *token, t_entab *env)
 	chunks = (t_Chunk_List){.head = NULL, .tail = NULL};
 	p = (t_Range){.start = token->lexeme, .end = token->lexeme};
 	expanded = false;
+  (void)env;
 	while (p.start < (token->lexeme + ft_strlen(token->lexeme)))
 	{
 		if (*p.end == '\0'
 			|| (is_quote(*p.end) && quote_to_remove(&token->quotes, p.end)))
 			chunkify_unexpanded_portion(&chunks, &p);
 		else if (*p.end == '$')
-			expanded = check_expansions(&p, &token->quotes, env, &chunks);
+			expanded = false;//check_expansions(&p, &token->quotes, env, &chunks);
 		else
 			p.end++;
 	}
