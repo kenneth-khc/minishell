@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 19:53:19 by qang              #+#    #+#             */
-/*   Updated: 2024/07/23 16:20:21 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/23 17:41:46 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 char		**match_expression(char *str);
 static void	fill_list(t_list **node, DIR *dir, char *expr, char *path);
 static void	recursive_fill(t_list **node, char *str, char *path);
+static void	rfill_helper(t_list **node, DIR *dir, char *str, char *path);
 
 static void	fill_list(t_list **node, DIR *dir, char *expr, char *path)
 {
@@ -27,6 +28,12 @@ static void	fill_list(t_list **node, DIR *dir, char *expr, char *path)
 	entry = readdir(dir);
 	while (entry != NULL)
 	{
+		if (ft_strcmp(entry->d_name, ".") == 0
+			|| ft_strcmp(entry->d_name, "..") == 0)
+		{
+			entry = readdir(dir);
+			continue ;
+		}
 		if (expr[0] == '.' && entry->d_name[0] == '.')
 			ft_lstadd_back(node, ft_lstnew(ft_strjoin(path, entry->d_name)));
 		else if (expr[0] != '.' && entry->d_name[0] != '.')
@@ -57,7 +64,6 @@ static void	rfill_helper(t_list **node, DIR *dir, char *str, char *path)
 		}
 		else
 			expr = ft_strjoin(path, entry->d_name);
-    printf("expr: %s\n", expr);
 		recursive_fill(node, ft_strchr(str, '/') + 1, expr);
 		free(expr);
 		entry = readdir(dir);
@@ -79,7 +85,10 @@ static void	recursive_fill(t_list **node, char *str, char *path)
 		return ;
 	if (!temp)
 	{
-		expr = ft_strjoin(path, "/");
+		if (path[0])
+			expr = ft_strjoin(path, "/");
+		else
+			expr = ft_strdup(path);
 		fill_list(node, dir, str, expr);
 		free(expr);
 	}
@@ -88,12 +97,40 @@ static void	recursive_fill(t_list **node, char *str, char *path)
 	closedir(dir);
 }
 
+static void	add_dot_slash(t_list **node)
+{
+	t_list	*temp;
+	char	*temp_str;
+
+	temp = *node;
+	while (temp)
+	{
+		if (ft_strncmp((char *)temp->content, "../", 3) != 0)
+		{
+			temp_str = ft_strjoin("./", (char *)temp->content);
+			free(temp->content);
+			temp->content = temp_str;
+		}
+		temp = temp->next;
+	}
+}
+
 char	**match_expression(char *str)
 {
 	t_list	*node;
+	bool	dot_slash;
 
 	node = NULL;
-	recursive_fill(&node, str, "");
+	dot_slash = false;
+	if (ft_strncmp(str, "./", 2) == 0)
+	{
+		dot_slash = true;
+		recursive_fill(&node, str + 2, "");
+	}
+	else
+		recursive_fill(&node, str, "");
+	if (dot_slash)
+		add_dot_slash(&node);
 	unmatch(&node, str);
 	return (list_to_string(node, str));
 }

@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 23:57:06 by qang              #+#    #+#             */
-/*   Updated: 2024/07/23 16:20:10 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/23 18:04:13 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 
 char		**list_to_string(t_list *node, char *str);
 void		unmatch(t_list **list, char *pattern);
-// static bool	match_pattern(char *pattern, char *str, int pat_i, int str_i);
+static bool	match_pattern(char *pattern, char *str);
 
 char	**list_to_string(t_list *node, char *str)
 {
@@ -48,36 +48,27 @@ char	**list_to_string(t_list *node, char *str)
 
 static bool	match_pattern(char *pattern, char *str)
 {
-	int pat_i = 0;
-	int str_i = 0;
-	int star_idx = -1;
-	int match_idx = 0;
-
-	while (str[str_i])
+	if (!*pattern && !*str)
+		return (true);
+	else if (*pattern == '*')
 	{
-		if (pattern[pat_i] == '*')
+		if (!*(pattern + 1))
+			return (true);
+		while (*str)
 		{
-			star_idx = pat_i;
-			match_idx = str_i;
-			pat_i++;
+			if (match_pattern(pattern, str))
+				return (true);
+			str++;
 		}
-		else if (pattern[pat_i] == str[str_i])
-		{
-			pat_i++;
-			str_i++;
-		}
-		else if (star_idx != -1)
-		{
-			pat_i = star_idx + 1;
-			match_idx++;
-			str_i = match_idx;
-		}
-		else
-			return false;
+		return (match_pattern(pattern, str));
 	}
-	while (pattern[pat_i] == '*')
-			pat_i++;
-	return pattern[pat_i] == '\0';
+	else
+	{
+		if (*pattern == *str)
+			return (match_pattern(pattern + 1, str + 1));
+		else
+			return (false);
+	}
 }
 
 void	unmatch(t_list **list, char *pattern)
