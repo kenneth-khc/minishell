@@ -6,11 +6,12 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 21:16:09 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/18 15:24:47 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/23 09:29:56 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include "definitions.h"
 #include "quotes.h"
 #include "tokens.h"
@@ -72,20 +73,38 @@ void	store_quotes(t_Quote_List *list, t_Quotes *quotes)
 	list->pairs = new;
 }
 
-// void	print_quote_list(t_Token *token)
-// {
-// 	printf("Start: %p End: %p\n", token->lexeme,
-//		token->lexeme + ft_strlen(token->lexeme) - 1);
-// 	
-// 	int	i = 0;
-// 	t_Quotes	*q;
-//
-// 	printf("Quotes: \n");
-// 	while (i < token->quotes.pair_count)
-// 	{
-// 		q = token->quotes.pairs[i];
-// 		printf("Start: %p End: %p\n", q->start, q->end);
-// 		i++;
-// 	}
-// 	printf("\n");
-// }
+/**
+ * Check if the quote found is any of the original pair of unquoted quotes
+ * in the input
+ * If it is, skip over them as quote removal
+ **/
+bool	quote_to_remove(t_Quote_List *quote_list, char *quote)
+{
+	int			i;
+	t_Quotes	*pair;
+
+	i = 0;
+	while (i < quote_list->pair_count)
+	{
+		pair = quote_list->pairs[i];
+		if (quote == pair->start || quote == pair->end)
+		{
+			return (true);
+		}
+		i++;
+	}
+	return (false);
+}
+
+void	free_quote_list(t_Quote_List *list)
+{
+	int	i;
+
+	i = 0;
+	while (i < list->pair_count)
+	{
+		free(list->pairs[i]);
+		i++;
+	}
+	free(list->pairs);
+}

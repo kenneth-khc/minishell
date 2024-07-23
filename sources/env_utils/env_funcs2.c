@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 21:32:14 by qang              #+#    #+#             */
-/*   Updated: 2024/07/17 00:23:56 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/18 18:34:26 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ t_envar	*copy_env(t_envar *src)
 {
 	t_envar	*temp;
 
-	temp = malloc(sizeof(t_envar));
+	temp = mallocpromax(sizeof(t_envar));
 	temp->key = ft_strdup(src->key);
 	if (src->val)
 		temp->val = ft_strdup(src->val);

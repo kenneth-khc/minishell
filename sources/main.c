@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 05:13:16 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/18 21:06:16 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/21 19:19:37 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 #include "execution.h"
 #include "lexer.h"
 #include "expansions.h"
+//#include "serialize_tree.h"
 
 const char	*__asan_default_options(void)
 {
@@ -43,6 +44,7 @@ int	main(int argc, char **argv, char **envp)
 		init_signal();
 		get_input(&input);
 		tokens = scan(&input);
+		//print_tokens(&tokens);
 		expand_tokens(&tokens, env);
 		init_parser(&parser, &tokens, env);
 		root = parse(&parser);
@@ -50,7 +52,7 @@ int	main(int argc, char **argv, char **envp)
 			exec_ast(root);
 		clean_up(&input, &tokens, root);
 	}
-	//clear_history();
+	rl_clear_history();
 }
 
 void	init_parser(t_Parser *parser, t_Token_List *tokens, t_entab *env)

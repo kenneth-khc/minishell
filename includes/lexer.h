@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 09:44:52 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/17 01:06:16 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/23 08:57:39 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,17 +41,20 @@ typedef struct s_Match_Table
 }	t_Match_Table;
 
 t_Token_List	scan(t_Input *input);
-bool	is_metacharacter(const char c);
-bool	is_blank(const char c);
-void	skip_comment(t_Lexer *lexer);
-void	match(t_Input *input, t_Lexer *lexer, t_Token_List *tokens);
+bool			is_metacharacter(const char c);
+bool			is_blank(const char c);
+void			skip_comment(t_Lexer *lexer);
+void			match(t_Input *input, t_Lexer *lexer, t_Token_List *tokens);
 
 /* Words */
-void	match_word(t_Lexer *lexer, t_Token_List *tokens, t_Input *input);
-void	advance_word(t_Lexer *lexer);
-void	join_input_lines(t_Lexer *lexer, t_Input *input);
-void	update_lexer_state(t_Lexer *lexer);
-void	set_word_flags(t_Token *token);
-bool	is_valid_name(const char *start, const char *end);
+void			match_word(t_Lexer *lexer, t_Token_List *tokens,
+					t_Input *input);
+void			advance_word(t_Lexer *lexer);
+void			join_input_lines(t_Lexer *lexer, t_Input *input);
+void			update_lexer_state(t_Lexer *lexer);
+bool			io_number(char *lexeme, char *delim);
+
+void			set_word_flags(t_Token *token);
+bool			is_valid_name(const char *start, const char *end);
 
 #endif

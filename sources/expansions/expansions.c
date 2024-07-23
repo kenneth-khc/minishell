@@ -6,21 +6,21 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 16:45:41 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/18 21:01:17 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/23 11:12:20 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include "libft.h"
 #include "env.h"
 #include "expansions.h"
 #include "tokens.h"
-#include "parser.h"
 
-static void	io_number(t_Token *token);
-static bool	only_digits(const char *str);
+bool	only_digits(const char *str);
 
+//TODO: wildcards (filename expansion)
 void	expand_tokens(t_Token_List *tokens, t_entab *env)
 {
 	t_Token	*token;
@@ -28,14 +28,11 @@ void	expand_tokens(t_Token_List *tokens, t_entab *env)
 	token = tokens->head;
 	while (token)
 	{
-		io_number(token);
 		tilde_expansion(token, env);
 		if (parameter_expand(token, env))
 		{
-			word_splitting(token);
+			word_splitting(token, tokens);
 		}
-		// todo: filename expansion
-		filename_expansion(token, env);
 		token = token->next;
 	}
 }
@@ -46,8 +43,24 @@ void	expand_tokens(t_Token_List *tokens, t_entab *env)
 # define IFS ' '
 #endif
 
-	#include <stdio.h>
-void	word_splitting(t_Token *token)
+void	split_token_to_tokens(t_Token_List *tokens, t_Token *token,
+			t_Token_List *new_tokens)
+{
+	if (new_tokens->tail)
+	{
+		new_tokens->tail->next = token->next;
+		if (token->prev)
+			token->prev->next = new_tokens->head;
+		else
+			tokens->head = new_tokens->head;
+		if (token->next)
+			token->next->prev = new_tokens->tail;
+		else
+			tokens->tail = new_tokens->tail;
+	}
+}
+
+void	word_splitting(t_Token *token, t_Token_List *tokens)
 {
 	char			**words;
 	char			**w;
@@ -65,53 +78,12 @@ void	word_splitting(t_Token *token)
 		add_token(&new_tokens, new_token);
 		words++;
 	}
-	if (new_tokens.tail)
-	{
-		new_tokens.tail->next = token->next;
-		if (token->prev)
-		{
-			token->prev->next = new_tokens.head;
-		}
-		if (token->next)
-		{
-			token->next->prev = new_tokens.tail;
-		}
-	}
 	free(w);
+	split_token_to_tokens(tokens, token, &new_tokens);
 }
 
 void	tilde_expansion(t_Token *token, t_entab *env)
 {
 	if (token->word_flags & W_TILDE_EXPANSION)
 		token->lexeme = ft_strdup(get_var("HOME", env)->val);
-}
-
-#ifndef OPEN_MAX
-# define OPEN_MAX 1024
-#endif
-
-/**
- * Looks at a token before a redirection operator,
- * if it only consists of numbers and is within fd range
- * it is a file descriptor.
-**/
-static void	io_number(t_Token *token)
-{
-	if (only_digits(token->lexeme)
-		&& is_redirection_token(token->next)
-		&& ft_atoi(token->lexeme) < OPEN_MAX)
-	{
-		token->type = IO_NUMBER;
-	}
-}
-
-static bool	only_digits(const char *str)
-{
-	while (*str)
-	{
-		if (!ft_isdigit(*str))
-			return (false);
-		str++;
-	}
-	return (true);
 }

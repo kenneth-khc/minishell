@@ -1,5 +1,5 @@
 MAKEFLAGS += --warn-undefined-variables
-NAME := visualize_minishell
+NAME := minishell
 CC ?= cc
 CFLAGS := -Wall -Werror -Wextra
 
@@ -10,15 +10,24 @@ minishell_objs := $(minishell_objs_dir)/*.o $(minishell_objs_dir)/*/*.o
 LDFLAGS := -L $(minishell_dir)/libft
 LDLIBS := -lreadline -lft
 
+pwd := $(shell pwd)
+includes := -I $(pwd) -I $(pwd)/../includes -I $(pwd)/../libft/includes
+
+ARCH := $(shell uname -m)
+ifeq ($(ARCH), x86_64)
+	LDFLAGS += -L $(pwd)/../readline/x86/lib/
+	includes += -I $(pwd)/../readline/x86/include/
+else
+	LDFLAGS += -L $(pwd)/../readline/arm/lib/
+	includes += -I $(pwd)/../readline/x86/include/
+endif
+
+export includes
+
 fsan := -fsanitize=address
 debug := -g3
 green := \e[0;32m
 c_reset := \e[0m
-
-pwd := $(shell pwd)
-includes := -I $(pwd) -I $(pwd)/../includes -I $(pwd)/../libft/includes
-export includes
-
 srcs := cJSON.c serialize_tree.c
 objs := $(patsubst %.c, %.o, $(srcs))
 

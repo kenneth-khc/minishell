@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 21:06:03 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/18 15:25:19 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/18 17:48:42 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@ typedef struct s_Node
 	struct s_Node		*right;
 }	t_Node;
 
+t_Node	*node(enum e_Node_Type type);
+
 /**
  * Node for executing commands
  */
@@ -55,7 +57,7 @@ typedef struct s_Exec_Node
 	const char			**args; // Args of the cmd, first one being the cmdname
 }	t_Exec_Node;
 
-t_Exec_Node		*create_exec_node(const char *cmd_name, t_entab *envtab);
+t_Exec_Node	*exec_node(const char *cmd, t_entab *env);
 void			add_exec_arguments(t_Exec_Node *exec_node, const char *arg);
 
 /**
@@ -82,13 +84,9 @@ typedef struct s_Redir_Node
 	char				*delim;
 }	t_Redir_Node;
 
-typedef struct s_Parser t_Parser;
-t_Redir_Node	*create_redir_node(int oldfd, const char *filename,
-					int flags, mode_t mode);
-void	trunc_output_redir(t_Parser *parser, t_Redir_Node *node, bool oldfd_set);
-void	append_output_redir(t_Parser *parser, t_Redir_Node *node, bool oldfd_set);
-void	input_redir(t_Parser *parser, t_Redir_Node *node, bool oldfd_set);
-void	heredoc_redir(t_Parser *parser, t_Redir_Node *node, bool oldfd_set);
+t_Redir_Node	*redir_node(t_entab *env);
+
+typedef struct s_Parser	t_Parser;
 
 /**
  * Node for piping
@@ -116,5 +114,7 @@ typedef struct s_Ass_Node
 	char				*key; // variable identifier
 	char				*value; // variable value
 }	t_Ass_Node;
+
+t_Node	*assignment_node(t_Parser *parser);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/26 00:30:17 by qang              #+#    #+#             */
-/*   Updated: 2024/07/17 00:51:21 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/20 22:45:33 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,4 +117,6 @@ void	update_pwd(char **args, t_entab *table)
 				ft_strlen(path_node->val) - 1);
 		free(temp);
 	}
+	free(path_node->pwd);
+	path_node->pwd = NULL;
 }

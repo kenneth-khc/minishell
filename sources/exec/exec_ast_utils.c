@@ -6,13 +6,12 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 00:46:52 by qang              #+#    #+#             */
-/*   Updated: 2024/07/17 00:40:08 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/19 22:32:26 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_dprintf.h"
 #include <sys/wait.h>
-#include <stdlib.h>
 
 int			get_exit_status(void);
 int			wait_for_child(int last_pid);

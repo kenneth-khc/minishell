@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 21:24:13 by qang              #+#    #+#             */
-/*   Updated: 2024/07/17 01:32:59 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/20 22:46:00 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,23 +22,28 @@ static void	update_var(t_envar *node, t_envar *new);
 
 static void	update_var(t_envar *node, t_envar *new)
 {
-	char	*temp;
-
 	if (ft_strcmp(new->key, "PWD") == 0)
-		special_pwd(node, new);
+	{
+		if (node->pwd)
+		{
+			free(node->pwd);
+			node->pwd = new->val;
+		}
+		else
+			node->pwd = new->val;
+	}
 	else
 	{
-		temp = node->val;
 		if (new->val)
 		{
+			if (node->val)
+				free(node->val);
 			node->val = new->val;
-			if (temp)
-				free(temp);
 		}
 		node->state = new->state;
-		free(new->key);
-		free(new);
 	}
+	free(new->key);
+	free(new);
 }
 
 void	add_var(char *str, t_entab *table)
@@ -69,7 +74,7 @@ t_envar	*new_env_var(const char *str)
 	char	*val;
 	t_envar	*new;
 
-	new = malloc(sizeof(t_envar));
+	new = mallocpromax(sizeof(t_envar));
 	temp = ft_strchr(str, '=');
 	key = ft_substr(str, 0, temp - str);
 	if (temp == NULL)
@@ -115,7 +120,7 @@ t_entab	*init_env_table(char **env)
 	t_entab	*table;
 
 	i = -1;
-	table = malloc(sizeof(t_entab));
+	table = mallocpromax(sizeof(t_entab));
 	prev = NULL;
 	temp = NULL;
 	while (env[++i])

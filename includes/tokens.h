@@ -19,7 +19,7 @@
  * A word is defined as a sequence of characters that is delimited by blanks
  * and metacharacters, unless the blanks and metacharacters are quoted.
  **/
-#define TOKEN_TYPES 13
+#define TOKEN_TYPES 11
 typedef enum e_Token_Types
 {
 	WORD = 256,
@@ -30,10 +30,8 @@ typedef enum e_Token_Types
 	LESSER_LESSER,		// <<
 	GREATER,			// >
 	GREATER_GREATER,	// >>
-	STAR,				// *
 	OPEN_PARAN,			// (
 	CLOSE_PARAN,		// )
-	SEMICOLON,			// ;
 	END_OF_LINE,		// \n
 	HASH,				// #
 	ASSIGNMENT_WORD,
@@ -73,9 +71,7 @@ typedef struct s_Token_List
 
 t_Token	*create_token(int type, const char *lexeme);
 void	add_token(t_Token_List *tokens, t_Token *token);
-int		get_tokens_count(t_Token_List *tokens);
 void	free_tokens(t_Token_List *tokens);
-void	free_token(t_Token *token);
 void	print_tokens(t_Token_List *tokens);
 char	*token_enum_to_str(t_Token *token);
 

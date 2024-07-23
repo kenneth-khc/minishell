@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/13 00:48:55 by qang              #+#    #+#             */
-/*   Updated: 2024/07/18 15:40:20 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/21 19:23:27 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void	exec(t_Exec_Node *node)
 		ignore_sigs();
 		if (ft_isbuiltin(node->command))
 			set_exit_status(run_builtin(node->args, node->table));
+		else
+			set_exit_status(wait_for_child(pid));
 	}
-	if (!ft_isbuiltin(node->command))
-		set_exit_status(wait_for_child(pid));
 }

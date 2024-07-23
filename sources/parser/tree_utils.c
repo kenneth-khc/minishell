@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/20 21:02:06 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/18 17:35:30 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/18 18:17:19 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,10 @@
 #include "libft.h"
 #include <stdlib.h>
 
-t_Node	*create_node(enum e_Node_Type type)
+/**
+ * Create a general node of type type
+**/
+t_Node	*node(enum e_Node_Type type)
 {
 	t_Node	*node;
 
@@ -23,37 +26,28 @@ t_Node	*create_node(enum e_Node_Type type)
 	return (node);
 }
 
-t_Exec_Node	*create_exec_node(const char *cmd_name, t_entab *envtab)
+/**
+ * Create an execution node with the command name passed in and a pointer
+ * to the environment
+**/
+t_Exec_Node	*exec_node(const char *cmd, t_entab *env)
 {
-	t_Exec_Node	*node;
+	t_Exec_Node	*cmd_node;
 
-	node = ft_calloc(1, sizeof(*node));
-	node->type = Exec_Node;
-	node->left = NULL;
-	node->command = cmd_name;
-	node->table = envtab;
-	return (node);
+	cmd_node = ft_calloc(1, sizeof(*cmd_node));
+	cmd_node->type = Exec_Node;
+	cmd_node->command = cmd;
+	cmd_node->table = env;
+	return (cmd_node);
 }
 
-t_Redir_Node	*create_redir_node(int oldfd, const char *filename,
-int flags, mode_t mode)
-{
-	t_Redir_Node	*node;
-	
-	node = ft_calloc(1, sizeof(*node));
-	node->type = Redir_Node;
-	node->left = NULL;
-	node->oldfd = oldfd;
-	node->file = (char *)filename;
-	node->flags = flags;
-	node->mode = mode;
-
-	return (node);
-}
-
+/**
+ * Store the arguments for the command in an array to be passed in to
+ * execve()
+**/
 void	add_exec_arguments(t_Exec_Node *exec_node, const char *arg)
 {
-	int	i;
+	int			i;
 	int			old_count;
 	const char	**temp;
 
@@ -75,13 +69,24 @@ void	add_exec_arguments(t_Exec_Node *exec_node, const char *arg)
 	exec_node->args = temp;
 }
 
+/**
+ * Get the tail of the tree, traversing through all the left children
+**/
 t_Node	*get_tail(t_Node *node)
 {
-	while (node->left != NULL)
-		node = node->left;
-	return (node);
+	if (node)
+	{
+		while (node->left != NULL)
+			node = node->left;
+		return (node);
+	}
+	return (NULL);
 }
 
+/**
+ * Free the tree after done walking through it
+ * For execution nodes, the pointer holding the arguments also have to be freed
+**/
 void	free_tree(t_Node *node)
 {
 	t_Node		*temp;
@@ -99,4 +104,3 @@ void	free_tree(t_Node *node)
 	free_tree(node->right);
 	free(temp);
 }
-

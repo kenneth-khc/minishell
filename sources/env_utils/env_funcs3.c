@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 00:11:02 by qang              #+#    #+#             */
-/*   Updated: 2024/07/17 10:55:19 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/20 16:50:20 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@
 char		**env_convert(t_entab *table);
 void		add_ass(char *str, t_entab *table);
 void		incr_shlvl(t_entab *table);
-void		special_pwd(t_envar *node, t_envar *new);
 static char	**convert(char **ret, t_envar *node, int size);
 
 static char	**convert(char **ret, t_envar *node, int size)
@@ -58,7 +57,7 @@ char	**env_convert(t_entab *table)
 			i++;
 		node = node->next;
 	}
-	ret = (char **)malloc(sizeof(char *) * (i + 1));
+	ret = (char **)mallocpromax(sizeof(char *) * (i + 1));
 	convert(ret, table->head, i);
 	ret[i] = 0;
 	return (ret);
@@ -97,7 +96,7 @@ void	add_ass(char *str, t_entab *table)
 	t_envar	*new;
 
 	new = new_env_var(str);
-	if (get_var(new->val, table))
+	if (get_var(new->key, table))
 		add_var(str, table);
 	else
 	{
@@ -107,15 +106,5 @@ void	add_ass(char *str, t_entab *table)
 	free(new->key);
 	if (new->val)
 		free(new->val);
-	free(new);
-}
-
-void	special_pwd(t_envar *node, t_envar *new)
-{
-	if (node->state & LOCAL)
-		free(node->pwd);
-	node->state |= LOCAL;
-	node->pwd = new->val;
-	free(new->key);
 	free(new);
 }

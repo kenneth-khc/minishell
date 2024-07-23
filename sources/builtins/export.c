@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 21:20:05 by qang              #+#    #+#             */
-/*   Updated: 2024/07/18 17:07:17 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/20 16:43:30 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 
 int			ft_export(char **args, t_entab *table);
 static bool	ft_is_valid_export(char *str);
+static void	append_node(char *val, t_envar *node);
 static void	append_var(char *arg, t_entab *table);
 static void	ft_export_error(char *str, int *errno);
 
@@ -25,7 +26,7 @@ static void	ft_export_error(char *str, int *errno)
 	ft_dprintf(2, "%s: export: `%s': not a valid identifier\n", SHELL, str);
 	*errno = 1;
 }
-#include <stdio.h>
+
 static bool	ft_is_valid_export(char *str)
 {
 	int	i;
@@ -48,6 +49,17 @@ static void	append_node(char *val, t_envar *node)
 {
 	char	*temp;
 
+	if (ft_strcmp(node->key, "PWD") == 0)
+	{
+		if (node->pwd)
+		{
+			temp = node->pwd;
+			node->pwd = ft_strjoin(node->pwd, val);
+			free(temp);
+		}
+		else
+			node->pwd = ft_strjoin(node->val, val);
+	}
 	if (node->val)
 	{
 		temp = node->val;
@@ -63,7 +75,6 @@ static void	append_var(char *arg, t_entab *table)
 	char	*key;
 	char	*val;
 	char	*temp;
-	t_envar	*node;
 
 	key = ft_substr(arg, 0, ft_strchr(arg, '+') - arg);
 	temp = ft_strchr(arg, '=');
@@ -72,16 +83,16 @@ static void	append_var(char *arg, t_entab *table)
 	else
 		val = ft_substr(arg, temp + 1 - arg,
 				ft_strlen(arg) - ft_strlen(key) - 2);
-	node = get_var(key, table);
-	if (!node)
+	if (get_var(key, table) == NULL)
 	{
 		temp = ft_strjoin("=", val);
 		free(val);
 		val = ft_strjoin(key, temp);
 		add_var(val, table);
+		free(temp);
 	}
 	else
-		append_node(val, node);
+		append_node(val, get_var(key, table));
 	get_var(key, table)->state |= EXPORT;
 	free(val);
 	free(key);

@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include <stdlib.h>
+#include <stdio.h>
 #include "tokens.h"
 #include "libft.h"
 
@@ -41,92 +42,61 @@ void	add_token(t_Token_List *tokens, t_Token *token)
 	tokens->tail = token;
 }
 
-int	get_tokens_count(t_Token_List *tokens)
-{
-	int		count;
-	t_Token	*curr;
-
-	count = 0;
-	curr = tokens->head;
-	while (curr != NULL)
-	{
-		count++;
-		curr = curr->next;
-	}
-	return (count);
-}
-
-void	free_token(t_Token *token)
-{
-	free_quote_list(&token->quotes);
-	free(token->lexeme);
-	free(token);
-}
-
 void	free_tokens(t_Token_List *tokens)
 {
 	t_Token	*curr;
-	t_Token	*temp;
+	t_Token	*token;
 
 	curr = tokens->head;
 	while (curr != NULL)
 	{
-		temp = curr;
-		curr = curr->next;
-		free_token(temp);
+		token = curr;
+		curr = token->next;
+		free_quote_list(&token->quotes);
+		free(token->lexeme);
+		free(token);
 	}
+	tokens->head = NULL;
+	tokens->tail = NULL;
 }
 
-void	free_quote_list(t_Quote_List *list)
+void	print_tokens(t_Token_List *tokens)
 {
-	int	i;
+	int			i;
+	t_Token		*curr;
 
 	i = 0;
-	while (i < list->pair_count)
+	curr = tokens->head;
+	while (curr != NULL)
 	{
-		free(list->pairs[i]);
-		i++;
+		printf("Token %d:\n", ++i);
+		printf("%s\n", token_enum_to_str(curr));
+		printf("%s\n", curr->lexeme);
+		printf("\n");
+		printf("↓\n\n");
+		curr = curr->next;
 	}
-	free(list->pairs);
+	printf("\n\n");
 }
 
-// void	print_tokens(t_Token_List *tokens)
-// {
-// 	int			i;
-// 	t_Token		*curr;
-//
-// 	i = 0;
-// 	curr = tokens->head;
-// 	while (curr != NULL)
-// 	{
-// 		printf("Token %d:\n", ++i);
-// 		printf("%s\n", token_enum_to_str(curr));
-// 		printf("%s\n", curr->lexeme);
-// 		printf("\n");
-// 		printf("↓\n\n");
-// 		curr = curr->next;
-// 	}
-// 	printf("\n\n");
-// }
-//
- char	*token_enum_to_str(t_Token *token)
- {
- 	const char *types[] = {
- 		"WORD",
- 		"PIPE",
- 		"OR_OR",
- 		"AND_AND",
- 		"LESSER",
- 		"LESSER_LESSER",
- 		"GREATER",
- 		"GREATER_GREATER",
- 		"STAR",
- 		"OPEN_PARAN",
- 		"CLOSE_PARAN",
- 		"SEMICOLON",
- 		"END_OF_LINE",
- 		"HASH"
- 	};
+char	*token_enum_to_str(t_Token *token)
+{
+	const char	*types[] = {
+		"WORD",
+		"PIPE",
+		"OR_OR",
+		"AND_AND",
+		"LESSER",
+		"LESSER_LESSER",
+		"GREATER",
+		"GREATER_GREATER",
+		"STAR",
+		"OPEN_PARAN",
+		"CLOSE_PARAN",
+		"END_OF_LINE",
+		"HASH",
+		"ASSIGNMENT_WORD",
+		""};
 
- 	return (ft_strdup(types[token->type - 256]));
- }
+	return (ft_strdup(types[token->type - 256]));
+}

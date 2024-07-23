@@ -6,36 +6,34 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/26 22:22:35 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/18 16:27:02 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/21 16:38:59 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <unistd.h>
 #include "parser.h"
 #include "libft.h"
-#include "errors.h"
 #include "tokens.h"
-#include <stdio.h>
 
 t_Node	*parse_pipe_sequence(t_Parser *parser)
 {
 	t_Node	*left;
-	t_Node	*temp;
+	t_Node	*pipe;
 
 	left = parse_simple_command(parser);
-	while (peek(1, parser) == PIPE)
+	while (accept(parser, PIPE))
 	{
-		consume(parser);
-		temp = ft_calloc(1, sizeof(*temp));
-		temp->type = Pipe_Node;
-		temp->left = left;
-		temp->right = parse_list(parser);
-		if (temp->right == NULL)
-		{
-			syntax_error(parser, "expected command to pipe to");
-			return (NULL);
-		}
-		left = temp;
+		pipe = ft_calloc(1, sizeof(*pipe));
+		pipe->type = Pipe_Node;
+		pipe->left = left;
+		if (pipe->left == NULL)
+			syntax_error(parser, "expected operand before `|`",
+				parser->consumed->prev);
+		pipe->right = parse_list(parser);
+		if (pipe->right == NULL)
+			syntax_error(parser, "expected operand after `|`",
+				parser->token);
+		left = pipe;
 	}
 	return (left);
 }

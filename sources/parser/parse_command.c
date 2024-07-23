@@ -6,49 +6,139 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/26 16:20:58 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/18 16:26:35 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/21 19:23:41 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include <stdio.h>
+#include <stdlib.h>
 #include "tokens.h"
 #include "tree.h"
 #include "parser.h"
-#include <stdio.h>
-#include <stdlib.h>
 
-t_Node	*parse_command_args(t_Parser *parser)
-{
-	t_Node		*ret;
-	t_Exec_Node	*exec_node;
+t_Node	*make_command_tree(t_Node *prefix, t_Node *cmd, t_Node *suffix);
 
-	exec_node = create_exec_node(NULL, parser->envtab);
-	while (peek(1, parser) == WORD)
-	{
-		add_exec_arguments(exec_node, parser->token->lexeme);
-		consume(parser);
-	}
-	if (exec_node->command == NULL)
-	{
-		ret = NULL;
-		free(exec_node);
-	}
-	else
-		ret = (t_Node *)exec_node;
-	return (ret);
-}
-
+/**
+ * Get the command and its prefixes and suffixes
+ * Prefixes are IO_REDIRECTs and ASSIGNMENT_WORDs
+ * Command consists of the command name and its arguments
+ * Suffixes are WORDs as command arguments and IO_REDIRECTs
+ * Redirections and assignments are all processed from left to right
+ * before executing the command
+ **/
 t_Node	*parse_simple_command(t_Parser *parser)
 {
 	t_Node	*prefix;
 	t_Node	*suffix;
-	t_Node	*ret;
+	t_Node	*root;
 	t_Node	*cmd;
 
-	ret = NULL;
 	prefix = parse_command_prefix(parser);
-	cmd = parse_command_args(parser);
-	suffix = parse_command_suffix(parser, prefix, (t_Exec_Node *)cmd);
+	cmd = parse_command(parser);
+	suffix = parse_command_suffix(parser, prefix, (t_Exec_Node *) cmd);
+	root = make_command_tree(prefix, cmd, suffix);
+	return (root);
+}
+
+/**
+* Prefixes are IO_REDIRECTs and ASSIGNMENT_WORDs
+* They should be executed in order from left to right, so we
+* have to add in each new node to the tail of the chain
+* e.g. ">one <two a=b" becomes a chain of
+* [>one] -> NULL
+* [>one] -> [<two] -> NULL
+* [>one] -> [<two] -> [a=b] -> NULL
+**/
+t_Node	*parse_command_prefix(t_Parser *parser)
+{
+	t_Node	*root;
+	t_Node	*node;
+	t_Node	**curr;
+
+	root = NULL;
+	node = NULL;
+	curr = &root;
+	while (peek(parser) == ASSIGNMENT_WORD || is_io_redirect(parser))
+	{
+		if (peek(parser) == ASSIGNMENT_WORD)
+			node = assignment_node(parser);
+		else if (is_io_redirect(parser))
+			node = parse_io_redirect(parser);
+		while (*curr != NULL)
+			curr = &(*curr)->left;
+		*curr = node;
+	}
+	return (root);
+}
+
+/**
+ * Parse the command into an execution node
+ * The first WORD is the command's name
+ * Every WORD after are arguments passed to the command
+ **/
+t_Node	*parse_command(t_Parser *parser)
+{
+	t_Exec_Node	*exec;
+	bool		cmd_name_set;
+
+	exec = NULL;
+	cmd_name_set = false;
+	while (accept(parser, WORD))
+	{
+		if (cmd_name_set == false)
+		{
+			exec = exec_node(parser->consumed->lexeme, parser->envtab);
+			cmd_name_set = true;
+		}
+		add_exec_arguments(exec, parser->consumed->lexeme);
+	}
+	return ((t_Node *) exec);
+}
+
+/**
+ * Construct a chain of all the suffixes of a command.
+ * A suffix could be WORD arguments passed to the command, or IO_REDIRECT
+ * Since ASSIGNMENT_WORDs can't appear in suffixes, we pretend they are
+ * WORDs and treat them as such.
+**/
+t_Node	*parse_command_suffix(t_Parser *parser, t_Node *prefix,
+	t_Exec_Node *exec_node)
+{
+	t_Node	*root;
+	t_Node	**curr;
+
+	root = NULL;
+	if (prefix)
+		curr = &prefix;
+	else
+		curr = &root;
+	while (peek(parser) == ASSIGNMENT_WORD
+		|| peek(parser) == WORD || is_io_redirect(parser))
+	{
+		if (accept(parser, WORD))
+			add_exec_arguments(exec_node, parser->consumed->lexeme);
+		else if (accept(parser, ASSIGNMENT_WORD))
+			add_exec_arguments(exec_node, parser->consumed->lexeme);
+		if (is_io_redirect(parser))
+		{
+			while (*curr != NULL)
+				curr = &(*curr)->left;
+			*curr = parse_io_redirect(parser);
+		}
+	}
+	return (root);
+}
+
+/**
+ * Chain the prefix, command and suffix lists into one.
+ * All prefix and suffix happens before the command, so command is placed
+ * at the very bottom of the chain
+**/
+t_Node	*make_command_tree(t_Node *prefix, t_Node *cmd, t_Node *suffix)
+{
+	t_Node	*ret;
+
+	ret = NULL;
 	if (prefix)
 	{
 		ret = prefix;
@@ -67,109 +157,4 @@ t_Node	*parse_simple_command(t_Parser *parser)
 	else if (suffix)
 		ret = suffix;
 	return (ret);
-}
-
-t_Node	*assignment_node(t_Parser *parser)
-{
-	t_Ass_Node	*ass;
-	const char	*equal;
-	const char	*end;
-
-	ass = ft_calloc(1, sizeof(*ass));
-	equal = ft_strchr(parser->token->lexeme, '=');
-	ass->type = ASS_NODE;
-	ass->key = ft_extract_substring(parser->token->lexeme, equal - 1);
-	end = parser->token->lexeme + ft_strlen(parser->token->lexeme) - 1;
-	ass->value = ft_extract_substring(equal + 1, end);
-	ass->table = parser->envtab;
-	ass->left = NULL;
-	return ((t_Node *)ass);
-}
-
-bool	is_io_redirect(t_Parser *parser)
-{
-	return (peek(1, parser) == IO_NUMBER
-		|| is_redirection_token(parser->token));
-}
-
-t_Node	*parse_command_prefix(t_Parser *parser)
-{
-	t_Node	*root;
-	t_Node	*node;
-	t_Node	*curr;
-
-	node = NULL;
-	curr = NULL;
-	root = NULL;
-	while (peek(1, parser) == ASSIGNMENT_WORD || is_io_redirect(parser))
-	{
-		if (peek(1, parser) == ASSIGNMENT_WORD)
-		{
-			node = assignment_node(parser);
-			consume(parser);
-		}
-		else if (is_io_redirect(parser))
-		{
-			node = parse_io_redirect(parser);
-		}
-		if (root == NULL)
-		{
-			root = node;
-			curr = root;
-		}
-		else
-		{
-			curr->left = node;
-			curr = node;
-		}
-	}
-	return (root);
-}
-
-t_Node	*parse_command_suffix(t_Parser *parser, t_Node *prefix,
-	t_Exec_Node *exec_node)
-{
-	t_Node	*root;
-	t_Node	*node;
-	t_Node	*curr;
-
-	root = NULL;
-	node = NULL;
-	curr = NULL;
-	// todo: there shouldn't be assignment words in suffix
-	while (peek(1, parser) == ASSIGNMENT_WORD
-		|| peek(1, parser) == WORD || is_io_redirect(parser))
-	{
-		// bandaid fix for now
-		if (peek(1, parser) == ASSIGNMENT_WORD)
-			parser->token->type = WORD;
-		//
-		if (peek(1, parser) == WORD)
-		{
-			if (exec_node == NULL)
-				exec_node = create_exec_node(NULL, parser->envtab);
-			add_exec_arguments(exec_node, parser->token->lexeme);
-			consume(parser);
-		}
-		if (is_io_redirect(parser))
-		{
-			node = parse_io_redirect(parser);
-			if (prefix)
-				get_tail(prefix)->left = node;
-			else
-			{
-				if (root == NULL)
-				{
-					root = node;
-					curr = root;
-				}
-				else
-				{
-					curr->left = node;
-					curr = node;
-				}
-			}
-		}
-	}
-	return (root);
 }
