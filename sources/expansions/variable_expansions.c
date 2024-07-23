@@ -20,7 +20,8 @@
 #include "quotes.h"
 #include "definitions.h"
 
-bool	dollar_prefix_string(char *dollar, t_Quote_List *quote_list);
+bool	delimited(t_Range *p, t_Quote_List *pairs);
+bool	is_dollar(char c);
 
 bool	parameter_expand(t_Token *token, t_entab *env)
 {
@@ -33,11 +34,28 @@ bool	parameter_expand(t_Token *token, t_entab *env)
 	expanded = false;
 	while (p.start < (token->lexeme + ft_strlen(token->lexeme)))
 	{
-		if (*p.end == '\0'
-			|| (is_quote(*p.end) && quote_to_remove(&token->quotes, p.end)))
-			chunkify_unexpanded_portion(&chunks, &p);
-		else if (*p.end == '$')
+		if (delimited(&p, &token->quotes))
+		{
+			add_chunk(&chunks, ft_extract_substring(p.start, p.end - 1));
+			p.end += 1;
+			p.start = p.end;
+		}
+		else if (is_dollar(*p.end))
 			expanded = check_expansions(&p, &token->quotes, env, &chunks);
+		else if (*p.end == '*' && !is_quoted(&token->quotes, p.end))
+		{
+			if (filename_expansion(&chunks, token))
+			{
+				while (*p.start == '*')
+					p.start++;
+				p.start++;
+				p.end = p.start;
+				expanded = true;
+			}
+			add_chunk(&chunks, ft_extract_substring(p.start, p.end));
+			p.end += 1;
+			p.start = p.end;
+		}
 		else
 			p.end++;
 	}
@@ -45,6 +63,17 @@ bool	parameter_expand(t_Token *token, t_entab *env)
 	token->lexeme = join_chunks(&chunks);
 	free_chunks(&chunks);
 	return (expanded);
+}
+
+bool	is_dollar(char c)
+{
+	return (c == '$');
+}
+
+bool	delimited(t_Range *p, t_Quote_List *pairs)
+{
+	return (*p->end == '\0'
+		|| (is_quote(*p->end) && quote_to_remove(pairs, p->end)));
 }
 
 bool	special_parameter(char *dollar)

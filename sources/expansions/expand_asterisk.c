@@ -70,22 +70,25 @@ static void	recursive_fill(t_list **node, char *str, char *path)
 	char			*expr;
 	DIR				*dir;
 
-	temp = ft_strchr(str, '/');
-	if (path[0])
-		dir = opendir(path);
-	else
-		dir = opendir(".");
-	if (!dir)
-		return ;
-	if (!temp)
-	{
-		expr = ft_strjoin(path, "/");
-		fill_list(node, dir, str, expr);
-		free(expr);
-	}
-	else
-		rfill_helper(node, dir, str, path);
-	closedir(dir);
+    temp = ft_strchr(str, '/');
+    if (path[0])
+        dir = opendir(path);
+    else
+        dir = opendir(".");
+    if (!dir)
+        return ;
+    if (!temp)
+    {
+        if (path[0])
+            expr = ft_strjoin(path, "/");
+        else
+            expr = ft_strdup(path);
+        fill_list(node, dir, str, expr);
+        free(expr);
+    }
+    else
+        rfill_helper(node, dir, str, path);
+    closedir(dir);
 }
 
 char	**match_expression(char *str)
