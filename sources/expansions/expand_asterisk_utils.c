@@ -48,10 +48,10 @@ char	**list_to_string(t_list *node, char *str)
 
 static bool	match_pattern(char *pattern, char *str)
 {
-	int pat_i = 0;
-	int str_i = 0;
-	int star_idx = -1;
-	int match_idx = 0;
+	int	pat_i = 0;
+	int	str_i = 0;
+	int	star_idx = -1;
+	int	match_idx = 0;
 
 	while (str[str_i])
 	{
@@ -73,11 +73,11 @@ static bool	match_pattern(char *pattern, char *str)
 			str_i = match_idx;
 		}
 		else
-			return false;
+			return (false);
 	}
 	while (pattern[pat_i] == '*')
-			pat_i++;
-	return pattern[pat_i] == '\0';
+		pat_i++;
+	return (pattern[pat_i] == '\0');
 }
 
 void	unmatch(t_list **list, char *pattern)

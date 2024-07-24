@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/08 16:45:41 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/23 11:12:20 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/24 19:09:35 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,69 +17,58 @@
 #include "env.h"
 #include "expansions.h"
 #include "tokens.h"
+#include "definitions.h"
 
-bool	only_digits(const char *str);
-
-//TODO: wildcards (filename expansion)
 void	expand_tokens(t_Token_List *tokens, t_entab *env)
 {
 	t_Token	*token;
+	bool	token_expanded;
 
 	token = tokens->head;
+	token_expanded = false;
 	while (token)
 	{
 		tilde_expansion(token, env);
-		if (parameter_expand(token, env))
-		{
+		token_expanded = do_expansions(token, env);
+		if (token_expanded)
 			word_splitting(token, tokens);
-		}
 		token = token->next;
 	}
 }
 
-// Internal field seperator should default to whitespaces
-#ifndef IFS
-//# define IFS " \t\n"
-# define IFS ' '
-#endif
-
-void	split_token_to_tokens(t_Token_List *tokens, t_Token *token,
-			t_Token_List *new_tokens)
+bool	do_expansions(t_Token *token, t_entab *env)
 {
-	if (new_tokens->tail)
+	t_Range			p;
+	t_Chunk_List	chunks;
+	bool			expanded;
+
+	expanded = false;
+	chunks = (t_Chunk_List){.head = NULL, .tail = NULL};
+	p = (t_Range){.start = token->lexeme, .end = token->lexeme};
+	while (p.start < (token->lexeme + ft_strlen(token->lexeme)))
 	{
-		new_tokens->tail->next = token->next;
-		if (token->prev)
-			token->prev->next = new_tokens->head;
+		if (delimited(&p, &token->quotes))
+		{
+			add_chunk(&chunks, ft_extract_substring(p.start, p.end - 1));
+			point_to_new_chunk(&p);
+		}
+		else if (is_dollar(*p.end))
+			expanded = try_variable_expansion(&chunks, &token->quotes, env, &p);
+		else if (*p.end == '*' && !is_quoted(&token->quotes, p.end))
+			expanded = try_filename_expansion(&chunks, token, &p);
 		else
-			tokens->head = new_tokens->head;
-		if (token->next)
-			token->next->prev = new_tokens->tail;
-		else
-			tokens->tail = new_tokens->tail;
+			p.end++;
 	}
+	free(token->lexeme);
+	token->lexeme = join_chunks(&chunks);
+	free_chunks(&chunks);
+	return (expanded);
 }
 
-void	word_splitting(t_Token *token, t_Token_List *tokens)
+bool	delimited(t_Range *p, t_Quote_List *pairs)
 {
-	char			**words;
-	char			**w;
-	t_Token_List	new_tokens;
-	t_Token			*new_token;
-
-	new_tokens = (t_Token_List){.head = NULL, .tail = NULL};
-	words = ft_split(token->lexeme, ' ');
-	if (words == NULL)
-		return ;
-	w = words;
-	while (*words)
-	{
-		new_token = create_token(WORD, *words);
-		add_token(&new_tokens, new_token);
-		words++;
-	}
-	free(w);
-	split_token_to_tokens(tokens, token, &new_tokens);
+	return (*p->end == '\0'
+		|| (is_quote(*p->end) && quote_to_remove(pairs, p->end)));
 }
 
 void	tilde_expansion(t_Token *token, t_entab *env)

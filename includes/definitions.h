@@ -23,5 +23,6 @@ bool	is_operator(const char *str);
 bool	is_valid_name(const char *start, const char *end);
 bool	is_not_identifier(char c);
 bool	is_quote(char c);
+bool	is_dollar(char c);
 
 #endif

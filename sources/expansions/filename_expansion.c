@@ -15,6 +15,52 @@
 #include "tokens.h"
 #include "expansions.h"
 
+static void	add_spaces_between_chunks(t_Chunk_List *chunks);
+
+bool	try_filename_expansion(t_Chunk_List *chunks, t_Token *token, t_Range *p)
+{
+	bool	token_expanded;
+
+	token_expanded = filename_expansion(chunks, token);
+	if (token_expanded)
+	{
+		while (*p->end == '*')
+			p->end++;
+		p->end++;
+		p->start = p->end;
+		token_expanded = true;
+	}
+	add_chunk(chunks, ft_extract_substring(p->start, p->end));
+	p->end += 1;
+	p->start = p->end;
+	return (token_expanded);
+}
+
+bool	filename_expansion(t_Chunk_List *chunks, t_Token *token)
+{
+	char			**files;
+	char			**ff;
+	t_Chunk_List	filename_chunks;
+
+	files = match_expression(token->lexeme);
+	if (ft_strcmp(*files, token->lexeme) == 0)
+		return (false);
+	ff = files;
+	filename_chunks = (t_Chunk_List){.head = NULL, .tail = NULL};
+	while (*files)
+		add_chunk(&filename_chunks, *files++);
+	add_spaces_between_chunks(&filename_chunks);
+	if (filename_chunks.tail)
+	{
+		if (chunks->tail)
+			chunks->tail->next = filename_chunks.head;
+		else
+			chunks->head = filename_chunks.head;
+		chunks->tail = filename_chunks.tail;
+	}
+	return (free(ff), true);
+}
+
 bool	is_quoted(t_Quote_List *quote_list, char *c)
 {
 	int			i;
@@ -31,64 +77,19 @@ bool	is_quoted(t_Quote_List *quote_list, char *c)
 	return (false);
 }
 
-void	split_token_to_tokens(t_Token_List *tokens, t_Token *token,
-			t_Token_List *new_tokens);
-
-void	print_chunks(t_Chunk_List *chunks)
+static void	add_spaces_between_chunks(t_Chunk_List *chunks)
 {
-	t_Chunk	*c;
-
-	c = chunks->head;
-	while (c)
-	{
-		printf("%s ", c->str);
-		printf("-> ");
-		c = c->next;
-	}
-	fflush(stdout);
-}
-
-bool	filename_expansion(t_Chunk_List *chunks, t_Token *token)
-{
-	char			**words; 
-	char			**w;
-	t_Chunk_List	filename_chunks;
-
-	words = match_expression(token->lexeme);
-	if (ft_strcmp(token->lexeme, *words) == 0)// when there is no match it returns back the original lexeme
-		return (false);
-	w = words;
-	filename_chunks = (t_Chunk_List){.head = NULL, .tail = NULL};
-	while (*words)
-	{
-		add_chunk(&filename_chunks, *words);
-		words++;
-	}
-	words = w;
 	t_Chunk	*chunk;
-	t_Chunk	*curr;
-	curr = filename_chunks.head;
-	while (curr)
+	t_Chunk	*space;
+
+	chunk = chunks->head;
+	while (chunk)
 	{
-		chunk = ft_calloc(1, sizeof(*chunk));
-		chunk->str = ft_calloc(1, sizeof(char));
-		chunk->str[0] = ' ';
-		chunk->next = curr->next;
-		curr->next = chunk;
-		curr = chunk->next;
+		space = ft_calloc(1, sizeof(*space));
+		space->str = ft_calloc(1, sizeof(char));
+		space->str[0] = ' ';
+		space->next = chunk->next;
+		chunk->next = space;
+		chunk = space->next;
 	}
-	if (filename_chunks.tail)
-	{
-		filename_chunks.tail->next = NULL;
-		if (chunks->tail)
-			chunks->tail->next = filename_chunks.head;
-		else
-		{
-			chunks->head = filename_chunks.head;
-			chunks->tail = filename_chunks.tail;
-		}
-	}
-	//print_chunks(&filename_chunks);
-	free(w);
-	return (true);
 }

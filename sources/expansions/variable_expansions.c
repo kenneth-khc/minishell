@@ -10,92 +10,79 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <stdlib.h>
 #include "env.h"
-#include "execution.h"
 #include "expansions.h"
-#include "libft.h"
-#include "tokens.h"
 #include "quotes.h"
-#include "definitions.h"
 
-bool	delimited(t_Range *p, t_Quote_List *pairs);
-bool	is_dollar(char c);
+static bool	dollar_prefix_string(char *dollar, t_Quote_List *quote_list);
+static bool	variable_should_expand(char *dollar, t_Quote_List *quote_list);
+static bool	variable_should_expand(char *dollar, t_Quote_List *quote_list);
 
-bool	parameter_expand(t_Token *token, t_entab *env)
+bool	try_variable_expansion(t_Chunk_List *chunks, t_Quote_List *quote_pairs,
+			t_entab *env, t_Range *p)
 {
-	t_Chunk_List	chunks;
-	t_Range			p;
-	bool			expanded;
+	bool	token_expanded;
 
-	chunks = (t_Chunk_List){.head = NULL, .tail = NULL};
-	p = (t_Range){.start = token->lexeme, .end = token->lexeme};
-	expanded = false;
-	while (p.start < (token->lexeme + ft_strlen(token->lexeme)))
+	token_expanded = false;
+	if (dollar_prefix_string(p->end, quote_pairs))
+		point_to_new_chunk(p);
+	else if (variable_should_expand(p->end, quote_pairs))
 	{
-		if (delimited(&p, &token->quotes))
-		{
-			add_chunk(&chunks, ft_extract_substring(p.start, p.end - 1));
-			p.end += 1;
-			p.start = p.end;
-		}
-		else if (is_dollar(*p.end))
-			expanded = check_expansions(&p, &token->quotes, env, &chunks);
-		else if (*p.end == '*' && !is_quoted(&token->quotes, p.end))
-		{
-			if (filename_expansion(&chunks, token))
-			{
-				while (*p.start == '*')
-					p.start++;
-				p.start++;
-				p.end = p.start;
-				expanded = true;
-			}
-			add_chunk(&chunks, ft_extract_substring(p.start, p.end));
-			p.end += 1;
-			p.start = p.end;
-		}
-		else
-			p.end++;
+		token_expanded = do_variable_expansion(chunks, env, p);
+		p->start = p->end;
 	}
-	free(token->lexeme);
-	token->lexeme = join_chunks(&chunks);
-	free_chunks(&chunks);
-	return (expanded);
-}
-
-bool	is_dollar(char c)
-{
-	return (c == '$');
-}
-
-bool	delimited(t_Range *p, t_Quote_List *pairs)
-{
-	return (*p->end == '\0'
-		|| (is_quote(*p->end) && quote_to_remove(pairs, p->end)));
-}
-
-bool	special_parameter(char *dollar)
-{
-	return (dollar[1] == '?'
-		|| dollar[1] == '0'
-		|| dollar[1] == '$');
-}
-
-void	expand_special_parameters(t_Chunk_List *chunks, char *dollar)
-{
-	char	*value;
-
-	value = NULL;
-	if (dollar)
+	else
 	{
-		if (dollar[1] == '?')
-			value = ft_itoa(get_exit_status());
-		else if (dollar[1] == '0')
-			value = ft_strdup(SHELL);
-		else if (dollar[1] == '$')
-			value = ft_itoa(getpid());
-		add_chunk(chunks, value);
+		p->end++;
 	}
+	return (token_expanded);
+}
+
+/**
+ * Check if it is a quoted string next to the dollar sign
+ * If it is, we skip over the dollar and continue as usual because we do not
+ * implement the "ANSI-C Quoting" and "Locale-Specific Translation" features
+ **/
+static bool	dollar_prefix_string(char *dollar, t_Quote_List *quote_list)
+{
+	int			i;
+	t_Quotes	*pair;
+
+	i = 0;
+	while (i < quote_list->pair_count)
+	{
+		pair = quote_list->pairs[i];
+		if (dollar + 1 == pair->start
+			&& pair->end > pair->start)
+			return (true);
+		i++;
+	}
+	return (false);
+}
+
+/**
+ * Check if the dollar found belongs between any of the pair of quotes
+ * in the word
+ * If found between strong quotes (''), do not expand
+**/
+static bool	variable_should_expand(char *dollar, t_Quote_List *quote_list)
+{
+	int			i;
+	t_Quotes	*pair;
+
+	i = 0;
+	while (i < quote_list->pair_count)
+	{
+		pair = quote_list->pairs[i];
+		if (dollar > pair->start
+			&& dollar < pair->end)
+		{
+			if (pair->quote == STRONG)
+				return (false);
+			else if (pair->quote == WEAK)
+				return (true);
+		}
+		i++;
+	}
+	return (true);
 }

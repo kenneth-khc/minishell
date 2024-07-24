@@ -37,25 +37,27 @@ typedef struct s_Range
 }	t_Range;
 
 
+bool	try_variable_expansion(t_Chunk_List *chunks, t_Quote_List *quote_pairs,
+			t_entab *env, t_Range *p);
+bool	try_filename_expansion(t_Chunk_List *chunks, t_Token *token, t_Range *p);
+bool	delimited(t_Range *p, t_Quote_List *pairs);
+bool	is_dollar(char c);
+
+void	point_to_new_chunk(t_Range *p);
+bool	do_expansions(t_Token *token, t_entab *env);
 bool	check_expansions(t_Range *p, t_Quote_List *quote_pairs, t_entab *env,
 			t_Chunk_List *chunks);
-bool	dollar_prefix_string(char *dollar, t_Quote_List *quote_list);
-bool	should_expand(char *dollar, t_Quote_List *quote_list);
 void	expand_tokens(t_Token_List *tokens, t_entab *env);
-bool	special_parameter(char *dollar);
-void	expand_special_parameters(t_Chunk_List *chunks, char *dollar);
 void	tilde_expansion(t_Token *token, t_entab *env);
 void	word_splitting(t_Token *token, t_Token_List *tokens);
 bool	is_valid_key_start(char *dollar);
 bool	parameter_expand(t_Token *token, t_entab *env);
-void	chunkify_unexpanded_portion(t_Chunk_List *chunks, t_Range *p);
-bool	chunkify_expansions(t_Chunk_List *chunks, t_entab *env, t_Range *p);
+bool	do_variable_expansion(t_Chunk_List *chunks, t_entab *env, t_Range *p);
 void	free_chunks(t_Chunk_List *chunks);
 size_t	count_total_chunk_len(t_Chunk_List *chunks);
 bool	quote_to_remove(t_Quote_List *quote_list, char *quote);
 bool	filename_expansion(t_Chunk_List *chunks, t_Token *token);
 void	add_chunk(t_Chunk_List *chunks, char *str);
-void	expand_parameter(t_Chunk_List *chunks, t_entab *env, char *dollar);
 char	*join_chunks(t_Chunk_List *chunks);
 char	*copy_var_val(char *key, t_entab *env);
 void	quote_removal(t_Token_List *tokens);
