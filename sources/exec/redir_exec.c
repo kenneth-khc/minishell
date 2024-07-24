@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:10:41 by qang              #+#    #+#             */
-/*   Updated: 2024/07/20 22:53:02 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/24 21:29:35 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,11 +38,11 @@ static void	write_heredoc(t_Redir_Node *node, int fd)
 {
 	char												*line;
 	char												*expanded_line;
-	int													i;
+	static int											i = 0;
 
-	i = 0;
 	expanded_line = NULL;
 	write(1, ">", 1);
+	fflush(stdin);
 	line = get_next_line(0);
 	while (line != NULL && ft_strcmp(line, node->delim) != 10)
 	{
@@ -79,7 +79,9 @@ static void	redir_delim(t_Redir_Node *node)
 		close(fd);
 		fd = openpromax(next_heredoc, O_RDONLY, 0644);
 		unlink(next_heredoc);
-		dup2(fd, node->oldfd);
+		if (node->left && node->left->type == Exec_Node)
+			dup2(fd, node->oldfd);
+		// if dup2 do dup2
 		close(fd);
 		if (node->left)
 			exec_ast(node->left);
