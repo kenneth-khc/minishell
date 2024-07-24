@@ -17,7 +17,6 @@
 #include "execution.h"
 #include "lexer.h"
 #include "expansions.h"
-//#include "serialize_tree.h"
 
 const char	*__asan_default_options(void)
 {

@@ -42,7 +42,7 @@ void	match_word(t_Lexer *lexer, t_Token_List *tokens, t_Input *input)
 	if (lexer->terminated)
 	{
 		lexeme = ft_extract_substring(lexer->start, lexer->end);
-		if (io_number(lexeme, lexer->end))
+		if (io_number(lexeme, lexer->end + 1))
 			add_token(tokens, create_token(IO_NUMBER, lexeme));
 		else
 			add_token(tokens, create_token(WORD, lexeme));

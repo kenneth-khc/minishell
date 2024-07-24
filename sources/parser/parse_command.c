@@ -17,6 +17,7 @@
 #include "parser.h"
 
 t_Node	*make_command_tree(t_Node *prefix, t_Node *cmd, t_Node *suffix);
+void	flag_last_heredoc(t_Node *root);
 
 /**
  * Get the command and its prefixes and suffixes
@@ -37,6 +38,7 @@ t_Node	*parse_simple_command(t_Parser *parser)
 	cmd = parse_command(parser);
 	suffix = parse_command_suffix(parser, prefix, (t_Exec_Node *) cmd);
 	root = make_command_tree(prefix, cmd, suffix);
+	flag_last_heredoc(root);
 	return (root);
 }
 
@@ -158,3 +160,30 @@ t_Node	*make_command_tree(t_Node *prefix, t_Node *cmd, t_Node *suffix)
 		ret = suffix;
 	return (ret);
 }
+
+/**
+* HACK: we flag the last heredoc and only dup that heredoc
+* into the file descriptor for the command 
+**/
+void	flag_last_heredoc(t_Node *root)
+{
+	t_Node			*curr;
+	t_Redir_Node	*last_heredoc_node;
+	t_Redir_Node	*r;
+
+	curr = root;
+	last_heredoc_node = NULL;
+	while (curr)
+	{
+		if (curr->type == Redir_Node)
+		{
+			r = (t_Redir_Node *) curr;
+			if (r->heredoc)
+				last_heredoc_node = r;
+		}
+		curr = curr->left;
+	}
+	if (last_heredoc_node)
+		last_heredoc_node->last_heredoc = true;
+}
+

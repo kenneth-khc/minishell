@@ -41,8 +41,7 @@ static void	write_heredoc(t_Redir_Node *node, int fd)
 	static int											i = 0;
 
 	expanded_line = NULL;
-	write(1, ">", 1);
-	fflush(stdin);
+	write(1, "> ", 2);
 	line = get_next_line(0);
 	while (line != NULL && ft_strcmp(line, node->delim) != 10)
 	{
@@ -51,7 +50,7 @@ static void	write_heredoc(t_Redir_Node *node, int fd)
 		write(fd, expanded_line, ft_strlen(expanded_line));
 		free(line);
 		free(expanded_line);
-		write(1, ">", 1);
+		write(1, "> ", 2);
 		line = get_next_line(0);
 	}
 	if (line == NULL)
@@ -79,9 +78,8 @@ static void	redir_delim(t_Redir_Node *node)
 		close(fd);
 		fd = openpromax(next_heredoc, O_RDONLY, 0644);
 		unlink(next_heredoc);
-		if (node->left && node->left->type == Exec_Node)
+		if (node->last_heredoc)
 			dup2(fd, node->oldfd);
-		// if dup2 do dup2
 		close(fd);
 		if (node->left)
 			exec_ast(node->left);
