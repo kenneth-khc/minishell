@@ -47,6 +47,8 @@ bool	do_expansions(t_Token *token, t_entab *env)
 	p = (t_Range){.start = token->lexeme, .end = token->lexeme};
 	while (p.start < (token->lexeme + ft_strlen(token->lexeme)))
 	{
+		if (token->prev && token->prev->type == LESSER_LESSER) // HACK: we ignore heredoc delimiters
+			return (false);
 		if (delimited(&p, &token->quotes))
 		{
 			add_chunk(&chunks, ft_extract_substring(p.start, p.end - 1));

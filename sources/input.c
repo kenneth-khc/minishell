@@ -20,6 +20,8 @@
 #include "libft.h"
 #include "execution.h"
 
+char	*s;
+
 t_Line	*make_line(char *str)
 {
 	t_Line	*line;
@@ -30,6 +32,7 @@ t_Line	*make_line(char *str)
 	return (line);
 }
 
+void	print_line(char *line);
 void	get_input(t_Input *input)
 {
 	t_Line	*line;
@@ -39,12 +42,18 @@ void	get_input(t_Input *input)
 	line = ft_calloc(1, sizeof(*line));
 	// read = readline("bish> ");
 	if (isatty(fileno(stdin)))
+	{
 		read = readline("bish > ");
+		if (read)
+			s = ft_strdup(read);
+	}
 	else
 	{
 		char *line;
 		line = get_next_line(fileno(stdin));
 		read = ft_strtrim(line, "\n");
+		if (read)
+			s = ft_strdup(read);
 		free(line);
 	}
 	if (read == NULL)

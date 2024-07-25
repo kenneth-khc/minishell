@@ -52,7 +52,8 @@ t_Quotes	*find_next_pair(char *word, char **next_start)
 		s++;
 	}
 	quotes->end = s;
-	*next_start = quotes->end + 1;
+	if (next_start)
+		*next_start = quotes->end + 1;
 	return (quotes);
 }
 

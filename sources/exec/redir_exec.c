@@ -12,6 +12,7 @@
 
 #include "env.h"
 #include "execution.h"
+#include "expansions.h"
 #include "ft_dprintf.h"
 #include "get_next_line.h"
 #include <fcntl.h>
@@ -34,23 +35,94 @@ static char	*get_next_heredoc(void)
 	return (heredoc);
 }
 
+extern char *s;
+
+#include <stdio.h>
+void	print_line(char *str)
+{
+	while (*str)
+	{
+		if (*str == '\n')
+			printf("$");
+		else
+			printf("%c", *str);
+		str++;
+		fflush(stdout);
+	}
+	printf("\n");
+}
+
+#include "quotes.h"
+void	heredoc_quote_removal(t_Redir_Node *node, t_Quotes *pair)
+{
+	char	*s;
+	size_t		len = 0;
+	char	*unquoted_delim;
+
+	s = node->delim;
+	while (*s)
+	{
+		if (s == pair->start || s == pair->end)
+		{
+			s++;
+			continue ;
+		}
+		len++;
+		s++;
+	}
+	unquoted_delim = ft_calloc(len + 1, sizeof(*unquoted_delim));
+	char	*temp = unquoted_delim;
+	s = node->delim;
+	while (*s)
+	{
+		if (s == pair->start || s == pair->end)
+		{
+			s++;
+			continue;
+		}
+		*temp = *s;
+		temp++;
+		s++;
+	}
+	free(node->delim);
+	node->delim = unquoted_delim;
+}
+
 static void	write_heredoc(t_Redir_Node *node, int fd)
 {
 	char												*line;
 	char												*expanded_line;
 	static int											i = 0;
+	t_Quotes	*quotes;
+	bool		should_expand;
 
+	should_expand = true;
 	expanded_line = NULL;
-	write(1, "> ", 2);
+	if (isatty(STDIN_FILENO))
+		write(STDERR_FILENO, "> ", 2);
 	line = get_next_line(0);
-	while (line != NULL && ft_strcmp(line, node->delim) != 10)
+	node->delim = ft_strjoin(node->delim, "\n");
+	// FIX: do expansions and quote removals on delim
+	quotes = find_next_pair(node->delim, NULL);
+	if (quotes && quotes->start && quotes->end)
+	{
+		should_expand = false;
+		heredoc_quote_removal(node, quotes);
+	}
+	while (line != NULL && ft_strcmp(line, node->delim) != 0)
 	{
 		i++;
-		expanded_line = expand_line(line, node->table);
+		if (should_expand)
+			expanded_line = expand_line(line, node->table);
+		else
+		{
+			expanded_line = line;
+		}
 		write(fd, expanded_line, ft_strlen(expanded_line));
-		free(line);
-		free(expanded_line);
-		write(1, "> ", 2);
+		// free(line);
+		// free(expanded_line);
+		if (isatty(STDIN_FILENO))
+			write(STDERR_FILENO, "> ", 2);
 		line = get_next_line(0);
 	}
 	if (line == NULL)
@@ -62,22 +134,23 @@ static void	write_heredoc(t_Redir_Node *node, int fd)
 	free(line);
 }
 
+#include <stdio.h>
 static void	redir_delim(t_Redir_Node *node)
 {
 	int		pid;
 	char	*next_heredoc;
 	int		fd;
 
-	pid = forkpromax();
-	if (pid == 0)
-	{
-		init_signal();
 		next_heredoc = get_next_heredoc();
 		fd = openpromax(next_heredoc, O_CREAT | O_RDWR | O_TRUNC, 0644);
 		write_heredoc(node, fd);
 		close(fd);
 		fd = openpromax(next_heredoc, O_RDONLY, 0644);
 		unlink(next_heredoc);
+	pid = forkpromax();
+	if (pid == 0)
+	{
+		init_signal();
 		if (node->last_heredoc)
 			dup2(fd, node->oldfd);
 		close(fd);
