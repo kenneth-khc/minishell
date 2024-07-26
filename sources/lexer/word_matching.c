@@ -6,7 +6,7 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 21:47:29 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/23 08:57:44 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/24 19:11:05 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ void	match_word(t_Lexer *lexer, t_Token_List *tokens, t_Input *input)
 	if (lexer->terminated)
 	{
 		lexeme = ft_extract_substring(lexer->start, lexer->end);
-		if (io_number(lexeme, lexer->end))
+		if (io_number(lexeme, lexer->end + 1))
 			add_token(tokens, create_token(IO_NUMBER, lexeme));
 		else
 			add_token(tokens, create_token(WORD, lexeme));

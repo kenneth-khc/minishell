@@ -81,6 +81,8 @@ typedef struct s_Redir_Node
 	mode_t				mode; // permission bits for READ WRITE EXECUTE
 	const char			*file; // name of the file to open
 	bool				heredoc;
+	bool				last_heredoc;
+	bool				should_expand;
 	char				*delim;
 }	t_Redir_Node;
 

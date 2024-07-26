@@ -32,7 +32,17 @@ int		openpromax(char *file, int flags, mode_t mode);
 void	close_pipe(int fd[2]);
 void	pipepromax(int fd[2]);
 
+# include "quotes.h"
+typedef struct s_Heredoc
+{
+	char			*delim;
+	t_Quote_List	quotes;
+	bool			should_expand;
+}	t_Heredoc;
+
 /*for redir*/
 char	*expand_line(char *line, t_entab *table);
 void	check_permissions(char *newfile, t_Direction direction);
+void	heredoc_prompt(void);
+t_Heredoc	*process_heredoc_delim(t_Redir_Node *node);
 #endif

@@ -48,3 +48,8 @@ bool	is_quote(char c)
 {
 	return (c == '"' || c == '\'');
 }
+
+bool	is_dollar(char c)
+{
+	return (c == '$');
+}

@@ -38,3 +38,29 @@ bool	is_io_redirect(t_Parser *parser)
 	return (peek(parser) == IO_NUMBER
 		|| is_redirection_token(parser->token));
 }
+
+/**
+* HACK: we flag the last heredoc and only dup that heredoc
+* into the file descriptor for the command 
+**/
+void	flag_last_heredoc(t_Node *root)
+{
+	t_Node			*curr;
+	t_Redir_Node	*last_heredoc_node;
+	t_Redir_Node	*r;
+
+	curr = root;
+	last_heredoc_node = NULL;
+	while (curr)
+	{
+		if (curr->type == Redir_Node)
+		{
+			r = (t_Redir_Node *) curr;
+			if (r->heredoc)
+				last_heredoc_node = r;
+		}
+		curr = curr->left;
+	}
+	if (last_heredoc_node)
+		last_heredoc_node->last_heredoc = true;
+}

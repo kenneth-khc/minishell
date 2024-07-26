@@ -1,20 +1,65 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   chunkify_utils.c                                   :+:      :+:    :+:   */
+/*   chunkify.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/07/18 15:32:18 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/18 18:17:10 by qang             ###   ########.fr       */
+/*   Created: 2024/07/17 22:33:06 by kecheong          #+#    #+#             */
+/*   Updated: 2024/07/23 10:15:12 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "expansions.h"
 #include "libft.h"
 
-void	add_chunk(t_Chunk_List *chunks, char *str);
-size_t	count_total_chunk_len(t_Chunk_List *chunks);
+char	*join_chunks(t_Chunk_List *chunks)
+{
+	t_Chunk	*chunk;
+	size_t	total_len;
+	int		i;
+	int		j;
+	char	*new_word;
+
+	chunk = chunks->head;
+	total_len = count_total_chunk_len(chunks);
+	new_word = ft_calloc(total_len + 1, sizeof(*new_word));
+	j = 0;
+	while (chunk != NULL)
+	{
+		i = 0;
+		while (chunk->str && chunk->str[i] != '\0')
+		{
+			new_word[j] = chunk->str[i];
+			i++;
+			j++;
+		}
+		chunk = chunk->next;
+	}
+	new_word[j] = '\0';
+	return (new_word);
+}
+
+void	free_chunks(t_Chunk_List *chunks)
+{
+	t_Chunk	*chunk;
+	t_Chunk	*temp;
+
+	chunk = chunks->head;
+	while (chunk)
+	{
+		temp = chunk;
+		chunk = chunk->next;
+		free(temp->str);
+		free(temp);
+	}
+}
+
+void	point_to_new_chunk(t_Range *p)
+{
+	p->end += 1;
+	p->start = p->end;
+}
 
 void	add_chunk(t_Chunk_List *chunks, char *str)
 {

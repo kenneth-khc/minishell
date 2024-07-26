@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:10:41 by qang              #+#    #+#             */
-/*   Updated: 2024/07/20 22:53:02 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/26 09:59:04 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,14 @@
 #include "execution.h"
 #include "ft_dprintf.h"
 #include "get_next_line.h"
+#include "libft.h"
 #include <fcntl.h>
 #include <unistd.h>
 
 void		redir(t_Redir_Node *node);
 static void	write_heredoc(t_Redir_Node *node, int fd);
+static void	write_heredoc_to_file(t_Heredoc *heredoc, int fd,
+				char *line, t_entab *table);
 static void	redir_delim(t_Redir_Node *node);
 static char	*get_next_heredoc(void);
 
@@ -37,21 +40,17 @@ static char	*get_next_heredoc(void)
 static void	write_heredoc(t_Redir_Node *node, int fd)
 {
 	char												*line;
-	char												*expanded_line;
-	int													i;
+	static int											i = 0;
+	t_Heredoc											*heredoc;
 
-	i = 0;
-	expanded_line = NULL;
-	write(1, ">", 1);
+	heredoc_prompt();
+	heredoc = process_heredoc_delim(node);
 	line = get_next_line(0);
-	while (line != NULL && ft_strcmp(line, node->delim) != 10)
+	while (line != NULL && ft_strcmp(line, node->delim) != 0)
 	{
 		i++;
-		expanded_line = expand_line(line, node->table);
-		write(fd, expanded_line, ft_strlen(expanded_line));
-		free(line);
-		free(expanded_line);
-		write(1, ">", 1);
+		write_heredoc_to_file(heredoc, fd, line, node->table);
+		heredoc_prompt();
 		line = get_next_line(0);
 	}
 	if (line == NULL)
@@ -63,23 +62,43 @@ static void	write_heredoc(t_Redir_Node *node, int fd)
 	free(line);
 }
 
+static void	write_heredoc_to_file(t_Heredoc *heredoc, int fd,
+		char *line, t_entab *table)
+{
+	char	*expanded_line;
+
+	if (heredoc->should_expand)
+	{
+		expanded_line = expand_line(line, table);
+		write(fd, expanded_line, ft_strlen(expanded_line));
+	}
+	else
+	{
+		expanded_line = NULL;
+		write(fd, line, ft_strlen(expanded_line));
+	}
+	free(line);
+	free(expanded_line);
+}
+
 static void	redir_delim(t_Redir_Node *node)
 {
 	int		pid;
 	char	*next_heredoc;
 	int		fd;
 
+	next_heredoc = get_next_heredoc();
+	fd = openpromax(next_heredoc, O_CREAT | O_RDWR | O_TRUNC, 0644);
+	write_heredoc(node, fd);
+	close(fd);
+	fd = openpromax(next_heredoc, O_RDONLY, 0644);
+	unlink(next_heredoc);
 	pid = forkpromax();
 	if (pid == 0)
 	{
 		init_signal();
-		next_heredoc = get_next_heredoc();
-		fd = openpromax(next_heredoc, O_CREAT | O_RDWR | O_TRUNC, 0644);
-		write_heredoc(node, fd);
-		close(fd);
-		fd = openpromax(next_heredoc, O_RDONLY, 0644);
-		unlink(next_heredoc);
-		dup2(fd, node->oldfd);
+		if (node->last_heredoc)
+			dup2(fd, node->oldfd);
 		close(fd);
 		if (node->left)
 			exec_ast(node->left);

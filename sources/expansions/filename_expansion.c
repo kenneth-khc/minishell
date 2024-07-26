@@ -13,9 +13,53 @@
 #include <dirent.h>
 #include <stdio.h>
 #include "tokens.h"
-#include "env.h"
-#include "libft.h"
 #include "expansions.h"
+
+static void	add_spaces_between_chunks(t_Chunk_List *chunks);
+
+bool	try_filename_expansion(t_Chunk_List *chunks, t_Token *token, t_Range *p)
+{
+	bool	token_expanded;
+
+	token_expanded = filename_expansion(chunks, token);
+	if (token_expanded)
+	{
+		while (*p->end == '*')
+			p->end++;
+		p->end++;
+		p->start = p->end;
+		token_expanded = true;
+	}
+	add_chunk(chunks, ft_extract_substring(p->start, p->end));
+	p->end += 1;
+	p->start = p->end;
+	return (token_expanded);
+}
+
+bool	filename_expansion(t_Chunk_List *chunks, t_Token *token)
+{
+	char			**files;
+	char			**ff;
+	t_Chunk_List	filename_chunks;
+
+	files = match_expression(token->lexeme);
+	if (ft_strcmp(*files, token->lexeme) == 0)
+		return (false);
+	ff = files;
+	filename_chunks = (t_Chunk_List){.head = NULL, .tail = NULL};
+	while (*files)
+		add_chunk(&filename_chunks, *files++);
+	add_spaces_between_chunks(&filename_chunks);
+	if (filename_chunks.tail)
+	{
+		if (chunks->tail)
+			chunks->tail->next = filename_chunks.head;
+		else
+			chunks->head = filename_chunks.head;
+		chunks->tail = filename_chunks.tail;
+	}
+	return (free(ff), true);
+}
 
 bool	is_quoted(t_Quote_List *quote_list, char *c)
 {
@@ -33,60 +77,19 @@ bool	is_quoted(t_Quote_List *quote_list, char *c)
 	return (false);
 }
 
-// char	*expand_asterisk(char *path, t_entab *table)
-// {
-// 	DIR				*dir;
-// 	char			*ret;
-// 	char			*temp;
-// 	struct dirent	*entry;
-//
-// 	temp = ft_strrchr(path, '/');
-// 	if (temp == NULL)
-// 		temp = ft_strdup(get_var("PWD", table)->val);
-// 	else
-// 		temp = ft_substr(path, 0, temp - path);
-// 	dir = opendir(temp);
-// 	if (dir == NULL)
-// 		return (NULL);
-// 	free(temp);
-// 	ret = ft_strdup("");
-// 	entry = readdir(dir);
-// 	while (entry != NULL)
-// 	{
-// 		temp = ret;
-// 		ret = ft_strjoin(ret, entry->d_name);
-// 		free(temp);
-// 		entry = readdir(dir);
-// 		if (entry != NULL)
-// 			ret = ft_strjoin(ret, " ");
-// 	}
-// 	closedir(dir);
-// 	return (ret);
-// }
+static void	add_spaces_between_chunks(t_Chunk_List *chunks)
+{
+	t_Chunk	*chunk;
+	t_Chunk	*space;
 
-// void	filename_expansion(t_Token_List *tokens, t_Token *token, t_entab *env)
-// {(void)tokens;(void)token;(void)env;
-// 	printf("|%s|\n", token->lexeme);
-// 	// do something i guess
-// 	//
-// 	char	*asterisk;
-//
-// 	asterisk = ft_strchr(token->lexeme, '*');
-// 	if (asterisk == NULL || is_quoted(&token->quotes, asterisk))
-// 		return ;
-// 	(void)env;
-// 	(void)tokens;
-// 	// token->lexeme = expand_asterisk(token->lexeme, env);
-// 	// token->type = WORD;
-// 	// word_splitting(token, tokens);
-// 	char	**words = match_expression(token->lexeme);
-// 	char	**w = words;
-// 	//t_Token_List	new_tokens;
-//
-// 	while (*words)
-// 	{
-// 		printf("|%s|\n", *words);
-// 		words++;
-// 	}
-// 	free(w);
-// }
+	chunk = chunks->head;
+	while (chunk)
+	{
+		space = ft_calloc(1, sizeof(*space));
+		space->str = ft_calloc(1, sizeof(char));
+		space->str[0] = ' ';
+		space->next = chunk->next;
+		chunk->next = space;
+		chunk = space->next;
+	}
+}

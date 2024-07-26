@@ -106,7 +106,7 @@ static void	heredoc_redir(t_Parser *parser, t_Redir_Node *redir, bool oldfd_set)
 	redir->heredoc = true;
 	if (expect(parser, WORD, "expected delimiter word for heredoc"))
 	{
-		redir->delim = parser->token->lexeme;
+		redir->delim = ft_strjoin(parser->token->lexeme, "\n");
 		consume(parser);
 	}
 }

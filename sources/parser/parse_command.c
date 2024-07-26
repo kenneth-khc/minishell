@@ -16,7 +16,18 @@
 #include "tree.h"
 #include "parser.h"
 
-t_Node	*make_command_tree(t_Node *prefix, t_Node *cmd, t_Node *suffix);
+static t_Node
+*parse_command_prefix(t_Parser *parser);
+
+static t_Node
+*parse_command(t_Parser *parser);
+
+static t_Node
+*parse_command_suffix(t_Parser *parser, t_Node *prefix,
+	t_Exec_Node *exec_node);
+
+static t_Node
+*make_command_tree(t_Node *prefix, t_Node *cmd, t_Node *suffix);
 
 /**
  * Get the command and its prefixes and suffixes
@@ -37,6 +48,7 @@ t_Node	*parse_simple_command(t_Parser *parser)
 	cmd = parse_command(parser);
 	suffix = parse_command_suffix(parser, prefix, (t_Exec_Node *) cmd);
 	root = make_command_tree(prefix, cmd, suffix);
+	flag_last_heredoc(root);
 	return (root);
 }
 
@@ -49,7 +61,7 @@ t_Node	*parse_simple_command(t_Parser *parser)
 * [>one] -> [<two] -> NULL
 * [>one] -> [<two] -> [a=b] -> NULL
 **/
-t_Node	*parse_command_prefix(t_Parser *parser)
+static t_Node	*parse_command_prefix(t_Parser *parser)
 {
 	t_Node	*root;
 	t_Node	*node;
@@ -76,7 +88,7 @@ t_Node	*parse_command_prefix(t_Parser *parser)
  * The first WORD is the command's name
  * Every WORD after are arguments passed to the command
  **/
-t_Node	*parse_command(t_Parser *parser)
+static t_Node	*parse_command(t_Parser *parser)
 {
 	t_Exec_Node	*exec;
 	bool		cmd_name_set;
@@ -101,7 +113,7 @@ t_Node	*parse_command(t_Parser *parser)
  * Since ASSIGNMENT_WORDs can't appear in suffixes, we pretend they are
  * WORDs and treat them as such.
 **/
-t_Node	*parse_command_suffix(t_Parser *parser, t_Node *prefix,
+static t_Node	*parse_command_suffix(t_Parser *parser, t_Node *prefix,
 	t_Exec_Node *exec_node)
 {
 	t_Node	*root;
@@ -134,7 +146,7 @@ t_Node	*parse_command_suffix(t_Parser *parser, t_Node *prefix,
  * All prefix and suffix happens before the command, so command is placed
  * at the very bottom of the chain
 **/
-t_Node	*make_command_tree(t_Node *prefix, t_Node *cmd, t_Node *suffix)
+static t_Node	*make_command_tree(t_Node *prefix, t_Node *cmd, t_Node *suffix)
 {
 	t_Node	*ret;
 
