@@ -19,6 +19,13 @@
 #include "tokens.h"
 #include "definitions.h"
 
+/**
+* Go through the list of tokens and perform expansions and quote removals,
+* following the order as specified by Bash as much as it can
+* HACK: We ignore heredocs here because its' yet to be constructed tree node 
+* requires information regarding its quotes and expansions that I cannot
+* pass to from here, so we do that during the execution stage instead
+**/
 void	expand_tokens(t_Token_List *tokens, t_entab *env)
 {
 	t_Token	*token;
@@ -28,6 +35,11 @@ void	expand_tokens(t_Token_List *tokens, t_entab *env)
 	token_expanded = false;
 	while (token)
 	{
+		if (token->prev && token->prev->type == LESSER_LESSER)
+		{
+			token = token->next;
+			continue ;
+		}
 		tilde_expansion(token, env);
 		token_expanded = do_expansions(token, env);
 		if (token_expanded)
@@ -47,9 +59,7 @@ bool	do_expansions(t_Token *token, t_entab *env)
 	p = (t_Range){.start = token->lexeme, .end = token->lexeme};
 	while (p.start < (token->lexeme + ft_strlen(token->lexeme)))
 	{
-		if (token->prev && token->prev->type == LESSER_LESSER) // HACK: we ignore heredoc delimiters
-			return (false);
-		if (delimited(&p, &token->quotes))
+		if (delimited(&p) || quote_to_remove(&token->quotes, p.end))
 		{
 			add_chunk(&chunks, ft_extract_substring(p.start, p.end - 1));
 			point_to_new_chunk(&p);
@@ -67,10 +77,9 @@ bool	do_expansions(t_Token *token, t_entab *env)
 	return (expanded);
 }
 
-bool	delimited(t_Range *p, t_Quote_List *pairs)
+bool	delimited(t_Range *p)
 {
-	return (*p->end == '\0'
-		|| (is_quote(*p->end) && quote_to_remove(pairs, p->end)));
+	return (*p->end == '\0');
 }
 
 void	tilde_expansion(t_Token *token, t_entab *env)

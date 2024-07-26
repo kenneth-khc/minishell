@@ -40,7 +40,7 @@ typedef struct s_Range
 bool	try_variable_expansion(t_Chunk_List *chunks, t_Quote_List *quote_pairs,
 			t_entab *env, t_Range *p);
 bool	try_filename_expansion(t_Chunk_List *chunks, t_Token *token, t_Range *p);
-bool	delimited(t_Range *p, t_Quote_List *pairs);
+bool	delimited(t_Range *p);
 bool	is_dollar(char c);
 
 void	point_to_new_chunk(t_Range *p);

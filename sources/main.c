@@ -43,7 +43,6 @@ int	main(int argc, char **argv, char **envp)
 		init_signal();
 		get_input(&input);
 		tokens = scan(&input);
-		//print_tokens(&tokens);
 		expand_tokens(&tokens, env);
 		init_parser(&parser, &tokens, env);
 		root = parse(&parser);

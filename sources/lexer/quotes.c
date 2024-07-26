@@ -79,16 +79,18 @@ void	store_quotes(t_Quote_List *list, t_Quotes *quotes)
  * in the input
  * If it is, skip over them as quote removal
  **/
-bool	quote_to_remove(t_Quote_List *quote_list, char *quote)
+bool	quote_to_remove(t_Quote_List *quote_list, char *c)
 {
 	int			i;
 	t_Quotes	*pair;
 
+	if (!is_quote(*c))
+		return (false);
 	i = 0;
 	while (i < quote_list->pair_count)
 	{
 		pair = quote_list->pairs[i];
-		if (quote == pair->start || quote == pair->end)
+		if (c == pair->start || c == pair->end)
 		{
 			return (true);
 		}

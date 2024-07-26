@@ -55,7 +55,6 @@ void	match_word(t_Lexer *lexer, t_Token_List *tokens, t_Input *input)
 	{
 		ft_dprintf(STDERR_FILENO, "> ");
 		next_line = get_input_line(STDIN_FILENO);
-//		printf(">>>|%s|\n", next_line->start);
 		store_input(input, next_line);
 		join_input_lines(lexer, input);
 		match_word(lexer, tokens, input);
@@ -89,7 +88,6 @@ void	advance_word(t_Lexer *lexer)
 	}
 }
 
-#include <stdlib.h>
 void	join_input_lines(t_Lexer *lexer, t_Input *input)
 {
 	int		offset;

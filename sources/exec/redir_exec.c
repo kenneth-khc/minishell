@@ -12,7 +12,6 @@
 
 #include "env.h"
 #include "execution.h"
-#include "expansions.h"
 #include "ft_dprintf.h"
 #include "get_next_line.h"
 #include <fcntl.h>
@@ -35,31 +34,16 @@ static char	*get_next_heredoc(void)
 	return (heredoc);
 }
 
-extern char *s;
-
-#include <stdio.h>
-void	print_line(char *str)
-{
-	while (*str)
-	{
-		if (*str == '\n')
-			printf("$");
-		else
-			printf("%c", *str);
-		str++;
-		fflush(stdout);
-	}
-	printf("\n");
-}
-
 #include "quotes.h"
+
 void	heredoc_quote_removal(t_Redir_Node *node, t_Quotes *pair)
 {
 	char	*s;
-	size_t		len = 0;
+	size_t	len;
 	char	*unquoted_delim;
 
 	s = node->delim;
+	len = 0;
 	while (*s)
 	{
 		if (s == pair->start || s == pair->end)

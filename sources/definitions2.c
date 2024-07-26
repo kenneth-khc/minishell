@@ -53,4 +53,3 @@ bool	is_dollar(char c)
 {
 	return (c == '$');
 }
-

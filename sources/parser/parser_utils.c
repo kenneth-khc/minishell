@@ -72,6 +72,9 @@ bool	accept(t_Parser *parser, enum e_Token_Types type)
 }
 
 void	set_exit_status(int status);
+
+#define EXIT_SYNTAX_ERROR 2
+
 /**
  * If a syntax error is found, print a descriptive error message to stderr
  * for the user
@@ -95,6 +98,6 @@ void	syntax_error(t_Parser *parser, const char *err_msg, t_Token *got)
 		ft_dprintf(STDERR_FILENO, "\n");
 		parser->syntax_ok = false;
 	}
-	set_exit_status(2);
+	set_exit_status(EXIT_SYNTAX_ERROR);
 	return ;
 }

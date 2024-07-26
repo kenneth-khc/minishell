@@ -16,8 +16,18 @@
 #include "tree.h"
 #include "parser.h"
 
-t_Node	*make_command_tree(t_Node *prefix, t_Node *cmd, t_Node *suffix);
-void	flag_last_heredoc(t_Node *root);
+static t_Node
+*parse_command_prefix(t_Parser *parser);
+
+static t_Node
+*parse_command(t_Parser *parser);
+
+static t_Node
+*parse_command_suffix(t_Parser *parser, t_Node *prefix,
+	t_Exec_Node *exec_node);
+
+static t_Node
+*make_command_tree(t_Node *prefix, t_Node *cmd, t_Node *suffix);
 
 /**
  * Get the command and its prefixes and suffixes
@@ -51,7 +61,7 @@ t_Node	*parse_simple_command(t_Parser *parser)
 * [>one] -> [<two] -> NULL
 * [>one] -> [<two] -> [a=b] -> NULL
 **/
-t_Node	*parse_command_prefix(t_Parser *parser)
+static t_Node	*parse_command_prefix(t_Parser *parser)
 {
 	t_Node	*root;
 	t_Node	*node;
@@ -78,7 +88,7 @@ t_Node	*parse_command_prefix(t_Parser *parser)
  * The first WORD is the command's name
  * Every WORD after are arguments passed to the command
  **/
-t_Node	*parse_command(t_Parser *parser)
+static t_Node	*parse_command(t_Parser *parser)
 {
 	t_Exec_Node	*exec;
 	bool		cmd_name_set;
@@ -103,7 +113,7 @@ t_Node	*parse_command(t_Parser *parser)
  * Since ASSIGNMENT_WORDs can't appear in suffixes, we pretend they are
  * WORDs and treat them as such.
 **/
-t_Node	*parse_command_suffix(t_Parser *parser, t_Node *prefix,
+static t_Node	*parse_command_suffix(t_Parser *parser, t_Node *prefix,
 	t_Exec_Node *exec_node)
 {
 	t_Node	*root;
@@ -136,7 +146,7 @@ t_Node	*parse_command_suffix(t_Parser *parser, t_Node *prefix,
  * All prefix and suffix happens before the command, so command is placed
  * at the very bottom of the chain
 **/
-t_Node	*make_command_tree(t_Node *prefix, t_Node *cmd, t_Node *suffix)
+static t_Node	*make_command_tree(t_Node *prefix, t_Node *cmd, t_Node *suffix)
 {
 	t_Node	*ret;
 
@@ -160,30 +170,3 @@ t_Node	*make_command_tree(t_Node *prefix, t_Node *cmd, t_Node *suffix)
 		ret = suffix;
 	return (ret);
 }
-
-/**
-* HACK: we flag the last heredoc and only dup that heredoc
-* into the file descriptor for the command 
-**/
-void	flag_last_heredoc(t_Node *root)
-{
-	t_Node			*curr;
-	t_Redir_Node	*last_heredoc_node;
-	t_Redir_Node	*r;
-
-	curr = root;
-	last_heredoc_node = NULL;
-	while (curr)
-	{
-		if (curr->type == Redir_Node)
-		{
-			r = (t_Redir_Node *) curr;
-			if (r->heredoc)
-				last_heredoc_node = r;
-		}
-		curr = curr->left;
-	}
-	if (last_heredoc_node)
-		last_heredoc_node->last_heredoc = true;
-}
-
