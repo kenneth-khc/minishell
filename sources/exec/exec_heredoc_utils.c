@@ -70,7 +70,8 @@ static void	heredoc_quote_removal(t_Heredoc *heredoc, t_Redir_Node *node)
 	free_chunks(&chunks);
 }
 
-void	write_heredoc_to_file(t_Heredoc *heredoc, int fd, char *line, t_entab *table)
+void	write_heredoc_to_file(t_Heredoc *heredoc, int fd,
+		char *line, t_entab *table)
 {
 	char	*expanded_line;
 
@@ -87,4 +88,3 @@ void	write_heredoc_to_file(t_Heredoc *heredoc, int fd, char *line, t_entab *tabl
 	free(line);
 	free(expanded_line);
 }
-

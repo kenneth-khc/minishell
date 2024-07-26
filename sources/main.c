@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include <readline/readline.h>
+#include <unistd.h>
 #include "input.h"
 #include "tokens.h"
 #include "parser.h"

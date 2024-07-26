@@ -75,7 +75,7 @@ static void	write_heredoc_to_file(t_Heredoc *heredoc, int fd,
 	else
 	{
 		expanded_line = NULL;
-		write(fd, line, ft_strlen(expanded_line));
+		write(fd, line, ft_strlen(line));
 	}
 	free(line);
 	free(expanded_line);
@@ -83,25 +83,24 @@ static void	write_heredoc_to_file(t_Heredoc *heredoc, int fd,
 
 static void	redir_delim(t_Redir_Node *node)
 {
-	int		pid;
+	pid_t	pid;
 	char	*next_heredoc;
 	int		fd;
 
 	next_heredoc = get_next_heredoc();
-	fd = openpromax(next_heredoc, O_CREAT | O_RDWR | O_TRUNC, 0644);
+	fd = openpromax(next_heredoc, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	write_heredoc(node, fd);
 	close(fd);
-	fd = openpromax(next_heredoc, O_RDONLY, 0644);
-	unlink(next_heredoc);
 	pid = forkpromax();
 	if (pid == 0)
 	{
+		fd = openpromax(next_heredoc, O_RDONLY, 0644);
+		unlink(next_heredoc);
 		init_signal();
 		if (node->last_heredoc)
 			dup2(fd, node->oldfd);
 		close(fd);
-		if (node->left)
-			exec_ast(node->left);
+		exec_ast(node->left);
 		exit(0);
 	}
 	else

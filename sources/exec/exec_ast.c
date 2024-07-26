@@ -53,7 +53,7 @@ void	paip(t_Pipe_Node *node)
 		dup2(fd[1], STDOUT_FILENO);
 		close_pipe(fd);
 		exec_ast(node->left);
-		exit(0);
+		exit(get_exit_status());
 	}
 	pid2 = forkpromax();
 	if (pid2 == 0)
@@ -61,11 +61,11 @@ void	paip(t_Pipe_Node *node)
 		dup2(fd[0], STDIN_FILENO);
 		close_pipe(fd);
 		exec_ast(node->right);
-		exit(0);
+		exit(get_exit_status());
 	}
 	close_pipe(fd);
-	waitpid(pid1, NULL, 0);
-	waitpid(pid2, NULL, 0);
+	set_exit_status(wait_for_child(pid1));
+	set_exit_status(wait_for_child(pid2));
 }
 
 void	andand(t_Node *node)

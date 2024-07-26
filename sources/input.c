@@ -20,8 +20,6 @@
 #include "libft.h"
 #include "execution.h"
 
-char	*s;
-
 t_Line	*make_line(char *str)
 {
 	t_Line	*line;
@@ -44,21 +42,17 @@ void	get_input(t_Input *input)
 	if (isatty(fileno(stdin)))
 	{
 		read = readline("bish > ");
-		if (read)
-			s = ft_strdup(read);
 	}
 	else
 	{
 		char *line;
 		line = get_next_line(fileno(stdin));
 		read = ft_strtrim(line, "\n");
-		if (read)
-			s = ft_strdup(read);
 		free(line);
 	}
 	if (read == NULL)
 	{
-		// printf("exit\n");
+		//printf("exit\n");
 		exit(get_exit_status());
 	}
 	add_history(read);
