@@ -6,11 +6,12 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 05:13:16 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/21 19:19:37 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/28 05:38:49 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <readline/readline.h>
+#include <readline/history.h>
 #include <unistd.h>
 #include "input.h"
 #include "tokens.h"
@@ -44,6 +45,7 @@ int	main(int argc, char **argv, char **envp)
 		init_signal();
 		get_input(&input);
 		tokens = scan(&input);
+		add_history(input_to_history(&input));
 		expand_tokens(&tokens, env);
 		init_parser(&parser, &tokens, env);
 		root = parse(&parser);

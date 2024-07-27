@@ -26,7 +26,7 @@ static bool	end_of_line(t_Token *token);
  */
 t_Token_List	scan(t_Input *input)
 {
-	t_Line			*line;
+	t_String		*line;
 	t_Lexer			lexer;
 	t_Token_List	tokens;
 

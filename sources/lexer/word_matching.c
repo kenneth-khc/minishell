@@ -6,7 +6,7 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 21:47:29 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/24 19:11:05 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/28 05:50:43 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 #include <unistd.h>
 #include "libft.h"
 #include "ft_dprintf.h"
+#include "get_next_line.h"
 #include "tokens.h"
 #include "lexer.h"
 #include "quotes.h"
@@ -32,11 +33,10 @@
 * At this point, all operators have been checked for. The remaining token
 * can only be a word, where quotes and escapes have to be handled carefully.
 **/
-
 void	match_word(t_Lexer *lexer, t_Token_List *tokens, t_Input *input)
 {
-	char	*lexeme;
-	t_Line	*next_line;
+	char		*lexeme;
+	t_String	*next_line;
 
 	advance_word(lexer);
 	if (lexer->terminated)
@@ -54,9 +54,9 @@ void	match_word(t_Lexer *lexer, t_Token_List *tokens, t_Input *input)
 	else if (lexer->terminated == false)
 	{
 		ft_dprintf(STDERR_FILENO, "> ");
-		next_line = get_input_line(STDIN_FILENO);
+		next_line = stringify(get_next_line(STDIN_FILENO));
 		store_input(input, next_line);
-		join_input_lines(lexer, input);
+		update_lexer_lines(lexer, input);
 		match_word(lexer, tokens, input);
 	}
 }
@@ -88,17 +88,18 @@ void	advance_word(t_Lexer *lexer)
 	}
 }
 
-void	join_input_lines(t_Lexer *lexer, t_Input *input)
+void	update_lexer_lines(t_Lexer *lexer, t_Input *input)
 {
-	int		offset;
-	char	*joined;
+	size_t		start_offset;
+	size_t		end_offset;
+	t_String	*complete_input;
 
-	offset = lexer->end - lexer->line->start;
-	joined = ft_strjoin(lexer->line->start,
-			input->lines[input->count - 1]->start);
-	lexer->line = make_line(joined);
-	lexer->start = lexer->line->start;
-	lexer->end = &joined[offset];
+	start_offset = lexer->start - lexer->line->start;
+	end_offset = lexer->end - lexer->line->start;
+	complete_input = lines_to_string(input);
+	lexer->line = complete_input;
+	lexer->start = lexer->line->start + start_offset;
+	lexer->end = lexer->line->start + end_offset;
 }
 
 /**

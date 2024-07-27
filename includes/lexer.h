@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 09:44:52 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/23 08:57:39 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/28 05:49:12 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ typedef enum e_Word_State
 
 typedef struct s_Lexer
 {
-	t_Line			*line; // the current line being processed
+	t_String		*line; // the current line being processed
 	char			*start; // start of the token to be grabbed
 	char			*end; // end of the token to be grabbed
 	t_Word_State	state; // whether it is currently unquoted or quoted
@@ -52,6 +52,7 @@ void			match_word(t_Lexer *lexer, t_Token_List *tokens,
 void			advance_word(t_Lexer *lexer);
 void			join_input_lines(t_Lexer *lexer, t_Input *input);
 void			update_lexer_state(t_Lexer *lexer);
+void			update_lexer_lines(t_Lexer *lexer, t_Input *input);
 bool			io_number(char *lexeme, char *delim);
 
 void			set_word_flags(t_Token *token);

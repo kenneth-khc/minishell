@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/09 21:04:33 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/18 15:34:44 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/28 06:05:29 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,76 +20,81 @@
 #include "libft.h"
 #include "execution.h"
 
-t_Line	*make_line(char *str)
-{
-	t_Line	*line;
-
-	line = ft_calloc(1, sizeof(*line));
-	line->start = str;
-	line->len = ft_strlen(str);
-	return (line);
-}
-
-void	print_line(char *line);
 void	get_input(t_Input *input)
 {
-	t_Line	*line;
-	char	*read;
-	char	*newline_appended;
+	char		*line;
+	char		*read;
+	t_String	*str;
 
-	line = ft_calloc(1, sizeof(*line));
-	// read = readline("bish> ");
-	if (isatty(fileno(stdin)))
-	{
+	if (isatty(STDIN_FILENO))
 		read = readline("bish > ");
-	}
 	else
 	{
-		char *line;
-		line = get_next_line(fileno(stdin));
+		line = get_next_line(STDIN_FILENO);
 		read = ft_strtrim(line, "\n");
 		free(line);
 	}
 	if (read == NULL)
 	{
-		//printf("exit\n");
+		printf("exit\n");
 		exit(get_exit_status());
 	}
-	add_history(read);
-	newline_appended = ft_strjoin(read, "\n");
+	str = stringify(read);
 	free(read);
-	line->start = newline_appended;
-	line->len = ft_strlen(line->start);
-	store_input(input, line);
+	str = string_join(str, stringify("\n"));
+	store_input(input, str);
 }
 
-void	store_input(t_Input *input, t_Line *new_line)
+void	store_input(t_Input *input, t_String *new_line)
 {
-	t_Line	**arr;
-	int		i;
+	t_String	**lines;
+	int			i;
 
 	i = 0;
-	input->count++;
-	arr = ft_calloc(1, sizeof(t_Line **) * input->count);
-	while (i < input->count - 1)
+	input->line_count++;
+	lines = ft_calloc(1, sizeof(t_String **) * input->line_count);
+	while (i < input->line_count - 1)
 	{
-		arr[i] = input->lines[i];
+		lines[i] = input->lines[i];
 		i++;
 	}
 	free(input->lines);
-	arr[i] = new_line;
-	input->lines = arr;
+	lines[i] = new_line;
+	input->lines = lines;
 }
 
-// For unterminated lines, fix later
-t_Line	*get_input_line(int fd)
+t_String	*lines_to_string(t_Input *input)
 {
-	t_Line	*line;
+	int			i;
+	size_t		total_len;
+	t_String	*str;
+	char		*s;
+	char		*ss;
 
-	line = ft_calloc(1, sizeof(*line));
-	line->start = get_next_line(fd);
-	line->len = ft_strlen(line->start);
-	return (line);
+	i = 0;
+	total_len = 0;
+	while (i < input->line_count)
+		total_len += input->lines[i++]->len;
+	str = string(total_len);
+	s = str->start;
+	i = 0;
+	while (i < input->line_count)
+	{
+		ss = input->lines[i]->start;
+		while (*ss)
+			*s++ = *ss++;
+		i++;
+	}
+	*s = '\0';
+	return (str);
+}
+
+char	*input_to_history(t_Input *input)
+{
+	char	*line;
+
+	line = lines_to_string(input)->start;
+	return (ft_strtrim(line, "\n"));
 }
 
 void	clear_input(t_Input *input)
@@ -97,13 +102,13 @@ void	clear_input(t_Input *input)
 	int	i;
 
 	i = 0;
-	while (i < input->count)
+	while (i < input->line_count)
 	{
 		free(input->lines[i]->start);
 		free(input->lines[i]);
 		i++;
 	}
 	free(input->lines);
-	input->count = 0;
+	input->line_count = 0;
 	input->lines = NULL;
 }

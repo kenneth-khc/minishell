@@ -6,12 +6,14 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 09:25:32 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/18 15:19:51 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/07/28 06:10:08 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef TOKENS_H
 # define TOKENS_H
+
+# include "quotes.h"
 
 /**
  * Types of tokens the shell recognizes. They are either a word, or an
@@ -19,7 +21,8 @@
  * A word is defined as a sequence of characters that is delimited by blanks
  * and metacharacters, unless the blanks and metacharacters are quoted.
  **/
-#define TOKEN_TYPES 11
+# define TOKEN_TYPES 11
+
 typedef enum e_Token_Types
 {
 	WORD = 256,
@@ -38,7 +41,6 @@ typedef enum e_Token_Types
 	IO_NUMBER // for left operand of redirection
 } t_Token_Type;
 
-#include "quotes.h"
 /**
  * Representing a token.
  * Stores the type of the token and its lexeme.
@@ -54,9 +56,9 @@ typedef struct s_Token
 	struct s_Token		*prev;
 }	t_Token;
 
-#define W_STRONG_QUOTED	       0b1
-#define W_WEAK_QUOTED	      0b10
-#define W_PARAM_EXPANSION  0b100
+#define W_STRONG_QUOTED 0b1
+#define W_WEAK_QUOTED 0b10
+#define W_PARAM_EXPANSION 0b100
 #define W_TILDE_EXPANSION 0b1000
 
 /**
