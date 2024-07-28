@@ -21,14 +21,19 @@
 #include "libft.h"
 #include "execution.h"
 
+#include "ft_dprintf.h"
 void	get_input(t_Input *input)
 {
 	char		*line;
 	char		*read;
 	t_String	*str;
+	static int i = 0;
 
 	if (isatty(STDIN_FILENO))
+	{
+		ft_dprintf(STDERR_FILENO, ">> %d\n", ++i);
 		read = readline("bish > ");
+	}
 	else
 	{
 		line = get_next_line(STDIN_FILENO);

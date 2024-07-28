@@ -42,16 +42,25 @@ int	main(int argc, char **argv, char **envp)
 	incr_shlvl(env);
 	while (1)
 	{
+		input.ok = true;
 		init_signal();
 		get_input(&input);
 		tokens = scan(&input);
 		add_history(input_to_history(&input));
-		expand_tokens(&tokens, env);
-		init_parser(&parser, &tokens, env);
-		root = parse(&parser);
-		if (root && parser.syntax_ok)
-			exec_ast(root);
-		clean_up(&input, &tokens, root);
+		if (input.ok)
+		{
+			expand_tokens(&tokens, env);
+			init_parser(&parser, &tokens, env);
+			root = parse(&parser);
+			if (root && parser.syntax_ok)
+				exec_ast(root);
+			clean_up(&input, &tokens, root);
+		}
+		if (input.ok == false)
+		{
+			clear_input(&input);
+			free_tokens(&tokens);
+		}
 	}
 	rl_clear_history();
 }

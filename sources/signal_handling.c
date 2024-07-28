@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "execution.h"
 #include <stdio.h>
 #include <readline/history.h>
 #include <readline/readline.h>
@@ -34,10 +35,11 @@ void	ignore_sigs(void)
 static void	re_prompt(int sig)
 {
 	(void)sig;
-	write(1, "\n", 1);
+	write(STDERR_FILENO, "\n", 1);
 	rl_on_new_line();
 	rl_replace_line("", 0);
 	rl_redisplay();
+	set_exit_status(128 + SIGINT);
 }
 
 void	init_signal(void)

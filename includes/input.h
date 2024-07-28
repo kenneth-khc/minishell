@@ -15,6 +15,7 @@
 
 # include <readline/readline.h>
 # include <stddef.h>
+# include <stdbool.h>
 # include "ft_string.h"
 
 /**
@@ -24,6 +25,7 @@ typedef struct s_Input
 {
 	t_String	**lines; // array of lines that are input
 	int			line_count; // size of the array
+	bool		ok;
 }	t_Input;
 
 void		get_input(t_Input *input);

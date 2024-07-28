@@ -15,6 +15,7 @@
 #include "libft.h"
 #include "ft_dprintf.h"
 #include "get_next_line.h"
+#include "readline/readline.h"
 #include "tokens.h"
 #include "lexer.h"
 #include "quotes.h"
@@ -33,10 +34,13 @@
 * At this point, all operators have been checked for. The remaining token
 * can only be a word, where quotes and escapes have to be handled carefully.
 **/
+int	get_exit_status(void);
+#include <stdlib.h>
 void	match_word(t_Lexer *lexer, t_Token_List *tokens, t_Input *input)
 {
 	char		*lexeme;
 	t_String	*next_line;
+	char	*line;
 
 	advance_word(lexer);
 	if (lexer->terminated)
@@ -50,11 +54,20 @@ void	match_word(t_Lexer *lexer, t_Token_List *tokens, t_Input *input)
 		tokens->tail->quotes = find_quotes(tokens->tail);
 		lexer->start = lexer->end + 1;
 		lexer->end = lexer->start;
+		input->ok = true;
 	}
 	else if (lexer->terminated == false)
 	{
 		ft_dprintf(STDERR_FILENO, "> ");
-		next_line = stringify(get_next_line(STDIN_FILENO));
+		line = get_next_line(STDIN_FILENO);
+		// line = readline("> ");
+		if (line == NULL)
+		{
+			add_token(tokens, create_token(END_OF_LINE, ft_strdup("\n")));
+			input->ok = false;
+			return ;
+		}
+		next_line = stringify(line);
 		store_input(input, next_line);
 		update_lexer_lines(lexer, input);
 		match_word(lexer, tokens, input);
