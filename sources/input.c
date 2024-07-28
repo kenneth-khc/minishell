@@ -17,6 +17,7 @@
 #include <readline/readline.h>
 #include "get_next_line.h"
 #include "input.h"
+#include "ft_string.h"
 #include "libft.h"
 #include "execution.h"
 

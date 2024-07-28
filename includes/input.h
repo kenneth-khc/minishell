@@ -15,6 +15,7 @@
 
 # include <readline/readline.h>
 # include <stddef.h>
+# include "ft_string.h"
 
 /**
  * Array storing all the lines read for one complete command.

@@ -15,6 +15,7 @@
 # include <sys/types.h>
 # include <stdbool.h>
 # include "env.h"
+# include "tokens.h"
 
 typedef enum e_Node_Type
 {
@@ -88,8 +89,6 @@ typedef struct s_Redir_Node
 
 t_Redir_Node	*redir_node(t_entab *env);
 
-typedef struct s_Parser	t_Parser;
-
 /**
  * Node for piping
  */
@@ -117,6 +116,6 @@ typedef struct s_Ass_Node
 	char				*value; // variable value
 }	t_Ass_Node;
 
-t_Node			*assignment_node(t_Parser *parser);
+t_Node			*assignment_node(t_Token *token, t_entab *env);
 
 #endif

@@ -73,7 +73,7 @@ static t_Node	*parse_command_prefix(t_Parser *parser)
 	while (peek(parser) == ASSIGNMENT_WORD || is_io_redirect(parser))
 	{
 		if (peek(parser) == ASSIGNMENT_WORD)
-			node = assignment_node(parser);
+			node = assignment_node(consume(parser), parser->envtab);
 		else if (is_io_redirect(parser))
 			node = parse_io_redirect(parser);
 		while (*curr != NULL)

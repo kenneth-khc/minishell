@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "libft.h"
-#include "parser.h"
 #include "env.h"
 #include "tokens.h"
 #include "tree.h"
@@ -35,23 +34,22 @@ t_Redir_Node	*redir_node(t_entab *env)
  * A pointer to the env is stored for updating the table with the ass
  * If value is empty, the variable is set to an empty string (not NULL)
 **/
-t_Node	*assignment_node(t_Parser *parser)
+t_Node	*assignment_node(t_Token *token, t_entab *env)
 {
 	t_Ass_Node	*ass;
 	const char	*equal;
 	const char	*end;
 
 	ass = ft_calloc(1, sizeof(*ass));
-	equal = ft_strchr(parser->token->lexeme, '=');
+	equal = ft_strchr(token->lexeme, '=');
 	ass->type = ASS_NODE;
-	ass->key = ft_extract_substring(parser->token->lexeme, equal - 1);
-	end = parser->token->lexeme + ft_strlen(parser->token->lexeme) - 1;
+	ass->key = ft_extract_substring(token->lexeme, equal - 1);
+	end = token->lexeme + ft_strlen(token->lexeme) - 1;
 	if (equal[1] == '\0')
 		ass->value = "";
 	else
 		ass->value = ft_extract_substring(equal + 1, end);
-	ass->table = parser->envtab;
+	ass->table = env;
 	ass->left = NULL;
-	accept(parser, ASSIGNMENT_WORD);
 	return ((t_Node *)ass);
 }

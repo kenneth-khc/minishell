@@ -28,28 +28,28 @@ typedef struct s_Parser
 }	t_Parser;
 
 // Init parser with token stream and env table
-void			init_parser(t_Parser *parser, t_Token_List *tokens,
-					t_entab *env);
+void				init_parser(t_Parser *parser, t_Token_List *tokens,
+						t_entab *env);
 
 // Parsing procedures
-t_Node			*parse(t_Parser *parser);
-t_Node			*parse_subshell(t_Parser *parser);
-t_Node			*parse_list(t_Parser *parser);
-t_Node			*parse_pipe_sequence(t_Parser *parser);
-t_Node			*parse_and_or(t_Parser *parser);
-t_Node			*parse_simple_command(t_Parser *parser);
-t_Node			*parse_io_redirect(t_Parser *parser);
-void			flag_last_heredoc(t_Node *root);
+t_Node				*parse(t_Parser *parser);
+t_Node				*parse_subshell(t_Parser *parser);
+t_Node				*parse_list(t_Parser *parser);
+t_Node				*parse_pipe_sequence(t_Parser *parser);
+t_Node				*parse_and_or(t_Parser *parser);
+t_Node				*parse_simple_command(t_Parser *parser);
+t_Node				*parse_io_redirect(t_Parser *parser);
+void				flag_last_heredoc(t_Node *root);
 
 // Utils
-t_Token_Type	peek(t_Parser *parser);
-bool			expect(t_Parser *parser, enum e_Token_Types expected,
-					const char *errmsg);
-bool			accept(t_Parser *parser, enum e_Token_Types type);
-t_Token			*consume(t_Parser *parser);
-void			syntax_error(t_Parser *parser, const char *err_msg,
-					t_Token *got);
-bool			is_redirection_token(t_Token *token);
-bool			is_io_redirect(t_Parser *parser);
+enum e_Token_Types	peek(t_Parser *parser);
+bool				expect(t_Parser *parser, enum e_Token_Types expected,
+						const char *errmsg);
+bool				accept(t_Parser *parser, enum e_Token_Types type);
+t_Token				*consume(t_Parser *parser);
+void				syntax_error(t_Parser *parser, const char *err_msg,
+						t_Token *got);
+bool				is_redirection_token(t_Token *token);
+bool				is_io_redirect(t_Parser *parser);
 
 #endif
