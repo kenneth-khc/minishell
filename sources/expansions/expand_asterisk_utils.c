@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_asterisk_utils.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/18 23:57:06 by qang              #+#    #+#             */
-/*   Updated: 2024/07/23 18:04:13 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/28 16:37:48 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,9 @@
 
 char		**list_to_string(t_list *node, char *str);
 void		unmatch(t_list **list, char *pattern);
-static bool	match_pattern(char *pattern, char *str);
+static bool	match_pattern(char *pattern, char *str, int pat_i, int str_i);
+static void	skip_val(int *star_idx, int *match_idx, int *pat_i, int *str_i);
+static void	store_val(int *star_idx, int *match_idx, int *pat_i, int str_i);
 
 char	**list_to_string(t_list *node, char *str)
 {
@@ -46,29 +48,44 @@ char	**list_to_string(t_list *node, char *str)
 	return (ret);
 }
 
-static bool	match_pattern(char *pattern, char *str)
+static void	store_val(int *star_idx, int *match_idx, int *pat_i, int str_i)
 {
-	if (!*pattern && !*str)
-		return (true);
-	else if (*pattern == '*')
+	*star_idx = *pat_i;
+	*match_idx = str_i;
+	*pat_i += 1;
+}
+
+static void	skip_val(int *star_idx, int *match_idx, int *pat_i, int *str_i)
+{
+	*pat_i = *star_idx + 1;
+	*match_idx += 1;
+	*str_i = *match_idx;
+}
+
+static bool	match_pattern(char *pattern, char *str, int pat_i, int str_i)
+{
+	int	star_idx;
+	int	match_idx;
+
+	star_idx = -1;
+	match_idx = 0;
+	while (str[str_i])
 	{
-		if (!*(pattern + 1))
-			return (true);
-		while (*str)
+		if (pattern[pat_i] == '*')
+			store_val(&star_idx, &match_idx, &pat_i, str_i);
+		else if (pattern[pat_i] == str[str_i])
 		{
-			if (match_pattern(pattern, str))
-				return (true);
-			str++;
+			pat_i++;
+			str_i++;
 		}
-		return (match_pattern(pattern, str));
-	}
-	else
-	{
-		if (*pattern == *str)
-			return (match_pattern(pattern + 1, str + 1));
+		else if (star_idx != -1)
+			skip_val(&star_idx, &match_idx, &pat_i, &str_i);
 		else
 			return (false);
 	}
+	while (pattern[pat_i] == '*')
+		pat_i++;
+	return (pattern[pat_i] == '\0');
 }
 
 void	unmatch(t_list **list, char *pattern)
@@ -82,7 +99,7 @@ void	unmatch(t_list **list, char *pattern)
 	node = *list;
 	while (node)
 	{
-		if (!match_pattern(pattern, node->content))
+		if (!match_pattern(pattern, node->content, 0, 0))
 		{
 			next = node->next;
 			if (prev == NULL)
