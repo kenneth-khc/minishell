@@ -40,6 +40,7 @@ void	get_input(t_Input *input)
 		printf("exit\n");
 		exit(get_exit_status());
 	}
+	input->ok = *read != '\0';
 	str = stringify(read);
 	free(read);
 	str = string_join(str, stringify("\n"));

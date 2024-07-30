@@ -17,8 +17,14 @@
 #include <stdlib.h>
 #include "libft.h"
 
-static void	init_matches(t_Match_Table (*matches)[TOKEN_TYPES]);
-static bool	end_of_line(t_Token *token);
+static void
+init_lexer(t_Lexer *lexer, t_Input *input);
+
+static void
+init_matches(t_Match_Table (*matches)[OP_TOKENS]);
+
+static bool	
+end_of_line(t_Token *token);
 
 /*
  * With the line read from the prompt, start scanning through it to tokenize.
@@ -26,18 +32,12 @@ static bool	end_of_line(t_Token *token);
  */
 t_Token_List	scan(t_Input *input)
 {
-	t_String		*line;
 	t_Lexer			lexer;
 	t_Token_List	tokens;
 
-	line = input->lines[0];
-	lexer = (t_Lexer){.line = line,
-		.start = line->start,
-		.end = line->start,
-		.state = UNQUOTED,
-		.terminated = true};
+	init_lexer(&lexer, input);
 	tokens = (t_Token_List){.head = NULL, .tail = NULL};
-	while (!end_of_line(tokens.tail))
+	while (input->ok && !end_of_line(tokens.tail))
 	{
 		while (is_blank(*lexer.start))
 		{
@@ -50,13 +50,28 @@ t_Token_List	scan(t_Input *input)
 }
 
 /**
+ * Initializes the state of the lexer.
+ * Originally trying to implement handling unclosed quotes and
+ * multiple lines of inputs, but it doesn't work quite right
+ * and I have given up.
+ **/
+static void	init_lexer(t_Lexer *lexer, t_Input *input)
+{
+	lexer->line = input->lines[0];
+	lexer->start = lexer->line->start;
+	lexer->end = lexer->start;
+	lexer->state = UNQUOTED;
+	lexer->terminated = true;
+}
+
+/**
  * Goes through the match table, creating a token of the corresponding type
  * when a match is found
  * If no match found, it is a WORD token
 **/
 void	match(t_Input *input, t_Lexer *lexer, t_Token_List *tokens)
 {
-	static t_Match_Table	matches[TOKEN_TYPES];
+	static t_Match_Table	matches[OP_TOKENS];
 	t_Match_Table const		*match;
 	t_Token					*new_token;
 	int						i;
@@ -64,7 +79,7 @@ void	match(t_Input *input, t_Lexer *lexer, t_Token_List *tokens)
 	if (matches[0].lexeme == NULL)
 		init_matches(&matches);
 	i = 0;
-	while (i < TOKEN_TYPES)
+	while (i < OP_TOKENS)
 	{
 		match = &matches[i];
 		if (ft_strncmp(lexer->start, match->lexeme,
@@ -89,9 +104,9 @@ static bool	end_of_line(t_Token *token)
 /**
  * Only called the first time to initialize the match table
 **/
-static void	init_matches(t_Match_Table (*matches)[TOKEN_TYPES])
+static void	init_matches(t_Match_Table (*matches)[OP_TOKENS])
 {
-	const t_Match_Table	temp[TOKEN_TYPES] = {
+	const t_Match_Table	temp[OP_TOKENS] = {
 	{"\n", END_OF_LINE},
 	{"||", OR_OR},
 	{"|", PIPE},
@@ -102,7 +117,6 @@ static void	init_matches(t_Match_Table (*matches)[TOKEN_TYPES])
 	{">", GREATER},
 	{"(", OPEN_PARAN},
 	{")", CLOSE_PARAN},
-	{"#", HASH}
 	};
 
 	ft_memcpy(matches, temp, sizeof(temp));

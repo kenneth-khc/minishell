@@ -13,6 +13,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <unistd.h>
+#include "ft_dprintf.h"
 #include "input.h"
 #include "tokens.h"
 #include "parser.h"
@@ -20,53 +21,84 @@
 #include "lexer.h"
 #include "expansions.h"
 
-const char	*__asan_default_options(void)
-{
-	return ("detect_leaks=0");
-}
+static void
+interactive(t_entab *env);
 
-void	clean_up(t_Input *input, t_Token_List *tokens, t_Node *tree);
+static void
+interpret(char *input_line, t_entab *env);
 
 int	main(int argc, char **argv, char **envp)
+{
+	t_entab	*env;
+
+	env = init_env_table(envp);
+	if (argc == 1)
+	{
+		interactive(env);
+	}
+	else if (argc == 2)
+	{
+		interpret(argv[1], env);
+	}
+	else
+	{
+		ft_dprintf(STDERR_FILENO, "Usage:\n");
+		ft_dprintf(STDERR_FILENO, "Interactive mode > ./minishell\n");
+		ft_dprintf(STDERR_FILENO, "Interpret a line > ./minishell <line>\n");
+		return (EXIT_FAILURE);
+	}
+	return (EXIT_SUCCESS);
+}
+
+static void	interactive(t_entab *env)
 {
 	t_Token_List	tokens;
 	t_Input			input;
 	t_Parser		parser;
 	t_Node			*root;
-	t_entab			*env;
 
-	(void)argc;
-	(void)argv;
 	input = (t_Input){0};
-	env = init_env_table(envp);
 	incr_shlvl(env);
 	while (1)
 	{
 		init_signal();
 		get_input(&input);
 		tokens = scan(&input);
-		add_history(input_to_history(&input));
-		expand_tokens(&tokens, env);
-		init_parser(&parser, &tokens, env);
-		root = parse(&parser);
-		if (root && parser.syntax_ok)
-			exec_ast(root);
-		clean_up(&input, &tokens, root);
+		if (input.ok)
+		{
+			add_history(input_to_history(&input));
+			expand_tokens(&tokens, env);
+			init_parser(&parser, &tokens, env);
+			root = parse(&parser);
+			if (root && parser.syntax_ok)
+				exec_ast(root);
+			free_tree(root);
+		}
+		clear_input(&input);
+		free_tokens(&tokens);
 	}
-	rl_clear_history();
 }
 
-void	init_parser(t_Parser *parser, t_Token_List *tokens, t_entab *env)
+static void	interpret(char *input_line, t_entab *env)
 {
-	parser->tokens = tokens;
-	parser->token = tokens->head;
-	parser->envtab = env;
-	parser->syntax_ok = true;
+	t_Input			input;
+	t_Token_List	tokens;
+	t_Node			*root;
+	t_Parser		parser;
+
+	input = (t_Input){0};
+	store_input(&input, stringify(input_line));
+	incr_shlvl(env);
+	tokens = scan(&input);
+	expand_tokens(&tokens, env);
+	init_parser(&parser, &tokens, env);
+	root = parse(&parser);
+	if (root && parser.syntax_ok)
+		exec_ast(root);
+	free_tree(root);
 }
 
-void	clean_up(t_Input *input, t_Token_List *tokens, t_Node *tree)
+const char	*__asan_default_options(void)
 {
-	clear_input(input);
-	free_tokens(tokens);
-	free_tree(tree);
+	return ("detect_leaks=0");
 }

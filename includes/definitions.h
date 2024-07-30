@@ -15,11 +15,12 @@
 
 # include <stdbool.h>
 
+/**
+ * Helper functions for checking if a character is a thing
+ */
+
 bool	is_blank(const char c);
 bool	is_metacharacter(const char c);
-bool	is_control_operator(const char *str);
-bool	is_redirection_operator(const char *str);
-bool	is_operator(const char *str);
 bool	is_valid_name(const char *start, const char *end);
 bool	is_not_identifier(char c);
 bool	is_quote(char c);

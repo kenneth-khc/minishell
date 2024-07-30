@@ -12,12 +12,12 @@
 
 #include <stddef.h>
 #include <unistd.h>
+#include "execution.h"
 #include "libft.h"
 #include "ft_dprintf.h"
 #include "get_next_line.h"
 #include "tokens.h"
 #include "lexer.h"
-#include "quotes.h"
 #include "definitions.h"
 
 /**
@@ -36,7 +36,6 @@
 void	match_word(t_Lexer *lexer, t_Token_List *tokens, t_Input *input)
 {
 	char		*lexeme;
-	t_String	*next_line;
 
 	advance_word(lexer);
 	if (lexer->terminated)
@@ -53,11 +52,9 @@ void	match_word(t_Lexer *lexer, t_Token_List *tokens, t_Input *input)
 	}
 	else if (lexer->terminated == false)
 	{
-		ft_dprintf(STDERR_FILENO, "> ");
-		next_line = stringify(get_next_line(STDIN_FILENO));
-		store_input(input, next_line);
-		update_lexer_lines(lexer, input);
-		match_word(lexer, tokens, input);
+		input->ok = false;
+		ft_dprintf(STDERR_FILENO, "input error: unclosed quotes\n");
+		set_exit_status(2);
 	}
 }
 

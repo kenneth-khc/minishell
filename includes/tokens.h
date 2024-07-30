@@ -22,24 +22,36 @@
  * and metacharacters, unless the blanks and metacharacters are quoted.
  **/
 
-# define TOKEN_TYPES 11
+# define TOKEN_COUNT 13
+# define OP_TOKENS 10
 
 enum e_Token_Types
 {
+/* WORD tokens */
 	WORD = 256,
-	PIPE,
-	OR_OR,
-	AND_AND,
-	LESSER,
-	LESSER_LESSER,
-	GREATER,
-	GREATER_GREATER,
-	OPEN_PARAN,
-	CLOSE_PARAN,
-	END_OF_LINE,
-	HASH,
 	ASSIGNMENT_WORD,
-	IO_NUMBER
+	IO_NUMBER,
+/* Operator tokens */
+	// |
+	PIPE,
+	// ||
+	OR_OR,
+	// &&
+	AND_AND,
+	// <
+	LESSER,
+	// <<
+	LESSER_LESSER,
+	// >
+	GREATER,
+	// >>
+	GREATER_GREATER,
+	// (
+	OPEN_PARAN,
+	// )
+	CLOSE_PARAN,
+	// \n
+	END_OF_LINE
 };
 
 /**
@@ -75,8 +87,6 @@ typedef struct s_Token_List
 t_Token			*create_token(int type, const char *lexeme);
 void			add_token(t_Token_List *tokens, t_Token *token);
 void			free_tokens(t_Token_List *tokens);
-void			print_tokens(t_Token_List *tokens);
-char			*token_enum_to_str(t_Token *token);
 t_Quote_List	find_quotes(t_Token *token);
 
 #endif

@@ -14,6 +14,9 @@
 #include "libft.h"
 #include "definitions.h"
 
+/**
+ * An identifier has to start with an alphabet or underscore only
+ */
 bool	is_not_identifier(char c)
 {
 	return (!ft_isalnum(c) && c != '_');
@@ -23,14 +26,16 @@ bool	is_not_identifier(char c)
  * A key is only a valid name if it starts with an underscore or alphabet.
  * Treat the $ as literal and do not expand if it is not
  * going to be a valid name.
- * For some reason, $"" $'' expands.
 **/
-bool	is_valid_key_start(char *dollar)
+bool	is_identifier_start(char *dollar)
 {
 	return (dollar[1] == '_'
 		|| ft_isalpha(dollar[1]));
 }
 
+/**
+ * Checks if a string forms a valid name
+ */
 bool	is_valid_name(const char *start, const char *end)
 {
 	if (ft_isdigit(start[0]))

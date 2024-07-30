@@ -37,7 +37,6 @@ void	add_token(t_Token_List *tokens, t_Token *token)
 		curr = &(*curr)->next;
 	}
 	*curr = token;
-	token->next = NULL;
 	token->prev = tokens->tail;
 	tokens->tail = token;
 }
@@ -58,45 +57,4 @@ void	free_tokens(t_Token_List *tokens)
 	}
 	tokens->head = NULL;
 	tokens->tail = NULL;
-}
-
-void	print_tokens(t_Token_List *tokens)
-{
-	int			i;
-	t_Token		*curr;
-
-	i = 0;
-	curr = tokens->head;
-	while (curr != NULL)
-	{
-		printf("Token %d:\n", ++i);
-		printf("%s\n", token_enum_to_str(curr));
-		printf("%s\n", curr->lexeme);
-		printf("\n");
-		printf("↓\n\n");
-		curr = curr->next;
-	}
-	printf("\n\n");
-}
-
-char	*token_enum_to_str(t_Token *token)
-{
-	const char	*types[] = {
-		"WORD",
-		"PIPE",
-		"OR_OR",
-		"AND_AND",
-		"LESSER",
-		"LESSER_LESSER",
-		"GREATER",
-		"GREATER_GREATER",
-		"STAR",
-		"OPEN_PARAN",
-		"CLOSE_PARAN",
-		"END_OF_LINE",
-		"HASH",
-		"ASSIGNMENT_WORD",
-		""};
-
-	return (ft_strdup(types[token->type - 256]));
 }

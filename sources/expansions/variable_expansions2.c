@@ -41,7 +41,7 @@ bool	do_variable_expansion(t_Chunk_List *chunks, t_entab *env,
 		p->end += 2;
 		return (true);
 	}
-	else if (is_valid_key_start(p->end))
+	else if (is_identifier_start(p->end))
 	{
 		expand_parameter(chunks, env, p->end);
 		p->end = ft_strpbrk(p->end + 1, is_not_identifier);

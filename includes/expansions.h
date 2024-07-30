@@ -59,7 +59,7 @@ char	**list_to_string(t_list *node, char *str);
 void	word_splitting(t_Token *token, t_Token_List *tokens);
 bool	delimited(t_Range *p);
 bool	is_dollar(char c);
-bool	is_valid_key_start(char *dollar);
+bool	is_identifier_start(char *dollar);
 char	*copy_var_val(char *key, t_entab *env);
 
 #endif

@@ -15,15 +15,19 @@
 
 # include <readline/readline.h>
 # include <stddef.h>
+# include <stdbool.h>
 # include "ft_string.h"
 
 /**
- * Array storing all the lines read for one complete command.
- **/
+ * Information about the input goes here
+ * Originally needed for handling multiline input due to unclosed quotes,
+ * not really necessary right now
+ */
 typedef struct s_Input
 {
 	t_String	**lines; // array of lines that are input
 	int			line_count; // size of the array
+	bool		ok;
 }	t_Input;
 
 void		get_input(t_Input *input);

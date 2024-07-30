@@ -20,3 +20,11 @@ t_Node	*parse(t_Parser *parser)
 	expect(parser, END_OF_LINE, "expecting end of line");
 	return (root);
 }
+
+void	init_parser(t_Parser *parser, t_Token_List *tokens, t_entab *env)
+{
+	parser->tokens = tokens;
+	parser->token = tokens->head;
+	parser->envtab = env;
+	parser->syntax_ok = true;
+}
