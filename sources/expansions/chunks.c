@@ -30,9 +30,7 @@ char	*join_chunks(t_Chunk_List *chunks)
 		i = 0;
 		while (chunk->str && chunk->str[i] != '\0')
 		{
-			new_word[j] = chunk->str[i];
-			i++;
-			j++;
+			new_word[j++] = chunk->str[i++];
 		}
 		chunk = chunk->next;
 	}

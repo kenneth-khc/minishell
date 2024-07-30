@@ -17,7 +17,8 @@ t_Node	*parse(t_Parser *parser)
 	t_Node	*root;
 
 	root = parse_list(parser);
-	expect(parser, END_OF_LINE, "expecting end of line");
+	if (parser->token)
+		expect(parser, END_OF_LINE, "expecting end of line");
 	return (root);
 }
 

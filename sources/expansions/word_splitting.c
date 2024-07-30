@@ -45,19 +45,22 @@ void	word_splitting(t_Token *token, t_Token_List *tokens)
 	split_token_to_tokens(tokens, token, &new_tokens);
 }
 
-void	split_token_to_tokens(t_Token_List *tokens, t_Token *token,
+void	split_token_to_tokens(t_Token_List *tokens, t_Token *old_token,
 			t_Token_List *new_tokens)
 {
 	if (new_tokens->tail)
 	{
-		new_tokens->tail->next = token->next;
-		if (token->prev)
-			token->prev->next = new_tokens->head;
+		new_tokens->tail->next = old_token->next;
+		if (old_token->prev)
+			old_token->prev->next = new_tokens->head;
 		else
 			tokens->head = new_tokens->head;
-		if (token->next)
-			token->next->prev = new_tokens->tail;
+		if (old_token->next)
+			old_token->next->prev = new_tokens->tail;
 		else
 			tokens->tail = new_tokens->tail;
 	}
+	free_quote_list(&old_token->quotes);
+	free(old_token->lexeme);
+	free(old_token);
 }

@@ -70,33 +70,37 @@ t_String	*lines_to_string(t_Input *input)
 	int			i;
 	size_t		total_len;
 	t_String	*str;
-	char		*s;
-	char		*ss;
+	char		*dst;
+	char		*src;
 
 	i = 0;
 	total_len = 0;
 	while (i < input->line_count)
 		total_len += input->lines[i++]->len;
 	str = string(total_len);
-	s = str->start;
+	dst = str->start;
 	i = 0;
 	while (i < input->line_count)
 	{
-		ss = input->lines[i]->start;
-		while (*ss)
-			*s++ = *ss++;
+		src = input->lines[i]->start;
+		while (*src)
+			*dst++ = *src++;
 		i++;
 	}
-	*s = '\0';
+	*dst = '\0';
 	return (str);
 }
 
-char	*input_to_history(t_Input *input)
+void	add_input_to_history(t_Input *input)
 {
-	char	*line;
+	t_String	*line;
+	char		*trimmed;
 
-	line = lines_to_string(input)->start;
-	return (ft_strtrim(line, "\n"));
+	line = lines_to_string(input);
+	trimmed = ft_strtrim(line->start, "\n");
+	add_history(trimmed);
+	free(trimmed);
+	string_free(line);
 }
 
 void	clear_input(t_Input *input)

@@ -33,7 +33,7 @@ typedef struct s_Input
 void		get_input(t_Input *input);
 void		store_input(t_Input *input, t_String *new_line);
 void		clear_input(t_Input *input);
-char		*input_to_history(t_Input *input);
+void		add_input_to_history(t_Input *input);
 t_String	*lines_to_string(t_Input *input);
 
 #endif

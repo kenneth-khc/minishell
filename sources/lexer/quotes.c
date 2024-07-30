@@ -27,7 +27,7 @@ t_Quote_List	find_quotes(t_Token *token)
 	list = (struct s_Quote_List){0, NULL};
 	quotes = find_next_pair(word, &word);
 	while (quotes != NULL
-		&& word <= token->lexeme + ft_strlen(token->lexeme))
+		&& word <= word + ft_strlen(word))
 	{
 		store_quotes(&list, quotes);
 		quotes = find_next_pair(word, &word);
@@ -63,7 +63,7 @@ void	store_quotes(t_Quote_List *list, t_Quotes *quotes)
 	int			i;
 
 	list->pair_count++;
-	new = ft_calloc(list->pair_count + 1, sizeof(t_Quotes *));
+	new = ft_calloc(list->pair_count, sizeof(t_Quotes *));
 	i = 0;
 	while (i < list->pair_count - 1)
 	{

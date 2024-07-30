@@ -47,6 +47,7 @@ int	main(int argc, char **argv, char **envp)
 		ft_dprintf(STDERR_FILENO, "Interpret a line > ./minishell <line>\n");
 		return (EXIT_FAILURE);
 	}
+	free_env(env);
 	return (EXIT_SUCCESS);
 }
 
@@ -57,7 +58,7 @@ static void	interactive(t_entab *env)
 	t_Parser		parser;
 	t_Node			*root;
 
-	input = (t_Input){0};
+	input = (t_Input){.line_count = 0, .lines = NULL, .ok = true};
 	incr_shlvl(env);
 	while (1)
 	{
@@ -66,7 +67,7 @@ static void	interactive(t_entab *env)
 		tokens = scan(&input);
 		if (input.ok)
 		{
-			add_history(input_to_history(&input));
+			add_input_to_history(&input);
 			expand_tokens(&tokens, env);
 			init_parser(&parser, &tokens, env);
 			root = parse(&parser);
@@ -85,9 +86,11 @@ static void	interpret(char *input_line, t_entab *env)
 	t_Token_List	tokens;
 	t_Node			*root;
 	t_Parser		parser;
+	t_String		*newline;
 
-	input = (t_Input){0};
-	store_input(&input, stringify(input_line));
+	input = (t_Input){.line_count = 0, .lines = NULL, .ok = true};
+	newline = string_join(stringify(input_line), stringify("\n"));
+	store_input(&input, newline);
 	incr_shlvl(env);
 	tokens = scan(&input);
 	expand_tokens(&tokens, env);
@@ -95,7 +98,9 @@ static void	interpret(char *input_line, t_entab *env)
 	root = parse(&parser);
 	if (root && parser.syntax_ok)
 		exec_ast(root);
+	clear_input(&input);
 	free_tree(root);
+	free_tokens(&tokens);
 }
 
 const char	*__asan_default_options(void)

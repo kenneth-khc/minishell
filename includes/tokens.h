@@ -51,7 +51,9 @@ enum e_Token_Types
 	// )
 	CLOSE_PARAN,
 	// \n
-	END_OF_LINE
+	END_OF_LINE,
+	// \0
+	END_OF_INPUT
 };
 
 /**

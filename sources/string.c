@@ -36,11 +36,17 @@ t_String	*string(size_t len)
 t_String	*stringify(char *s)
 {
 	t_String	*str;
+	size_t		i;
 
 	if (s == NULL)
 		return (NULL);
+	i = 0;
 	str = string(ft_strlen(s));
-	str->start = ft_strdup(s);
+	while (s[i])
+	{
+		str->start[i] = s[i];
+		i++;
+	}
 	str->end = str->start + str->len;
 	return (str);
 }
