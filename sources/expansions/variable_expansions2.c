@@ -45,7 +45,10 @@ bool	do_variable_expansion(t_Chunk_List *chunks, t_entab *env,
 	{
 		expand_parameter(chunks, env, p->end);
 		p->end = ft_strpbrk(p->end + 1, is_not_identifier);
-		return (true);
+		if (chunks->tail->str)
+			return (true);
+		else
+			return (false);
 	}
 	else
 	{

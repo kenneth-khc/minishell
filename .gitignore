@@ -6,3 +6,5 @@
 .cache/
 tmp/
 compile_commands.json
+readline*/
+
