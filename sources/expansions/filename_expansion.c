@@ -58,7 +58,8 @@ bool	filename_expansion(t_Chunk_List *chunks, t_Token *token)
 			chunks->head = filename_chunks.head;
 		chunks->tail = filename_chunks.tail;
 	}
-	return (free(ff), true);
+	free(ff);
+	return (true);
 }
 
 bool	is_quoted(t_Quote_List *quote_list, char *c)
@@ -83,7 +84,7 @@ static void	add_spaces_between_chunks(t_Chunk_List *chunks)
 	t_Chunk	*space;
 
 	chunk = chunks->head;
-	while (chunk)
+	while (chunk->next)
 	{
 		space = ft_calloc(1, sizeof(*space));
 		space->str = ft_calloc(1, sizeof(char));
