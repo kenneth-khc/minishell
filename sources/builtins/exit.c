@@ -6,11 +6,12 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 19:42:59 by qang              #+#    #+#             */
-/*   Updated: 2024/07/20 22:45:47 by qang             ###   ########.fr       */
+/*   Updated: 2024/07/31 17:51:13 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "env.h"
+#include "execution.h"
 #include "ft_dprintf.h"
 #include <stdlib.h>
 
@@ -91,7 +92,7 @@ int	exit_sh(char **arg, t_entab *table)
 	(void)table;
 	ft_dprintf(2, "exit\n");
 	if (length(arg) == 1)
-		exit(0);
+		exit(get_exit_status());
 	if (length(arg) == 2)
 	{
 		ft_exitatol(arg[1], &valid);
