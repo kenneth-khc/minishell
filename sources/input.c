@@ -54,7 +54,7 @@ void	store_input(t_Input *input, t_String *new_line)
 
 	i = 0;
 	input->line_count++;
-	lines = ft_calloc(1, sizeof(t_String **) * input->line_count);
+	lines = callocpromax(1, sizeof(t_String **) * input->line_count);
 	while (i < input->line_count - 1)
 	{
 		lines[i] = input->lines[i];

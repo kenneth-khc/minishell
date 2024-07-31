@@ -43,7 +43,7 @@ t_Quotes	*find_next_pair(char *word, char **next_start)
 	s = ft_strpbrk(word, is_quote);
 	if (s == NULL)
 		return (NULL);
-	quotes = ft_calloc(1, sizeof(*quotes));
+	quotes = callocpromax(1, sizeof(*quotes));
 	quotes->quote = *s;
 	quotes->start = s;
 	s++;
@@ -63,7 +63,7 @@ void	store_quotes(t_Quote_List *list, t_Quotes *quotes)
 	int			i;
 
 	list->pair_count++;
-	new = ft_calloc(list->pair_count, sizeof(t_Quotes *));
+	new = callocpromax(list->pair_count, sizeof(t_Quotes *));
 	i = 0;
 	while (i < list->pair_count - 1)
 	{

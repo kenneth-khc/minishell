@@ -19,7 +19,7 @@ t_Token	*create_token(int type, const char *lexeme)
 {
 	t_Token	*new_token;
 
-	new_token = ft_calloc(1, sizeof(*new_token));
+	new_token = callocpromax(1, sizeof(*new_token));
 	new_token->type = type;
 	new_token->lexeme = (char *)lexeme;
 	new_token->next = NULL;

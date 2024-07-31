@@ -31,7 +31,7 @@ t_Heredoc	*process_heredoc_delim(t_Redir_Node *node)
 	t_Heredoc	*heredoc;
 
 	p = node->delim;
-	heredoc = ft_calloc(1, sizeof(*heredoc));
+	heredoc = callocpromax(1, sizeof(*heredoc));
 	pair = find_next_pair(p, &p);
 	if (pair)
 		heredoc->should_expand = false;

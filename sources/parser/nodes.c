@@ -23,7 +23,7 @@ t_Redir_Node	*redir_node(t_entab *env)
 {
 	t_Redir_Node	*redir;
 
-	redir = ft_calloc(1, sizeof(*redir));
+	redir = callocpromax(1, sizeof(*redir));
 	redir->type = REDIR_NODE;
 	redir->table = env;
 	return (redir);
@@ -40,7 +40,7 @@ t_Node	*assignment_node(t_Token *token, t_entab *env)
 	const char	*equal;
 	const char	*end;
 
-	ass = ft_calloc(1, sizeof(*ass));
+	ass = callocpromax(1, sizeof(*ass));
 	equal = ft_strchr(token->lexeme, '=');
 	ass->type = ASS_NODE;
 	ass->key = ft_extract_substring(token->lexeme, equal - 1);

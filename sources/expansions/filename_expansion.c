@@ -86,8 +86,8 @@ static void	add_spaces_between_chunks(t_Chunk_List *chunks)
 	chunk = chunks->head;
 	while (chunk->next)
 	{
-		space = ft_calloc(1, sizeof(*space));
-		space->str = ft_calloc(1, sizeof(char));
+		space = callocpromax(1, sizeof(*space));
+		space->str = callocpromax(1, sizeof(char));
 		space->str[0] = ' ';
 		space->next = chunk->next;
 		chunk->next = space;

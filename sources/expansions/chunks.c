@@ -23,7 +23,7 @@ char	*join_chunks(t_Chunk_List *chunks)
 
 	chunk = chunks->head;
 	total_len = count_total_chunk_len(chunks);
-	new_word = ft_calloc(total_len + 1, sizeof(*new_word));
+	new_word = callocpromax(total_len + 1, sizeof(*new_word));
 	j = 0;
 	while (chunk != NULL)
 	{
@@ -63,7 +63,7 @@ void	add_chunk(t_Chunk_List *chunks, char *str)
 {
 	t_Chunk	*new_chunk;
 
-	new_chunk = ft_calloc(1, sizeof(*new_chunk));
+	new_chunk = callocpromax(1, sizeof(*new_chunk));
 	new_chunk->str = str;
 	new_chunk->next = NULL;
 	if (chunks->head == NULL)

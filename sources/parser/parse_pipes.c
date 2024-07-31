@@ -23,7 +23,7 @@ t_Node	*parse_pipe_sequence(t_Parser *parser)
 	left = parse_simple_command(parser);
 	while (accept(parser, PIPE))
 	{
-		pipe = ft_calloc(1, sizeof(*pipe));
+		pipe = callocpromax(1, sizeof(*pipe));
 		pipe->type = PIPE_NODE;
 		pipe->left = left;
 		if (pipe->left == NULL)

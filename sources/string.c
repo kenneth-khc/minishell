@@ -21,9 +21,9 @@ t_String	*string(size_t len)
 {
 	t_String	*str;
 
-	str = ft_calloc(1, sizeof(*str));
+	str = callocpromax(1, sizeof(*str));
 	str->len = len;
-	str->start = ft_calloc(len + 1, sizeof(char));
+	str->start = callocpromax(len + 1, sizeof(char));
 	str->end = str->start + len;
 	return (str);
 }
@@ -74,10 +74,10 @@ t_String	*string_join(t_String *s1, t_String *s2)
 	char		*s;
 	size_t		i;
 
-	new_string = ft_calloc(1, sizeof(*new_string));
+	new_string = callocpromax(1, sizeof(*new_string));
 	new_len = s1->len + s2->len;
 	i = 0;
-	new_string->start = ft_calloc(new_len + 1, sizeof(char));
+	new_string->start = callocpromax(new_len + 1, sizeof(char));
 	new_string->len = new_len;
 	s = new_string->start;
 	while (s1->start[i] != '\0')

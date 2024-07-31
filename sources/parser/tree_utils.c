@@ -21,7 +21,7 @@ t_Node	*node(enum e_Node_Type type)
 {
 	t_Node	*node;
 
-	node = ft_calloc(1, sizeof(*node));
+	node = callocpromax(1, sizeof(*node));
 	node->type = type;
 	return (node);
 }
@@ -34,7 +34,7 @@ t_Exec_Node	*exec_node(const char *cmd, t_entab *env)
 {
 	t_Exec_Node	*cmd_node;
 
-	cmd_node = ft_calloc(1, sizeof(*cmd_node));
+	cmd_node = callocpromax(1, sizeof(*cmd_node));
 	cmd_node->type = EXEC_NODE;
 	cmd_node->command = cmd;
 	cmd_node->table = env;
@@ -58,7 +58,7 @@ void	add_exec_arguments(t_Exec_Node *exec_node, const char *arg)
 	if (exec_node->arg_count == 0)
 		exec_node->command = arg;
 	exec_node->arg_count++;
-	temp = ft_calloc(exec_node->arg_count + 1, sizeof(const char *));
+	temp = callocpromax(exec_node->arg_count + 1, sizeof(const char *));
 	while (i < old_count)
 	{
 		temp[i] = exec_node->args[i];
