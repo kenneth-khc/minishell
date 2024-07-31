@@ -1,8 +1,10 @@
 MAKEFLAGS += --warn-undefined-variables
+ARCH = $(shell uname -m)
+PWD = $(shell pwd)
 NAME := minishell
 CC ?= cc
 CFLAGS := -Wall -Werror -Wextra
-LDFLAGS := -L libft -L readline/x86/lib
+LDFLAGS := -L libft -L readline/$(ARCH)/lib
 LDLIBS := -lreadline -lft
 fsan := -fsanitize=address
 debug := -g3
@@ -11,7 +13,7 @@ c_reset := \e[0m
 
 libft_dir := libft
 libft := $(libft_dir)/libft.a
-includes ?= -I includes -I libft/includes -I readline/x86/include
+includes ?= -I includes -I libft/includes -I readline/$(ARCH)/include
 
 src_dir := sources
 src_dirs := $(src_dir) $(src_dir)/lexer $(src_dir)/parser $(src_dir)/builtins $(src_dir)/exec $(src_dir)/expansions $(src_dir)/env_utils
@@ -20,8 +22,6 @@ srcs := $(foreach dir, $(src_dirs), $(wildcard $(dir)/*.c))
 obj_dir := objects
 objs := $(srcs:$(src_dir)/%.c=$(obj_dir)/%.o)
 
-ARCH = $(shell uname -m)
-PWD = $(shell pwd)
 # RL_COMPILE =
 # ifeq ($(ARCH), x86_64)
 RL_COMPILE = cd readline-8.2 && ./configure --prefix="$(PWD)/readline/x86" && make && make install && cd ..
@@ -29,7 +29,26 @@ RL_COMPILE = cd readline-8.2 && ./configure --prefix="$(PWD)/readline/x86" && ma
 #     RL_COMPILE = cd readline-8.2 && ./configure --prefix="$(PWD)/readline/arm" && make && make install && cd ..
 # endif
 
+READLINE_SRC_DIR := readline-8.2/
+READLINE_DIR := readline/$(ARCH)/
+READLINE_LIB_DIR := $(READLINE_DIR)/lib
+READLINE_LIB := $(READLINE_LIB_DIR)/libreadline.a
+READLINE_INC_DIR := $(READLINE_DIR)/include
+
 all: $(NAME)
+
+check_rl:
+	@if [ ! -f $(READLINE_LIB) ]; then \
+		echo "Readline not found.\nCompiling readline from source..."; \
+	cd $(READLINE_SRC_DIR) \
+	&& ./configure "--prefix=$(PWD)/$(READLINE_DIR)" \
+	&& make && make install && cd .. \
+	&& echo "#include <stdio.h>" > .tmp \
+	&& cat $(READLINE_INC_DIR)/readline/readline.h >> .tmp \
+	&& mv .tmp $(READLINE_INC_DIR)/readline/readline.h ; \
+	else \
+		echo "Readline found.\n"; \
+	fi
 
 rl:
 	$(RL_COMPILE)
