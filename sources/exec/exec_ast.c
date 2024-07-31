@@ -89,15 +89,15 @@ void	exec_ast(t_Node *node)
 {
 	if (node == NULL)
 		return ;
-	if (node->type == Exec_Node)
+	if (node->type == EXEC_NODE)
 		exec((t_Exec_Node *)node);
-	else if (node->type == Redir_Node)
+	else if (node->type == REDIR_NODE)
 		redir((t_Redir_Node *)node);
 	else if (node->type == ASS_NODE)
 		ass_var((t_Ass_Node *)node);
 	else if (node->type == SUBSHELL_NODE)
 		subshell(node);
-	else if (node->type == Pipe_Node)
+	else if (node->type == PIPE_NODE)
 		paip((t_Pipe_Node *)node);
 	else if (node->type == AND_AND_NODE)
 		andand(node);

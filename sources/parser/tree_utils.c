@@ -35,7 +35,7 @@ t_Exec_Node	*exec_node(const char *cmd, t_entab *env)
 	t_Exec_Node	*cmd_node;
 
 	cmd_node = ft_calloc(1, sizeof(*cmd_node));
-	cmd_node->type = Exec_Node;
+	cmd_node->type = EXEC_NODE;
 	cmd_node->command = cmd;
 	cmd_node->table = env;
 	return (cmd_node);
@@ -95,7 +95,7 @@ void	free_tree(t_Node *node)
 	temp = node;
 	if (node == NULL)
 		return ;
-	if (node->type == Exec_Node)
+	if (node->type == EXEC_NODE)
 	{
 		enode = (t_Exec_Node *)node;
 		free(enode->args);

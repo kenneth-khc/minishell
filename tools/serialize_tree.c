@@ -75,11 +75,11 @@ static char	*get_data(t_Node *node)
 	if (node == NULL)
 		return (NULL);
 	str = NULL;
-	if (node->type == Exec_Node)
+	if (node->type ==EXEC_NODE)
 		str = exec_to_json((t_Exec_Node *)node);
-	else if (node->type == Pipe_Node)
+	else if (node->type ==PIPE_NODE)
 		str = "PIPE";
-	else if (node->type == Redir_Node)
+	else if (node->type ==REDIR_NODE)
 		str = redir_to_json((t_Redir_Node *)node);
 	else if (node->type == AND_AND_NODE)
 		str = "&&";

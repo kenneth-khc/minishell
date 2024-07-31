@@ -24,7 +24,7 @@ t_Redir_Node	*redir_node(t_entab *env)
 	t_Redir_Node	*redir;
 
 	redir = ft_calloc(1, sizeof(*redir));
-	redir->type = Redir_Node;
+	redir->type = REDIR_NODE;
 	redir->table = env;
 	return (redir);
 }

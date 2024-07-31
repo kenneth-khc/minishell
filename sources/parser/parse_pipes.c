@@ -24,7 +24,7 @@ t_Node	*parse_pipe_sequence(t_Parser *parser)
 	while (accept(parser, PIPE))
 	{
 		pipe = ft_calloc(1, sizeof(*pipe));
-		pipe->type = Pipe_Node;
+		pipe->type = PIPE_NODE;
 		pipe->left = left;
 		if (pipe->left == NULL)
 			syntax_error(parser, "expected operand before `|`",

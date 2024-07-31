@@ -19,10 +19,9 @@
 
 typedef enum e_Node_Type
 {
-	Exec_Node = 1,
-	Argument_Node,
-	Redir_Node,
-	Pipe_Node,
+	EXEC_NODE = 1,
+	REDIR_NODE,
+	PIPE_NODE,
 	AND_AND_NODE,
 	OR_OR_NODE,
 	ASS_NODE,

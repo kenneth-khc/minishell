@@ -53,7 +53,7 @@ void	flag_last_heredoc(t_Node *root)
 	last_heredoc_node = NULL;
 	while (curr)
 	{
-		if (curr->type == Redir_Node)
+		if (curr->type == REDIR_NODE)
 		{
 			r = (t_Redir_Node *) curr;
 			if (r->heredoc)
