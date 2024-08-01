@@ -6,7 +6,7 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 02:10:42 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/28 05:45:45 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/08/05 05:43:30 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,4 +90,35 @@ t_String	*string_join(t_String *s1, t_String *s2)
 	string_free(s1);
 	string_free(s2);
 	return (new_string);
+}
+
+t_String	*string_extract(const char *start, const char *end)
+{
+	t_String	*substr;
+	char		*s;
+	size_t		len;
+
+	if (start > end || start == NULL || end == NULL)
+		return (NULL);
+	len = 0;
+	s = (char *) start;
+	while (*s != '\0' && s <= end)
+	{
+		s++;
+		len++;
+	}
+	substr = malloc(sizeof(*substr));
+	substr->len = len;
+	substr->start = malloc(sizeof(char) * (len + 1));
+	s = (char *) substr->start;
+	while (*start != '\0' && start <= end)
+		*s++ = *start++;
+	*s = '\0';
+	substr->end = s;
+	return (substr);
+}
+
+void	print_string(t_String *s)
+{
+	printf("%lu: |%s|\n", s->len, s->start);
 }

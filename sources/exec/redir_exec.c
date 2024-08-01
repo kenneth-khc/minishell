@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:10:41 by qang              #+#    #+#             */
-/*   Updated: 2024/07/26 09:59:04 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/08/03 19:08:24 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ static void	write_heredoc(t_Redir_Node *node, int fd)
 	static int											i = 0;
 	t_Heredoc											*heredoc;
 
+	init_signal();
 	heredoc_prompt();
 	heredoc = process_heredoc_delim(node);
 	line = get_next_line(0);
@@ -57,7 +58,7 @@ static void	write_heredoc(t_Redir_Node *node, int fd)
 	{
 		ft_dprintf(2, "%s: warning: here-document at line %d ", SHELL, i);
 		ft_dprintf(2, "delimited by end-of-file (wanted `%s')\n", node->delim);
-		exit(0);
+		/*exit(0);*/
 	}
 	free(line);
 }

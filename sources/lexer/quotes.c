@@ -6,7 +6,7 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/15 21:16:09 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/23 09:29:56 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/08/05 03:48:56 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,21 +16,55 @@
 #include "quotes.h"
 #include "tokens.h"
 #include "libft.h"
+#include "expansions.h"
+/**
+ * Checks if a given character belongs within any of the expansions
+ */
+bool	in_expansions(t_Expansion_List *expansions, char *c)
+{
+	t_Expansion	*expansion;
 
-t_Quote_List	find_quotes(t_Token *token)
+	expansion = expansions->head;
+	while (expansion)
+	{
+		if (expansion->start <= c
+			&& c <= expansion->end)
+		{
+			return (true);
+		}
+		expansion = expansion->next;
+	}
+	return (false);
+}
+/**
+ * Find sections of the word that are quoted, ignoring those that resulted
+ * from an expansion
+*/
+t_Quote_List	find_quoted_sections(t_Token *token, t_Expansion_List *expansions)
 {
 	struct s_Quote_List	list;
 	struct s_Quotes		*quotes;
-	char				*word;
+	char				*s;
+	char				*q;
 
-	word = token->lexeme;
-	list = (struct s_Quote_List){0, NULL};
-	quotes = find_next_pair(word, &word);
-	while (quotes != NULL
-		&& word <= word + ft_strlen(word))
+	list = (t_Quote_List){.pairs = NULL, .pair_count = 0};
+	s = token->lex->start;
+	while (s < token->lex->end)
 	{
-		store_quotes(&list, quotes);
-		quotes = find_next_pair(word, &word);
+		q = ft_strpbrk(s, is_quote);
+		if (q && !in_expansions(expansions, q))
+		{
+			quotes = malloc(sizeof(*quotes));
+			quotes->quote = *q;
+			quotes->start = q;
+			while (q < token->lex->end && *++q != quotes->quote)
+				;
+			quotes->end = q;
+			store_quotes(&list, quotes);
+			s = q + 1;
+		}
+		else
+			s++;
 	}
 	return (list);
 }

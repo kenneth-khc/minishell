@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   chunkify.c                                         :+:      :+:    :+:   */
+/*   chunks.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/17 22:33:06 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/23 10:15:12 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/08/05 06:40:44 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,4 +92,19 @@ size_t	count_total_chunk_len(t_Chunk_List *chunks)
 		chunk = chunk->next;
 	}
 	return (total_len);
+}
+
+#include <stdio.h>
+void	print_chunks(t_Chunk_List *chunks)
+{
+	t_Chunk	*chunk;
+	int		i;
+
+	chunk = chunks->head;
+	i = 0;
+	while (chunk)
+	{
+		printf("Chunk%d: |%s|\n", i, chunk->str);
+		chunk = chunk->next;
+	}
 }

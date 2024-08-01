@@ -6,7 +6,7 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 21:47:29 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/28 05:50:43 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/08/05 04:26:48 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 #include "execution.h"
 #include "libft.h"
 #include "ft_dprintf.h"
-#include "get_next_line.h"
 #include "tokens.h"
 #include "lexer.h"
 #include "definitions.h"
@@ -46,14 +45,13 @@ void	match_word(t_Lexer *lexer, t_Token_List *tokens, t_Input *input)
 		else
 			add_token(tokens, create_token(WORD, lexeme));
 		set_word_flags(tokens->tail);
-		tokens->tail->quotes = find_quotes(tokens->tail);
 		lexer->start = lexer->end + 1;
 		lexer->end = lexer->start;
 	}
 	else if (lexer->terminated == false)
 	{
 		input->ok = false;
-		ft_dprintf(STDERR_FILENO, "input error: unclosed quotes\n");
+		ft_dprintf(STDERR_FILENO, "syntax error: unclosed quotes\n");
 		set_exit_status(2);
 	}
 }

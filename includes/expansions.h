@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/09 21:15:47 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/28 06:25:10 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/08/05 09:47:20 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 # include <stdbool.h>
 # include "env.h"
 # include "libft.h"
+# include "ft_string.h"
 # include "tokens.h"
 
 // Chunks for storing untouched and expanded sections of the word,
@@ -38,6 +39,22 @@ typedef struct s_Range
 	char	*end;
 }	t_Range;
 
+typedef struct s_Expansion
+{
+	char				*start;
+	char				*end;
+	t_String			*key; // the original key, including the $ character
+	t_String			*value; // the value of the variable
+	ssize_t				offset; // offset relative to the start of the word
+	struct s_Expansion	*next;
+}	t_Expansion;
+
+typedef struct s_Expansion_List
+{
+	struct s_Expansion	*head;
+	struct s_Expansion	*tail;
+}	t_Expansion_List;
+
 void	add_chunk(t_Chunk_List *chunks, char *str);
 void	point_to_new_chunk(t_Range *p);
 size_t	count_total_chunk_len(t_Chunk_List *chunks);
@@ -46,7 +63,8 @@ void	free_chunks(t_Chunk_List *chunks);
 
 void	expand_tokens(t_Token_List *tokens, t_entab *env);
 bool	do_expansions(t_Token *token, t_entab *env);
-void	tilde_expansion(t_Token *token, t_entab *env);
+/*void	tilde_expansion(t_Token *token, t_entab *env);*/
+void	tilde_expansion(t_Expansion_List *expansions, t_Token *token, t_entab *env);
 bool	try_variable_expansion(t_Chunk_List *chunks,
 			t_Quote_List *quote_pairs, t_entab *env, t_Range *p);
 bool	do_variable_expansion(t_Chunk_List *chunks, t_entab *env, t_Range *p);
@@ -61,5 +79,26 @@ bool	delimited(t_Range *p);
 bool	is_dollar(char c);
 bool	is_identifier_start(char *dollar);
 char	*copy_var_val(char *key, t_entab *env);
+
+bool	variable_should_expand(char *dollar, t_Quote_List *quote_list);
+
+/* experiment */
+/* ideally works and reads better than what we have */
+
+#define GET	0
+#define RESET 1
+
+bool	is_expansion(char *c, t_Quote_List *quotes);
+void	add_expansion(t_Expansion_List *expansions, t_Expansion *expansion);
+t_Expansion	*get_next_expansion(t_Expansion_List *expansions, bool reset);
+void	parameter_expansion(t_Expansion_List *expansions, t_Token *token, t_entab *env);
+t_Expansion	*create_expansion(t_String *key, t_String *value, size_t offset);
+void	update_token_lexeme(t_Token *token, t_Expansion_List *expansions);
+size_t			calculate_expanded_len(t_Expansion_List *expansions);
+size_t			calculate_unexpanded_len(t_Token *token, t_String *lexeme);
+t_Quote_List	find_quoted_sections(t_Token *token, t_Expansion_List *expansions);
+void	word_split(t_Expansion_List *expansions, t_Token_List *tokens, t_Token *token);
+bool	filename_expand(t_Token *token, t_Token_List *tokens);
+void	remove_quotes(t_Token *token);
 
 #endif

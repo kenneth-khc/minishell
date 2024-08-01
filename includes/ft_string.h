@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   string.h                                           :+:      :+:    :+:   */
+/*   ft_string.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/28 05:56:16 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/28 06:16:08 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/08/05 04:14:38 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,5 +36,7 @@ t_String	*stringify(char *s);
 void		string_free(t_String *string);
 t_String	*string_join(t_String *s1, t_String *s2);
 t_String	*string_join_and_free(t_String *s1, t_String *s2);
+t_String	*string_extract(const char *start, const char *end);
+void	print_string(t_String *s);
 
 #endif

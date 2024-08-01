@@ -15,13 +15,14 @@
 #include "tokens.h"
 #include "libft.h"
 
-t_Token	*create_token(int type, const char *lexeme)
+t_Token	*create_token(int type, char *lexeme)
 {
 	t_Token	*new_token;
 
 	new_token = callocpromax(1, sizeof(*new_token));
 	new_token->type = type;
 	new_token->lexeme = (char *)lexeme;
+	new_token->lex = stringify(lexeme);
 	new_token->next = NULL;
 	new_token->prev = NULL;
 	return (new_token);

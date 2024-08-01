@@ -6,7 +6,7 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/11 09:25:32 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/18 15:19:51 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/08/05 03:48:54 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,7 @@ enum e_Token_Types
 	END_OF_INPUT
 };
 
+#include "ft_string.h"
 /**
  * Representing a token.
  * Stores the type of the token and its lexeme.
@@ -65,7 +66,9 @@ typedef struct s_Token
 {
 	enum e_Token_Types	type;
 	char				*lexeme;
+	t_String			*lex;
 	int					word_flags;
+	bool				expanded;
 	t_Quote_List		quotes;
 	struct s_Token		*next;
 	struct s_Token		*prev;
@@ -86,9 +89,8 @@ typedef struct s_Token_List
 	struct s_Token	*tail;
 }	t_Token_List;
 
-t_Token			*create_token(int type, const char *lexeme);
+t_Token			*create_token(int type, char *lexeme);
 void			add_token(t_Token_List *tokens, t_Token *token);
 void			free_tokens(t_Token_List *tokens);
-t_Quote_List	find_quotes(t_Token *token);
 
 #endif
