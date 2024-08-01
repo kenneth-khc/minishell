@@ -36,5 +36,6 @@ t_String	*stringify(char *s);
 void		string_free(t_String *string);
 t_String	*string_join(t_String *s1, t_String *s2);
 t_String	*string_join_and_free(t_String *s1, t_String *s2);
+void	print_string(t_String *s);
 
 #endif

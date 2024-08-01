@@ -15,8 +15,6 @@
 #include "quotes.h"
 
 static bool	dollar_prefix_string(char *dollar, t_Quote_List *quote_list);
-static bool	variable_should_expand(char *dollar, t_Quote_List *quote_list);
-static bool	variable_should_expand(char *dollar, t_Quote_List *quote_list);
 
 bool	try_variable_expansion(t_Chunk_List *chunks, t_Quote_List *quote_pairs,
 			t_entab *env, t_Range *p)
@@ -65,7 +63,7 @@ static bool	dollar_prefix_string(char *dollar, t_Quote_List *quote_list)
  * in the word
  * If found between strong quotes (''), do not expand
 **/
-static bool	variable_should_expand(char *dollar, t_Quote_List *quote_list)
+bool	variable_should_expand(char *dollar, t_Quote_List *quote_list)
 {
 	int			i;
 	t_Quotes	*pair;

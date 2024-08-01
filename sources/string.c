@@ -91,3 +91,8 @@ t_String	*string_join(t_String *s1, t_String *s2)
 	string_free(s2);
 	return (new_string);
 }
+
+void	print_string(t_String *s)
+{
+	printf("%lu: |%s|\n", s->len, s->start);
+}

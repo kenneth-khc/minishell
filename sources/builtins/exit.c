@@ -90,7 +90,7 @@ int	exit_sh(char **arg, t_entab *table)
 
 	valid = true;
 	(void)table;
-	ft_dprintf(2, "exit\n");
+	//ft_dprintf(2, "exit\n");
 	if (length(arg) == 1)
 		exit(get_exit_status());
 	if (length(arg) == 2)
