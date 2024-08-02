@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:10:41 by qang              #+#    #+#             */
-/*   Updated: 2024/07/26 09:59:04 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/08/03 01:38:52 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,11 @@ static void	redir_delim(t_Redir_Node *node)
 	fd = openpromax(next_heredoc, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	write_heredoc(node, fd);
 	close(fd);
+  if (special_cmd(node))
+  {
+    exec_ast(node->left);
+    return ;
+  }
 	pid = forkpromax();
 	if (pid == 0)
 	{
@@ -120,6 +125,11 @@ void	redir(t_Redir_Node *node)
 		redir_delim(node);
 		return ;
 	}
+  if (special_cmd(node))
+  {
+    exec_ast(node->left);
+    return ;
+  }
 	pid1 = forkpromax();
 	if (pid1 == 0)
 	{

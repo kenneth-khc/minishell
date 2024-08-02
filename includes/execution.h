@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 23:33:10 by qang              #+#    #+#             */
-/*   Updated: 2024/07/28 06:30:39 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/08/03 01:38:05 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,14 @@ typedef struct s_Heredoc
 	bool			should_expand;
 }	t_Heredoc;
 
+/*laying PIPE*/
+// bool		left_is_builtin(t_Pipe_Node *node);
+// void		paip_helper(t_Pipe_Node *node);
+
 /*for redir*/
 char		*expand_line(char *line, t_entab *table);
 void		check_permissions(char *newfile, t_Direction direction);
 void		heredoc_prompt(void);
 t_Heredoc	*process_heredoc_delim(t_Redir_Node *node);
+bool	  special_cmd(t_Redir_Node *node);
 #endif

@@ -1,0 +1,6 @@
+test.c
+minishell
+*.md
+objects
+.vscode
+tools

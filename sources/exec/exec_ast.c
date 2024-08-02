@@ -6,10 +6,11 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 22:15:03 by qang              #+#    #+#             */
-/*   Updated: 2024/07/20 22:54:36 by qang             ###   ########.fr       */
+/*   Updated: 2024/08/03 01:19:58 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "builtins.h"
 #include "execution.h"
 #include <fcntl.h>
 #include <sys/wait.h>
@@ -44,8 +45,12 @@ void	paip(t_Pipe_Node *node)
 {
 	int	fd[2];
 	int	pid1;
-	int	pid2;
-
+	
+	// if (left_is_builtin(node))
+	// {
+	// 	paip_helper(node);
+	// 	return ;
+	// }
 	pipepromax(fd);
 	pid1 = forkpromax();
 	if (pid1 == 0)
@@ -55,17 +60,19 @@ void	paip(t_Pipe_Node *node)
 		exec_ast(node->left);
 		exit(get_exit_status());
 	}
-	pid2 = forkpromax();
-	if (pid2 == 0)
+	else
 	{
-		dup2(fd[0], STDIN_FILENO);
+		pid1 = forkpromax();
+		if (pid1 == 0)
+		{
+			dup2(fd[0], STDIN_FILENO);
+			close_pipe(fd);
+			exec_ast(node->right);
+			exit(get_exit_status());
+		}
 		close_pipe(fd);
-		exec_ast(node->right);
-		exit(get_exit_status());
-	}
-	close_pipe(fd);
-	set_exit_status(wait_for_child(pid1));
-	set_exit_status(wait_for_child(pid2));
+		set_exit_status(wait_for_child(pid1));
+	}	
 }
 
 void	andand(t_Node *node)
