@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 23:33:10 by qang              #+#    #+#             */
-/*   Updated: 2024/08/03 01:38:05 by qang             ###   ########.fr       */
+/*   Updated: 2024/08/04 00:37:10 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,5 +49,6 @@ char		*expand_line(char *line, t_entab *table);
 void		check_permissions(char *newfile, t_Direction direction);
 void		heredoc_prompt(void);
 t_Heredoc	*process_heredoc_delim(t_Redir_Node *node);
-bool	  special_cmd(t_Redir_Node *node);
+bool		special_cmd(t_Redir_Node *node);
+void		redir_special_cmd(t_Redir_Node *node);
 #endif
