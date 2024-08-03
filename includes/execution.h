@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 23:33:10 by qang              #+#    #+#             */
-/*   Updated: 2024/08/04 00:51:34 by qang             ###   ########.fr       */
+/*   Updated: 2024/08/03 17:00:34 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,4 +55,5 @@ bool		special_cmd(t_Redir_Node *node);
 void		redir_special_cmd(t_Redir_Node *node);
 void		write_heredoc(t_Redir_Node *node, char *next_heredoc);
 void		run_heredoc(t_Redir_Node *node, char *next_heredoc);
+void		run_redir(t_Redir_Node *node);
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_ast.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 22:15:03 by qang              #+#    #+#             */
-/*   Updated: 2024/08/04 00:45:49 by qang             ###   ########.fr       */
+/*   Updated: 2024/08/03 16:58:20 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ void	paip(t_Pipe_Node *node)
 		}
 		close_pipe(fd);
 		set_exit_status(wait_for_child(pid1));
-	}	
+	}
 }
 
 void	andand(t_Node *node)

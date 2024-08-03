@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redir_exec.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:10:41 by qang              #+#    #+#             */
-/*   Updated: 2024/08/04 00:53:55 by qang             ###   ########.fr       */
+/*   Updated: 2024/08/03 17:01:18 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,9 +101,6 @@ static void	redir_delim(t_Redir_Node *node)
 
 void	redir(t_Redir_Node *node)
 {
-	int	pid1;
-	int	fd;
-
 	if (node->heredoc)
 	{
 		redir_delim(node);
@@ -114,19 +111,5 @@ void	redir(t_Redir_Node *node)
 		redir_special_cmd(node);
 		return ;
 	}
-	pid1 = forkpromax();
-	if (pid1 == 0)
-	{
-		check_permissions((char *)node->file, node->direction);
-		fd = openpromax((char *)node->file, node->flags, node->mode);
-		dup2(fd, node->oldfd);
-		close(fd);
-		exec_ast(node->left);
-		exit(0);
-	}
-	else
-	{
-		ignore_sigs();
-		set_exit_status(wait_for_child(pid1));
-	}
+	run_redir(node);
 }

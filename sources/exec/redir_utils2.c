@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redir_utils2.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/03 01:28:41 by qang              #+#    #+#             */
-/*   Updated: 2024/08/04 00:51:23 by qang             ###   ########.fr       */
+/*   Updated: 2024/08/03 17:01:06 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,16 +20,18 @@
 bool	special_cmd(t_Redir_Node *node);
 void	redir_special_cmd(t_Redir_Node *node);
 void	run_heredoc(t_Redir_Node *node, char *next_heredoc);
+void	run_redir(t_Redir_Node *node);
 void	write_heredoc(t_Redir_Node *node, char *next_heredoc);
 
 bool	special_cmd(t_Redir_Node *node)
 {
-	t_Exec_Node *node_left;
+	t_Exec_Node	*node_left;
 
 	if (node->left && node->left->type == EXEC_NODE)
 	{
 		node_left = (t_Exec_Node *)node->left;
-		if (ft_strcmp2(node_left->command, "cd") == 0 || ft_strcmp2(node_left->command, "exit") == 0)
+		if (ft_strcmp2(node_left->command, "cd") == 0
+			|| ft_strcmp2(node_left->command, "exit") == 0)
 			return (true);
 		return (false);
 	}
@@ -55,9 +57,9 @@ void	redir_special_cmd(t_Redir_Node *node)
 
 void	write_heredoc(t_Redir_Node *node, char *next_heredoc)
 {
-	int pid1;
-	int fd;
-	
+	int	pid1;
+	int	fd;
+
 	pid1 = forkpromax();
 	if (pid1 == 0)
 	{
@@ -87,6 +89,28 @@ void	run_heredoc(t_Redir_Node *node, char *next_heredoc)
 		init_signal();
 		if (node->last_heredoc)
 			dup2(fd, node->oldfd);
+		close(fd);
+		exec_ast(node->left);
+		exit(0);
+	}
+	else
+	{
+		ignore_sigs();
+		set_exit_status(wait_for_child(pid1));
+	}
+}
+
+void	run_redir(t_Redir_Node *node)
+{
+	int	pid1;
+	int	fd;
+
+	pid1 = forkpromax();
+	if (pid1 == 0)
+	{
+		check_permissions((char *)node->file, node->direction);
+		fd = openpromax((char *)node->file, node->flags, node->mode);
+		dup2(fd, node->oldfd);
 		close(fd);
 		exec_ast(node->left);
 		exit(0);
