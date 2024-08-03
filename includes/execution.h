@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 23:33:10 by qang              #+#    #+#             */
-/*   Updated: 2024/07/28 06:30:39 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/08/03 16:25:56 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,4 +45,6 @@ char		*expand_line(char *line, t_entab *table);
 void		check_permissions(char *newfile, t_Direction direction);
 void		heredoc_prompt(void);
 t_Heredoc	*process_heredoc_delim(t_Redir_Node *node);
+bool		special_cmd(t_Redir_Node *node);
+void		redir_special_cmd(t_Redir_Node *node);
 #endif

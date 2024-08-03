@@ -11,7 +11,7 @@ READLINE_DIR := readline/$(ARCH)/
 READLINE_LIB_DIR := $(READLINE_DIR)/lib
 READLINE_LIB := $(READLINE_LIB_DIR)/libreadline.a
 READLINE_INC_DIR := $(READLINE_DIR)/include
-LDFLAGS := -L libft -L $(READLINE_LIB_DIR)
+LDFLAGS := -L libft #-L $(READLINE_LIB_DIR)
 LDLIBS := -lreadline -lft
 
 fsan := -fsanitize=address
@@ -23,7 +23,7 @@ c_reset := \e[0m
 libft_dir := libft
 libft := $(libft_dir)/libft.a
 libft.a := $(libft_dir)/libft.a
-includes ?= -I includes -I libft/includes -I $(READLINE_INC_DIR)
+includes ?= -I includes -I libft/includes #-I $(READLINE_INC_DIR)
 
 src_dir := sources
 src_dirs := $(src_dir) \

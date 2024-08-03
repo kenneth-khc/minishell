@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redir_exec.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:10:41 by qang              #+#    #+#             */
-/*   Updated: 2024/07/26 09:59:04 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/08/03 16:33:32 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,9 +55,9 @@ static void	write_heredoc(t_Redir_Node *node, int fd)
 	}
 	if (line == NULL)
 	{
+    node->delim[ft_strlen(node->delim) - 1] = '\0';
 		ft_dprintf(2, "%s: warning: here-document at line %d ", SHELL, i);
 		ft_dprintf(2, "delimited by end-of-file (wanted `%s')\n", node->delim);
-		exit(0);
 	}
 	free(line);
 }
@@ -87,10 +87,30 @@ static void	redir_delim(t_Redir_Node *node)
 	char	*next_heredoc;
 	int		fd;
 
-	next_heredoc = get_next_heredoc();
-	fd = openpromax(next_heredoc, O_CREAT | O_WRONLY | O_TRUNC, 0644);
-	write_heredoc(node, fd);
-	close(fd);
+  int pid1 = forkpromax();
+  next_heredoc = get_next_heredoc();
+  if (pid1 == 0)
+  {
+    set_sig();
+    fd = openpromax(next_heredoc, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+    write_heredoc(node, fd);
+    close(fd);
+    exit(0);
+  }
+  else
+  {
+    ignore_sigs();
+    set_exit_status(wait_for_child(pid1));
+  }
+  if (get_exit_status() == 130)
+    return ;
+  init_signal();
+  if (special_cmd(node))
+  {
+    node->file = next_heredoc;
+    redir_special_cmd(node);
+    return ;
+  }
 	pid = forkpromax();
 	if (pid == 0)
 	{
@@ -120,6 +140,11 @@ void	redir(t_Redir_Node *node)
 		redir_delim(node);
 		return ;
 	}
+  if (special_cmd(node))
+  {
+    redir_special_cmd(node);
+    return ;
+  }
 	pid1 = forkpromax();
 	if (pid1 == 0)
 	{
