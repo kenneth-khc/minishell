@@ -6,15 +6,21 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/03 01:28:41 by qang              #+#    #+#             */
-/*   Updated: 2024/08/04 00:36:53 by qang             ###   ########.fr       */
+/*   Updated: 2024/08/04 00:51:23 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtins.h"
 #include "execution.h"
 #include "tree.h"
+#include <fcntl.h>
 #include <stdbool.h>
 #include <unistd.h>
+
+bool	special_cmd(t_Redir_Node *node);
+void	redir_special_cmd(t_Redir_Node *node);
+void	run_heredoc(t_Redir_Node *node, char *next_heredoc);
+void	write_heredoc(t_Redir_Node *node, char *next_heredoc);
 
 bool	special_cmd(t_Redir_Node *node)
 {
@@ -45,4 +51,49 @@ void	redir_special_cmd(t_Redir_Node *node)
 	dup2(temp_fd[0], STDIN_FILENO);
 	dup2(temp_fd[1], STDOUT_FILENO);
 	close_pipe(temp_fd);
+}
+
+void	write_heredoc(t_Redir_Node *node, char *next_heredoc)
+{
+	int pid1;
+	int fd;
+	
+	pid1 = forkpromax();
+	if (pid1 == 0)
+	{
+		set_sig();
+		fd = openpromax(next_heredoc, O_CREAT | O_WRONLY | O_TRUNC, 0644);
+		write_heredoc_loop(node, fd);
+		close(fd);
+		exit(0);
+	}
+	else
+	{
+		ignore_sigs();
+		set_exit_status(wait_for_child(pid1));
+	}
+}
+
+void	run_heredoc(t_Redir_Node *node, char *next_heredoc)
+{
+	int	pid1;
+	int	fd;
+
+	pid1 = forkpromax();
+	if (pid1 == 0)
+	{
+		fd = openpromax(next_heredoc, O_RDONLY, 0644);
+		unlink(next_heredoc);
+		init_signal();
+		if (node->last_heredoc)
+			dup2(fd, node->oldfd);
+		close(fd);
+		exec_ast(node->left);
+		exit(0);
+	}
+	else
+	{
+		ignore_sigs();
+		set_exit_status(wait_for_child(pid1));
+	}
 }

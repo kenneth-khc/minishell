@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:10:41 by qang              #+#    #+#             */
-/*   Updated: 2024/08/04 00:37:06 by qang             ###   ########.fr       */
+/*   Updated: 2024/08/04 00:53:55 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 #include <unistd.h>
 
 void		redir(t_Redir_Node *node);
-static void	write_heredoc(t_Redir_Node *node, int fd);
+void		write_heredoc_loop(t_Redir_Node *node, int fd);
 static void	write_heredoc_to_file(t_Heredoc *heredoc, int fd,
 				char *line, t_entab *table);
 static void	redir_delim(t_Redir_Node *node);
@@ -37,7 +37,7 @@ static char	*get_next_heredoc(void)
 	return (heredoc);
 }
 
-static void	write_heredoc(t_Redir_Node *node, int fd)
+void	write_heredoc_loop(t_Redir_Node *node, int fd)
 {
 	char												*line;
 	static int											i = 0;
@@ -55,7 +55,7 @@ static void	write_heredoc(t_Redir_Node *node, int fd)
 	}
 	if (line == NULL)
 	{
-    node->delim[ft_strlen(node->delim) - 1] = '\0';
+		node->delim[ft_strlen(node->delim) - 1] = '\0';
 		ft_dprintf(2, "%s: warning: here-document at line %d ", SHELL, i);
 		ft_dprintf(2, "delimited by end-of-file (wanted `%s')\n", node->delim);
 	}
@@ -83,51 +83,20 @@ static void	write_heredoc_to_file(t_Heredoc *heredoc, int fd,
 
 static void	redir_delim(t_Redir_Node *node)
 {
-	pid_t	pid;
 	char	*next_heredoc;
-	int		fd;
 
-  int pid1 = forkpromax();
-  next_heredoc = get_next_heredoc();
-  if (pid1 == 0)
-  {
-    set_sig();
-    fd = openpromax(next_heredoc, O_CREAT | O_WRONLY | O_TRUNC, 0644);
-    write_heredoc(node, fd);
-    close(fd);
-    exit(0);
-  }
-  else
-  {
-    ignore_sigs();
-    set_exit_status(wait_for_child(pid1));
-  }
-  if (get_exit_status() == 130)
-    return ;
-  init_signal();
-  if (special_cmd(node))
-  {
-    node->file = next_heredoc;
-    redir_special_cmd(node);
-    return ;
-  }
-	pid = forkpromax();
-	if (pid == 0)
+	next_heredoc = get_next_heredoc();
+	write_heredoc(node, next_heredoc);
+	if (get_exit_status() == 130)
+		return ;
+	init_signal();
+	if (special_cmd(node))
 	{
-		fd = openpromax(next_heredoc, O_RDONLY, 0644);
-		unlink(next_heredoc);
-		init_signal();
-		if (node->last_heredoc)
-			dup2(fd, node->oldfd);
-		close(fd);
-		exec_ast(node->left);
-		exit(0);
+		node->file = next_heredoc;
+		redir_special_cmd(node);
+		return ;
 	}
-	else
-	{
-		ignore_sigs();
-		set_exit_status(wait_for_child(pid));
-	}
+	run_heredoc(node, next_heredoc);
 }
 
 void	redir(t_Redir_Node *node)
@@ -140,11 +109,11 @@ void	redir(t_Redir_Node *node)
 		redir_delim(node);
 		return ;
 	}
-  if (special_cmd(node))
-  {
-    redir_special_cmd(node);
-    return ;
-  }
+	if (special_cmd(node))
+	{
+		redir_special_cmd(node);
+		return ;
+	}
 	pid1 = forkpromax();
 	if (pid1 == 0)
 	{
@@ -152,8 +121,7 @@ void	redir(t_Redir_Node *node)
 		fd = openpromax((char *)node->file, node->flags, node->mode);
 		dup2(fd, node->oldfd);
 		close(fd);
-		if (node->left)
-			exec_ast(node->left);
+		exec_ast(node->left);
 		exit(0);
 	}
 	else

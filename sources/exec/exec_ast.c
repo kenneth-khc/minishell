@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 22:15:03 by qang              #+#    #+#             */
-/*   Updated: 2024/08/03 01:19:58 by qang             ###   ########.fr       */
+/*   Updated: 2024/08/04 00:45:49 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,12 +45,7 @@ void	paip(t_Pipe_Node *node)
 {
 	int	fd[2];
 	int	pid1;
-	
-	// if (left_is_builtin(node))
-	// {
-	// 	paip_helper(node);
-	// 	return ;
-	// }
+
 	pipepromax(fd);
 	pid1 = forkpromax();
 	if (pid1 == 0)
