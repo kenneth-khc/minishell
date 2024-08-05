@@ -3,30 +3,26 @@
 /*                                                        :::      ::::::::   */
 /*   exec_ast.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 22:15:03 by qang              #+#    #+#             */
-/*   Updated: 2024/08/03 16:58:20 by codespace        ###   ########.fr       */
+/*   Updated: 2024/08/05 20:12:19 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtins.h"
 #include "execution.h"
-#include <fcntl.h>
 #include <sys/wait.h>
-#include <stdlib.h>
 #include <unistd.h>
 
 void	exec_ast(t_Node *node);
 void	oror(t_Node *node);
 void	andand(t_Node *node);
-void	paip(t_Pipe_Node *node);
 void	subshell(t_Node *node);
 
 void	subshell(t_Node *node)
 {
 	int	pid;
-	int	status;
 
 	pid = forkpromax();
 	if (pid == 0)
@@ -35,39 +31,10 @@ void	subshell(t_Node *node)
 		exit(get_exit_status());
 	}
 	else
-	{
-		waitpid(pid, &status, 0);
-		set_exit_status(WEXITSTATUS(status));
-	}
-}
-
-void	paip(t_Pipe_Node *node)
-{
-	int	fd[2];
-	int	pid1;
-
-	pipepromax(fd);
-	pid1 = forkpromax();
-	if (pid1 == 0)
-	{
-		dup2(fd[1], STDOUT_FILENO);
-		close_pipe(fd);
-		exec_ast(node->left);
-		exit(get_exit_status());
-	}
-	else
-	{
-		pid1 = forkpromax();
-		if (pid1 == 0)
-		{
-			dup2(fd[0], STDIN_FILENO);
-			close_pipe(fd);
-			exec_ast(node->right);
-			exit(get_exit_status());
-		}
-		close_pipe(fd);
-		set_exit_status(wait_for_child(pid1));
-	}
+  {
+    ignore_sigs();
+    set_exit_status(wait_for_child(pid));
+  }
 }
 
 void	andand(t_Node *node)
@@ -89,6 +56,7 @@ void	oror(t_Node *node)
 
 void	exec_ast(t_Node *node)
 {
+  init_signal();
 	if (node == NULL)
 		return ;
 	if (node->type == EXEC_NODE)

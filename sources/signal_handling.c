@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/06 22:09:08 by qang              #+#    #+#             */
-/*   Updated: 2024/07/18 15:23:49 by qang             ###   ########.fr       */
+/*   Updated: 2024/08/05 20:08:14 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include <signal.h>
 #include <unistd.h>
 
-void	set_sig(void)
+void	default_sigs(void)
 {
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);

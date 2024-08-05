@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 23:33:10 by qang              #+#    #+#             */
-/*   Updated: 2024/08/03 17:00:34 by codespace        ###   ########.fr       */
+/*   Updated: 2024/08/05 19:50:40 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@
 
 void		exec_ast(t_Node *node);
 void		exec(t_Exec_Node *node);
-void		redir(t_Redir_Node *node);
 void		subshell(t_Node *node);
 void		ass_var(t_Ass_Node *node);
+void		paip(t_Pipe_Node *node);
 
 /*exec_ast_utils*/
 int			get_exit_status(void);
@@ -40,20 +40,14 @@ typedef struct s_Heredoc
 	bool			should_expand;
 }	t_Heredoc;
 
-/*laying PIPE*/
-// bool		left_is_builtin(t_Pipe_Node *node);
-// void		paip_helper(t_Pipe_Node *node);
-
 /*for redir*/
 char		*expand_line(char *line, t_entab *table);
 void		check_permissions(char *newfile, t_Direction direction);
 void		heredoc_prompt(void);
 t_Heredoc	*process_heredoc_delim(t_Redir_Node *node);
-void		write_heredoc_loop(t_Redir_Node *node, int fd);
-
-bool		special_cmd(t_Redir_Node *node);
-void		redir_special_cmd(t_Redir_Node *node);
-void		write_heredoc(t_Redir_Node *node, char *next_heredoc);
-void		run_heredoc(t_Redir_Node *node, char *next_heredoc);
+void		redir(t_Redir_Node *node);
 void		run_redir(t_Redir_Node *node);
+void		run_heredoc(t_Redir_Node *node, char *next_heredoc);
+void		write_heredoc(t_Redir_Node *node, char *next_heredoc);
+char		*get_next_heredoc(void);
 #endif

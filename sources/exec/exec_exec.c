@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/13 00:48:55 by qang              #+#    #+#             */
-/*   Updated: 2024/07/21 19:23:27 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/08/05 20:08:37 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	child_process(t_Exec_Node *node, t_entab *table)
 {
 	struct stat	file_stats;
 
-	set_sig();
+	default_sigs();
 	if (!ft_isbuiltin(node->command))
 	{
 		if (access(node->command, F_OK) == 0
