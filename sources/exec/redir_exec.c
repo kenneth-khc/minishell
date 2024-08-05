@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 16:10:41 by qang              #+#    #+#             */
-/*   Updated: 2024/08/05 20:15:09 by qang             ###   ########.fr       */
+/*   Updated: 2024/08/05 20:23:00 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,8 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-void		redir(t_Redir_Node *node);
-void		run_redir(t_Redir_Node *node);
+void			redir(t_Redir_Node *node);
+void			run_redir(t_Redir_Node *node);
 static bool		special_cmd(t_Redir_Node *node);
 static void		redir_special_cmd(t_Redir_Node *node);
 static void		redir_delim(t_Redir_Node *node);
@@ -43,7 +43,7 @@ static void	redir_delim(t_Redir_Node *node)
 bool	special_cmd(t_Redir_Node *node)
 {
 	t_Exec_Node	*node_left;
-	t_Node	*temp;
+	t_Node		*temp;
 
 	if (!node)
 		return (false);
@@ -56,7 +56,7 @@ bool	special_cmd(t_Redir_Node *node)
 		return (false);
 	}
 	else if (node->left && node->left->type == REDIR_NODE)
-	{	
+	{
 		temp = (t_Node *)node;
 		while (temp->left->type == REDIR_NODE)
 			temp = temp->left;
