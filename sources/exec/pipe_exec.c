@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_exec.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 19:47:00 by qang              #+#    #+#             */
-/*   Updated: 2024/08/05 20:17:40 by qang             ###   ########.fr       */
+/*   Updated: 2024/08/05 12:25:25 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 static void	pipe_child_process(t_Pipe_Node *node, int fd[2])
 {
 	int	pid;
-	
+
 	pid = forkpromax();
 	if (pid == 0)
 	{
@@ -37,7 +37,7 @@ static void	pipe_child_process(t_Pipe_Node *node, int fd[2])
 static void	papi(t_Pipe_Node *node, int fd[2])
 {
 	int	pid;
-	
+
 	pid = forkpromax();
 	if (pid == 0)
 	{

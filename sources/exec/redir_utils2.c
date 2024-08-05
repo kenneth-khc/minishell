@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/03 01:28:41 by qang              #+#    #+#             */
-/*   Updated: 2024/08/05 20:13:58 by qang             ###   ########.fr       */
+/*   Updated: 2024/08/05 20:22:52 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,12 @@
 #include <fcntl.h>
 #include <unistd.h>
 
-void	run_heredoc(t_Redir_Node *node, char *next_heredoc);
-void	write_heredoc(t_Redir_Node *node, char *next_heredoc);
-char	*get_next_heredoc(void);
+void		run_heredoc(t_Redir_Node *node, char *next_heredoc);
+void		write_heredoc(t_Redir_Node *node, char *next_heredoc);
+char		*get_next_heredoc(void);
 static void	write_heredoc_loop(t_Redir_Node *node, int fd);
 static void	write_heredoc_to_file(t_Heredoc *heredoc, int fd,
-		char *line, t_entab *table);
+				char *line, t_entab *table);
 
 char	*get_next_heredoc(void)
 {
@@ -116,7 +116,7 @@ void	run_heredoc(t_Redir_Node *node, char *next_heredoc)
 			dup2(fd, node->oldfd);
 		close(fd);
 		exec_ast(node->left);
-		exit(get_exit_status());
+		exit(0);
 	}
 	else
 	{
