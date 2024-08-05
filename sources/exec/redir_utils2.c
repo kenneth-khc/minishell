@@ -6,53 +6,79 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/03 01:28:41 by qang              #+#    #+#             */
-/*   Updated: 2024/08/03 17:01:06 by codespace        ###   ########.fr       */
+/*   Updated: 2024/08/05 11:39:17 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtins.h"
 #include "execution.h"
+#include "ft_dprintf.h"
+#include "get_next_line.h"
 #include "tree.h"
 #include <fcntl.h>
-#include <stdbool.h>
 #include <unistd.h>
 
-bool	special_cmd(t_Redir_Node *node);
-void	redir_special_cmd(t_Redir_Node *node);
-void	run_heredoc(t_Redir_Node *node, char *next_heredoc);
-void	run_redir(t_Redir_Node *node);
-void	write_heredoc(t_Redir_Node *node, char *next_heredoc);
+void		run_heredoc(t_Redir_Node *node, char *next_heredoc);
+void		write_heredoc(t_Redir_Node *node, char *next_heredoc);
+char		*get_next_heredoc(void);
+static void	write_heredoc_loop(t_Redir_Node *node, int fd);
+static void	write_heredoc_to_file(t_Heredoc *heredoc, int fd,
+				char *line, t_entab *table);
 
-bool	special_cmd(t_Redir_Node *node)
+char	*get_next_heredoc(void)
 {
-	t_Exec_Node	*node_left;
+	static int	fd = 0;
+	char		*num;
+	char		*heredoc;
 
-	if (node->left && node->left->type == EXEC_NODE)
-	{
-		node_left = (t_Exec_Node *)node->left;
-		if (ft_strcmp2(node_left->command, "cd") == 0
-			|| ft_strcmp2(node_left->command, "exit") == 0)
-			return (true);
-		return (false);
-	}
-	return (false);
+	num = ft_itoa(fd++);
+	heredoc = ft_strjoin("/tmp/.heredoc", num);
+	free(num);
+	return (heredoc);
 }
 
-void	redir_special_cmd(t_Redir_Node *node)
+static void	write_heredoc_loop(t_Redir_Node *node, int fd)
 {
-	int	temp_fd[2];
-	int	fd;
+	char												*line;
+	static int											i = 0;
+	t_Heredoc											*heredoc;
 
-	temp_fd[0] = dup(STDIN_FILENO);
-	temp_fd[1] = dup(STDOUT_FILENO);
-	check_permissions((char *)node->file, node->direction);
-	fd = openpromax((char *)node->file, node->flags, node->mode);
-	dup2(fd, node->oldfd);
-	close(fd);
-	exec_ast(node->left);
-	dup2(temp_fd[0], STDIN_FILENO);
-	dup2(temp_fd[1], STDOUT_FILENO);
-	close_pipe(temp_fd);
+	heredoc_prompt();
+	heredoc = process_heredoc_delim(node);
+	line = get_next_line(0);
+	while (line != NULL && ft_strcmp(line, node->delim) != 0)
+	{
+		i++;
+		write_heredoc_to_file(heredoc, fd, line, node->table);
+		heredoc_prompt();
+		line = get_next_line(0);
+	}
+	if (line == NULL)
+	{
+		node->delim[ft_strlen(node->delim) - 1] = '\0';
+		ft_dprintf(2, "%s: warning: here-document at line %d ", SHELL, i);
+		ft_dprintf(2, "delimited by end-of-file (wanted `%s')\n", node->delim);
+	}
+	free(line);
+}
+
+static void	write_heredoc_to_file(t_Heredoc *heredoc, int fd,
+		char *line, t_entab *table)
+{
+	char	*expanded_line;
+
+	if (heredoc->should_expand)
+	{
+		expanded_line = expand_line(line, table);
+		write(fd, expanded_line, ft_strlen(expanded_line));
+	}
+	else
+	{
+		expanded_line = NULL;
+		write(fd, line, ft_strlen(line));
+	}
+	free(line);
+	free(expanded_line);
 }
 
 void	write_heredoc(t_Redir_Node *node, char *next_heredoc)
@@ -89,28 +115,6 @@ void	run_heredoc(t_Redir_Node *node, char *next_heredoc)
 		init_signal();
 		if (node->last_heredoc)
 			dup2(fd, node->oldfd);
-		close(fd);
-		exec_ast(node->left);
-		exit(0);
-	}
-	else
-	{
-		ignore_sigs();
-		set_exit_status(wait_for_child(pid1));
-	}
-}
-
-void	run_redir(t_Redir_Node *node)
-{
-	int	pid1;
-	int	fd;
-
-	pid1 = forkpromax();
-	if (pid1 == 0)
-	{
-		check_permissions((char *)node->file, node->direction);
-		fd = openpromax((char *)node->file, node->flags, node->mode);
-		dup2(fd, node->oldfd);
 		close(fd);
 		exec_ast(node->left);
 		exit(0);
