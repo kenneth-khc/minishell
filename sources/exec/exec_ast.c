@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_ast.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 22:15:03 by qang              #+#    #+#             */
-/*   Updated: 2024/08/05 20:12:19 by qang             ###   ########.fr       */
+/*   Updated: 2024/08/05 12:24:58 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,10 @@ void	subshell(t_Node *node)
 		exit(get_exit_status());
 	}
 	else
-  {
-    ignore_sigs();
-    set_exit_status(wait_for_child(pid));
-  }
+	{
+		ignore_sigs();
+		set_exit_status(wait_for_child(pid));
+	}
 }
 
 void	andand(t_Node *node)
@@ -56,7 +56,7 @@ void	oror(t_Node *node)
 
 void	exec_ast(t_Node *node)
 {
-  init_signal();
+	init_signal();
 	if (node == NULL)
 		return ;
 	if (node->type == EXEC_NODE)
