@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 21:18:39 by qang              #+#    #+#             */
-/*   Updated: 2024/07/17 23:28:50 by qang             ###   ########.fr       */
+/*   Updated: 2024/08/05 22:02:48 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,13 @@
 
 int			print_env(char **args, t_entab *table);
 static void	print_val(t_envar *node);
+
+int	dont_print_env(char **args)
+{
+	ft_dprintf(2, "%s: env: %s: No such file or directory\n",
+		SHELL, args[1]);
+	return (127);
+}
 
 static void	print_val(t_envar *node)
 {
@@ -34,8 +41,7 @@ int	print_env(char **args, t_entab *table)
 	absfn = NULL;
 	node = table->head;
 	if (length(args) > 1)
-		ft_dprintf(2, "%s: env: %s: No such file or directory\n",
-			SHELL, args[1]);
+		return (dont_print_env(args));
 	while (node)
 	{
 		if (ft_strcmp(node->key, "_") == 0)

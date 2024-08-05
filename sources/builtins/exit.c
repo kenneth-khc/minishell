@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 19:42:59 by qang              #+#    #+#             */
-/*   Updated: 2024/07/31 17:51:13 by qang             ###   ########.fr       */
+/*   Updated: 2024/08/05 15:12:59 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,8 @@ static long	ft_exitatol(char *str, bool *valid)
 
 	nbr = 0;
 	sign = 1;
+	if (ft_strlen(str) > 20 || ft_strlen(str) == 0)
+		return (ft_print_error(str, valid));
 	i = skip_space_and_sign(str, &sign);
 	while (str[i])
 	{

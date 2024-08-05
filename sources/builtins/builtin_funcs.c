@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 19:35:04 by qang              #+#    #+#             */
-/*   Updated: 2024/07/20 12:06:29 by qang             ###   ########.fr       */
+/*   Updated: 2024/08/05 22:28:50 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,13 +43,13 @@ int	run_builtin(const char **cav, t_entab *table)
 		errno = cd(av, table);
 	else if (ft_strcmp2("pwd", av[0]) == 0)
 		errno = pwd(av, table);
-	else if (ft_strcmp2("export", av[0]) == 0)
+	else if (ft_strcmp("export", av[0]) == 0)
 		errno = ft_export(av, table);
 	else if (ft_strcmp2("unset", av[0]) == 0)
 		errno = unset(av, table);
 	else if (ft_strcmp2("env", av[0]) == 0)
 		errno = print_env(av, table);
-	else if (ft_strcmp2("exit", av[0]) == 0)
+	else if (ft_strcmp("exit", av[0]) == 0)
 		errno = exit_sh(av, table);
 	return (errno);
 }
