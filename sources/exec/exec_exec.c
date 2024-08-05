@@ -6,7 +6,7 @@
 /*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/13 00:48:55 by qang              #+#    #+#             */
-/*   Updated: 2024/08/05 15:11:46 by codespace        ###   ########.fr       */
+/*   Updated: 2024/08/05 16:29:10 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,18 +24,11 @@ void	exec(t_Exec_Node *node);
 
 void	child_process(t_Exec_Node *node, t_entab *table)
 {
-	struct stat	file_stats;
-
 	default_sigs();
 	if (!ft_isbuiltin(node->command))
 	{
-		if (stat(node->command, &file_stats) == 0
-			&& S_ISDIR(file_stats.st_mode))
-		{
-			ft_dprintf(2, "%s: %s: is a directory\n", SHELL, node->command);
-			exit(126);
-		}
-		else if (access(node->command, F_OK) == 0
+		check_file(node->command, node->command);
+		if (access(node->command, F_OK) == 0
 			&& access(node->command, X_OK) == 0)
 			execve((char *)node->command, (char **)node->args,
 				env_convert(table));
@@ -51,23 +44,15 @@ void	child_process(t_Exec_Node *node, t_entab *table)
 
 void	exec(t_Exec_Node *node)
 {
-	int	pid;
+	int		pid;
+	char	*temp;
 
+	temp = ft_strjoin("_=", node->args[length((char **)node->args) - 1]);
+	add_var(temp, node->table);
+	free(temp);
 	pid = forkpromax();
 	if (pid == 0)
-	{
-		if (ft_strcmp(node->command, ".") == 0)
-		{
-			ft_dprintf(2, "%s: .: filename argument required\n", SHELL);
-			exit(2);
-		}
-		if (ft_strcmp(node->command, "..") == 0)
-		{
-			ft_dprintf(2, "%s: ..: command not found\n", SHELL);
-			exit(127);
-		}
 		child_process(node, node->table);
-	}
 	else
 	{
 		ignore_sigs();

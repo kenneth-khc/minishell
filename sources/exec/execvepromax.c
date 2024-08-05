@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execvepromax.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
+/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 21:44:44 by qang              #+#    #+#             */
-/*   Updated: 2024/07/21 19:14:22 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/08/05 16:28:53 by codespace        ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,10 @@
 #include "libft.h"
 #include <dirent.h>
 #include <stdlib.h>
+#include <sys/stat.h>
 #include <unistd.h>
 
+void		check_file(const char *ret, const char *cmd);
 void		execvepromax(char **args, t_entab *table, t_envar *path_node);
 static void	attempt_exec(DIR *dir, char *path, char **args, t_entab *table);
 static char	*next_path(char **path);
@@ -48,6 +50,39 @@ static char	*next_path(char **path)
 	return (ft_substr(start, 0, len));
 }
 
+/*
+** Check if the file is a directory or has execute permission.
+** Does not indicate if file does not exist.
+*/
+void	check_file(const char *ret, const char *cmd)
+{
+	struct stat	file_stats;
+
+	if (ft_strcmp(cmd, ".") == 0)
+	{
+		ft_dprintf(2, "%s: .: filename argument required\n", SHELL);
+		exit(2);
+	}
+	if (ft_strcmp(cmd, "..") == 0)
+	{
+		ft_dprintf(2, "%s: ..: command not found\n", SHELL);
+		exit(127);
+	}
+	if (stat(ret, &file_stats) == 0)
+	{
+		if (S_ISDIR(file_stats.st_mode))
+		{
+			ft_dprintf(2, "%s: %s: is a directory\n", SHELL, ret);
+			exit(126);
+		}
+		else if (access(ret, X_OK) == -1)
+		{
+			ft_dprintf(2, "%s: %s: Permission denied\n", SHELL, cmd);
+			exit(126);
+		}
+	}
+}
+
 static void	attempt_exec(DIR *dir, char *path, char **args, t_entab *table)
 {
 	char			*temp;
@@ -61,11 +96,7 @@ static void	attempt_exec(DIR *dir, char *path, char **args, t_entab *table)
 		{
 			temp = ft_strjoin(path, "/");
 			ret = ft_strjoin(temp, args[0]);
-			if (access(ret, X_OK) == -1)
-			{
-				ft_dprintf(2, "%s: %s: Permission denied\n", SHELL, args[0]);
-				exit(126);
-			}
+			check_file(ret, args[0]);
 			execve(ret, args, env_convert(table));
 			free(ret);
 			free(temp);
