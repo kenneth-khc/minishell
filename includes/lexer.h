@@ -55,7 +55,7 @@ void			update_lexer_state(t_Lexer *lexer);
 void			update_lexer_lines(t_Lexer *lexer, t_Input *input);
 bool			io_number(char *lexeme, char *delim);
 
-void			set_word_flags(t_Token *token);
+void			check_for_assignment(t_Token *token);
 bool			is_valid_name(const char *start, const char *end);
 
 #endif

@@ -36,7 +36,7 @@ t_Node	*parse_io_redirect(t_Parser *parser)
 	redir = redir_node(parser->envtab);
 	if (peek(parser) == IO_NUMBER)
 	{
-		redir->oldfd = ft_atoi(parser->token->lexeme);
+		redir->oldfd = ft_atoi(parser->token->lex->start);
 		oldfd_set = true;
 		consume(parser);
 	}
@@ -61,7 +61,7 @@ static void	trunc_output_redir(t_Parser *parser, t_Redir_Node *redir,
 	redir->mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
 	if (expect(parser, WORD, "expected filename for output redirection"))
 	{
-		redir->file = parser->token->lexeme;
+		redir->file = parser->token->lex->start;
 		consume(parser);
 	}
 }
@@ -76,7 +76,7 @@ static void	append_output_redir(t_Parser *parser, t_Redir_Node *redir,
 	redir->mode = S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH;
 	if (expect(parser, WORD, "expected filename for output redirection"))
 	{
-		redir->file = parser->token->lexeme;
+		redir->file = parser->token->lex->start;
 		consume(parser);
 	}
 }
@@ -90,7 +90,7 @@ static void	input_redir(t_Parser *parser, t_Redir_Node *redir, bool oldfd_set)
 	redir->mode = 0;
 	if (expect(parser, WORD, "expected filename for input redirection"))
 	{
-		redir->file = parser->token->lexeme;
+		redir->file = parser->token->lex->start;
 		consume(parser);
 	}
 }
@@ -106,7 +106,7 @@ static void	heredoc_redir(t_Parser *parser, t_Redir_Node *redir, bool oldfd_set)
 	redir->heredoc = true;
 	if (expect(parser, WORD, "expected delimiter word for heredoc"))
 	{
-		redir->delim = ft_strjoin(parser->token->lexeme, "\n");
+		redir->delim = ft_strjoin(parser->token->lex->start, "\n");
 		consume(parser);
 	}
 }

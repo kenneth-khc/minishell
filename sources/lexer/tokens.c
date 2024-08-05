@@ -21,7 +21,6 @@ t_Token	*create_token(int type, char *lexeme)
 
 	new_token = callocpromax(1, sizeof(*new_token));
 	new_token->type = type;
-	new_token->lexeme = (char *)lexeme;
 	new_token->lex = stringify(lexeme);
 	new_token->next = NULL;
 	new_token->prev = NULL;
@@ -53,7 +52,7 @@ void	free_tokens(t_Token_List *tokens)
 		token = curr;
 		curr = token->next;
 		free_quote_list(&token->quotes);
-		free(token->lexeme);
+		string_free(token->lex);
 		free(token);
 	}
 	tokens->head = NULL;

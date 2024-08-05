@@ -18,6 +18,9 @@
 static void
 heredoc_quote_removal(t_Heredoc *heredoc, t_Redir_Node *node);
 
+static bool	
+delimited(t_Range *p);
+
 void	heredoc_prompt(void)
 {
 	if (isatty(STDIN_FILENO))
@@ -87,4 +90,9 @@ void	write_heredoc_to_file(t_Heredoc *heredoc, int fd,
 	}
 	free(line);
 	free(expanded_line);
+}
+
+static bool	delimited(t_Range *p)
+{
+	return (*p->end == '\0');
 }

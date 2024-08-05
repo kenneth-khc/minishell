@@ -6,7 +6,7 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/21 17:09:48 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/21 18:22:34 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/08/06 09:27:32 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,10 +41,10 @@ t_Node	*assignment_node(t_Token *token, t_entab *env)
 	const char	*end;
 
 	ass = callocpromax(1, sizeof(*ass));
-	equal = ft_strchr(token->lexeme, '=');
+	equal = ft_strchr(token->lex->start, '=');
 	ass->type = ASS_NODE;
-	ass->key = ft_extract_substring(token->lexeme, equal - 1);
-	end = token->lexeme + ft_strlen(token->lexeme) - 1;
+	ass->key = ft_extract_substring(token->lex->start, equal - 1);
+	end = token->lex->end;
 	if (equal[1] == '\0')
 		ass->value = "";
 	else

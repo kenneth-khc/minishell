@@ -1,17 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parameter_expansion_utils.c                        :+:      :+:    :+:   */
+/*   expand_parameter_utils.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/03 10:36:18 by kecheong          #+#    #+#             */
-/*   Updated: 2024/08/05 09:17:24 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/08/07 03:53:45 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "expansions.h"
-#include "definitions.h"
 
 /**
  * Checks against the list of quotes to see if this is gonna expand
@@ -23,7 +22,7 @@ bool	is_expansion(char *c, t_Quote_List *quotes)
 	int			i;
 	t_Quotes	*pair;
 
-	if (*c != '$')
+	if (*c != '$' || c[1] == '\0')
 		return (false);
 	i = 0;
 	while (i < quotes->pair_count)
@@ -42,57 +41,22 @@ bool	is_expansion(char *c, t_Quote_List *quotes)
 	return (true);
 }
 
-bool	is_expansion_position(ssize_t i, t_Expansion_List *expansions)
+/**
+ * Checks if a given character belongs within any of the expansions
+ */
+bool	in_expansions(t_Expansion_List *expansions, char *c)
 {
 	t_Expansion	*expansion;
 
 	expansion = expansions->head;
 	while (expansion)
 	{
-		if (i == expansion->offset)
+		if (expansion->start <= c
+			&& c <= expansion->end)
+		{
 			return (true);
+		}
 		expansion = expansion->next;
 	}
 	return (false);
-}
-
-size_t	calculate_expanded_len(t_Expansion_List *expansions)
-{
-	size_t		len;
-	t_Expansion	*expansion;
-
-	len = 0;
-	expansion = expansions->head;
-	while (expansion)
-	{
-		len += expansion->value->len;
-		expansion = expansion->next;
-	}
-	return (len);
-}
-
-size_t	calculate_unexpanded_len(t_Token *token, t_String *lexeme)
-{
-	size_t	len;
-	char	*p;
-	bool	expansion_found;
-
-	len = 0;
-	p = lexeme->start;
-	expansion_found = false;
-	while (p < lexeme->end)
-	{
-		if (!expansion_found && is_expansion(p, &token->quotes))
-		{
-			expansion_found = true;
-			if (is_identifier_start(p))
-			{
-				p = ft_strpbrk(p + 1, is_not_identifier);
-				continue ;
-			}
-		}
-		len++;
-		p++;
-	}
-	return (len);
 }

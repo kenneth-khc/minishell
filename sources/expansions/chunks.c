@@ -93,18 +93,3 @@ size_t	count_total_chunk_len(t_Chunk_List *chunks)
 	}
 	return (total_len);
 }
-
-#include <stdio.h>
-void	print_chunks(t_Chunk_List *chunks)
-{
-	t_Chunk	*chunk;
-	int		i;
-
-	chunk = chunks->head;
-	i = 0;
-	while (chunk)
-	{
-		printf("Chunk%d: |%s|\n", i, chunk->str);
-		chunk = chunk->next;
-	}
-}

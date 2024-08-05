@@ -6,7 +6,7 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/04 23:33:03 by kecheong          #+#    #+#             */
-/*   Updated: 2024/08/05 09:23:23 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/08/07 03:03:31 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,20 +14,20 @@
 
 static size_t	calculate_new_len(t_String *lexeme, t_Quote_List *quotes);
 
-void	remove_quotes(t_Token *token)
+void	quote_removal(t_Token *token)
 {
 	char		*s;
 	t_String	*new_lexeme;
 	size_t		new_len;
 	size_t		i;
 
-	new_len = 0;
-	s = token->lex->start;
+	if (token->quotes.pair_count == 0)
+		return ;
 	new_len = calculate_new_len(token->lex, &token->quotes);
 	new_lexeme = string(new_len);
 	s = token->lex->start;
 	i = 0;
-	while (*s)
+	while (s && s < token->lex->end && *s)
 	{
 		if (quote_to_remove(&token->quotes, s))
 			s++;
@@ -38,8 +38,8 @@ void	remove_quotes(t_Token *token)
 			i++;
 		}
 	}
+	string_free(token->lex);
 	token->lex = new_lexeme;
-	token->lexeme = token->lex->start;
 }
 
 static size_t	calculate_new_len(t_String *lexeme, t_Quote_List *quotes)
@@ -49,7 +49,7 @@ static size_t	calculate_new_len(t_String *lexeme, t_Quote_List *quotes)
 
 	s = lexeme->start;
 	len = 0;
-	while (*s)
+	while (s && s < lexeme->end && *s)
 	{
 		if (quote_to_remove(quotes, s))
 			s++;

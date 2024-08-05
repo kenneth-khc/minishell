@@ -34,7 +34,7 @@
 **/
 void	match_word(t_Lexer *lexer, t_Token_List *tokens, t_Input *input)
 {
-	char		*lexeme;
+	char	*lexeme;
 
 	advance_word(lexer);
 	if (lexer->terminated)
@@ -44,7 +44,8 @@ void	match_word(t_Lexer *lexer, t_Token_List *tokens, t_Input *input)
 			add_token(tokens, create_token(IO_NUMBER, lexeme));
 		else
 			add_token(tokens, create_token(WORD, lexeme));
-		set_word_flags(tokens->tail);
+		free(lexeme);
+		check_for_assignment(tokens->tail);
 		lexer->start = lexer->end + 1;
 		lexer->end = lexer->start;
 	}
@@ -131,18 +132,16 @@ void	update_lexer_state(t_Lexer *lexer)
 	}
 }
 
-void	set_word_flags(t_Token *token)
+void	check_for_assignment(t_Token *token)
 {
 	const char	*word;
 	const char	*eq;
 
-	word = token->lexeme;
+	word = token->lex->start;
 	if (ft_strchr(word, '='))
 	{
 		eq = ft_strchr(word, '=');
 		if (is_valid_name(word, eq))
 			token->type = ASSIGNMENT_WORD;
 	}
-	if (ft_strchr(word, '~') && ft_strlen(word) == 1)
-		token->word_flags |= W_TILDE_EXPANSION;
 }

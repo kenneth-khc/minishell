@@ -21,6 +21,7 @@
 
 bool	is_blank(const char c);
 bool	is_metacharacter(const char c);
+bool	is_identifier_start(char *dollar);
 bool	is_valid_name(const char *start, const char *end);
 bool	is_not_identifier(char c);
 bool	is_quote(char c);

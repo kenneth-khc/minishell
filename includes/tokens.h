@@ -14,6 +14,7 @@
 # define TOKENS_H
 
 # include "quotes.h"
+# include "ft_string.h"
 
 /**
  * Types of tokens the shell recognizes. They are either a word, or an
@@ -56,7 +57,6 @@ enum e_Token_Types
 	END_OF_INPUT
 };
 
-#include "ft_string.h"
 /**
  * Representing a token.
  * Stores the type of the token and its lexeme.
@@ -65,19 +65,11 @@ enum e_Token_Types
 typedef struct s_Token
 {
 	enum e_Token_Types	type;
-	char				*lexeme;
 	t_String			*lex;
-	int					word_flags;
-	bool				expanded;
 	t_Quote_List		quotes;
 	struct s_Token		*next;
 	struct s_Token		*prev;
 }	t_Token;
-
-# define W_STRONG_QUOTED	       0b1
-# define W_WEAK_QUOTED	      0b10
-# define W_PARAM_EXPANSION  0b100
-# define W_TILDE_EXPANSION 0b1000
 
 /**
  * A list of all the tokens.

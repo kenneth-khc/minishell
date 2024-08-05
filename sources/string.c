@@ -12,7 +12,7 @@
 
 #include <stdlib.h>
 #include "libft.h"
-#include "input.h"
+#include "ft_string.h"
 
 /**
 ** Creates a String object with size len
@@ -56,6 +56,8 @@ t_String	*stringify(char *s)
 **/
 void	string_free(t_String *string)
 {
+	if (string == NULL)
+		return ;
 	free(string->start);
 	string->start = NULL;
 	string->end = NULL;
@@ -116,9 +118,4 @@ t_String	*string_extract(const char *start, const char *end)
 	*s = '\0';
 	substr->end = s;
 	return (substr);
-}
-
-void	print_string(t_String *s)
-{
-	printf("%lu: |%s|\n", s->len, s->start);
 }

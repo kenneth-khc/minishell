@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   filename_expand.c                                  :+:      :+:    :+:   */
+/*   expand_filename.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 09:27:27 by kecheong          #+#    #+#             */
-/*   Updated: 2024/08/05 10:04:55 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/08/07 03:02:39 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,23 +14,21 @@
 #include "tokens.h"
 #include "expansions.h"
 
-/*
-static void	add_spaces_between_chunks(t_Chunk_List *chunks);
-*/
-
 static void
 update_token_chain(t_Token_List *tokens, t_Token_List *filenames,
 	t_Token *token);
 
-bool	filename_expand(t_Token *token, t_Token_List *tokens)
+void	filename_expansion(t_Token *token, t_Token_List *tokens)
 {
 	char			**files;
 	char			**ff;
 	t_Token_List	filenames;
 
-	files = match_expression(token->lexeme);
-	if (ft_strcmp(*files, token->lexeme) == 0)
-		return (false);
+	if (ft_strchr(token->lex->start, '*') == NULL)
+		return ;
+	files = match_expression(token->lex->start);
+	if (ft_strcmp(*files, token->lex->start) == 0)
+		return ;
 	filenames = (t_Token_List){.head = NULL, .tail = NULL};
 	ff = files;
 	while (*files)
@@ -40,12 +38,14 @@ bool	filename_expand(t_Token *token, t_Token_List *tokens)
 	}
 	free(ff);
 	update_token_chain(tokens, &filenames, token);
-	return (true);
+	return ;
 }
 
 static void	update_token_chain(t_Token_List *tokens, t_Token_List *filenames,
 								t_Token *token)
 {
+	t_Token	*temp;
+
 	if (token->prev)
 		token->prev->next = filenames->head;
 	else
@@ -56,24 +56,8 @@ static void	update_token_chain(t_Token_List *tokens, t_Token_List *filenames,
 		tokens->tail = filenames->tail;
 	filenames->head->prev = token->prev;
 	filenames->tail->next = token->next;
+	temp = token;
 	token = filenames->head;
+	free_quote_list(&temp->quotes);
+	string_free(temp->lex);
 }
-
-/*
-static void	add_spaces_between_chunks(t_Chunk_List *chunks)
-{
-	t_Chunk	*chunk;
-	t_Chunk	*space;
-
-	chunk = chunks->head;
-	while (chunk->next)
-	{
-		space = callocpromax(1, sizeof(*space));
-		space->str = callocpromax(1, sizeof(char));
-		space->str[0] = ' ';
-		space->next = chunk->next;
-		chunk->next = space;
-		chunk = space->next;
-	}
-}
-*/
