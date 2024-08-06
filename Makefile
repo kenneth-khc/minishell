@@ -12,7 +12,7 @@ READLINE_LIB_DIR := $(READLINE_DIR)/lib
 READLINE_LIB := $(READLINE_LIB_DIR)/libreadline.a
 READLINE_INC_DIR := $(READLINE_DIR)/include
 LDFLAGS := -L libft -L $(READLINE_LIB_DIR)
-LDLIBS := -lreadline -lft
+LDLIBS := -lreadline -lncurses -lft
 
 fsan := -fsanitize=address
 debug := -g3
@@ -31,13 +31,18 @@ src_dirs := $(src_dir) \
 			$(src_dir)/parser \
 			$(src_dir)/builtins $(src_dir)/exec \
 			$(src_dir)/expansions \
+			$(src_dir)/expansions/exp \
 			$(src_dir)/env_utils
 srcs := $(foreach dir, $(src_dirs), $(wildcard $(dir)/*.c))
 
 obj_dir := objects
 objs := $(srcs:$(src_dir)/%.c=$(obj_dir)/%.o)
 
-$(NAME): $(libft.a) $(READLINE_LIB) | obj
+test: $(libft) all
+	@printf "$(green)Testing minishell...\n$(c_reset)"
+	./$(NAME)
+
+$(NAME): $(libft.a) $(READLINE_LIB) obj
 	@printf "$(green)Making minishell...\n$(c_reset)"
 	@$(CC) $(debug) $(objs) $(CFLAGS) $(LDFLAGS) $(LDLIBS) $(fsan) -o $@
 	@printf "$(green)Minishell compiled!\n$(c_reset)"
@@ -56,6 +61,7 @@ $(READLINE_LIB):
 		&& cd $(READLINE_SRC_DIR) \
 		&& ./configure "--prefix=$(PWD)/$(READLINE_DIR)" \
 		&& make && make install && cd .. \
+		&& rm -rf $(READLINE_SRC_DIR) \
 		&& printf "#include <stdio.h>\n" > .tmp \
 		&& cat $(READLINE_INC_DIR)/readline/readline.h >> .tmp \
 		&& mv .tmp $(READLINE_INC_DIR)/readline/readline.h ; \
@@ -100,6 +106,3 @@ fclean: clean
 .PHONY: re
 re: fclean all
 
-test: $(libft) all
-	@printf "$(green)Testing minishell...\n$(c_reset)"
-	./$(NAME)

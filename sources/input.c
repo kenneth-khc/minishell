@@ -37,7 +37,7 @@ void	get_input(t_Input *input)
 	}
 	if (read == NULL)
 	{
-		printf("exit\n");
+//		printf("exit\n");
 		exit(get_exit_status());
 	}
 	input->ok = *read != '\0';

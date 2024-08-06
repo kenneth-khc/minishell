@@ -6,7 +6,7 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 17:58:19 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/23 11:43:27 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/08/07 04:00:42 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,7 +85,7 @@ void	match(t_Input *input, t_Lexer *lexer, t_Token_List *tokens)
 		if (ft_strncmp(lexer->start, match->lexeme,
 				ft_strlen(match->lexeme)) == 0)
 		{
-			new_token = create_token(match->type, ft_strdup(match->lexeme));
+			new_token = create_token(match->type, (char *) match->lexeme);
 			add_token(tokens, new_token);
 			lexer->start += ft_strlen(match->lexeme);
 			lexer->end = lexer->start;

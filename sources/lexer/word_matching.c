@@ -6,7 +6,7 @@
 /*   By: kecheong <kecheong@student.42kl.edu.my>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/04/18 21:47:29 by kecheong          #+#    #+#             */
-/*   Updated: 2024/07/28 05:50:43 by kecheong         ###   ########.fr       */
+/*   Updated: 2024/08/05 04:26:48 by kecheong         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 #include "execution.h"
 #include "libft.h"
 #include "ft_dprintf.h"
-#include "get_next_line.h"
 #include "tokens.h"
 #include "lexer.h"
 #include "definitions.h"
@@ -35,7 +34,7 @@
 **/
 void	match_word(t_Lexer *lexer, t_Token_List *tokens, t_Input *input)
 {
-	char		*lexeme;
+	char	*lexeme;
 
 	advance_word(lexer);
 	if (lexer->terminated)
@@ -45,15 +44,15 @@ void	match_word(t_Lexer *lexer, t_Token_List *tokens, t_Input *input)
 			add_token(tokens, create_token(IO_NUMBER, lexeme));
 		else
 			add_token(tokens, create_token(WORD, lexeme));
-		set_word_flags(tokens->tail);
-		tokens->tail->quotes = find_quotes(tokens->tail);
+		free(lexeme);
+		check_for_assignment(tokens->tail);
 		lexer->start = lexer->end + 1;
 		lexer->end = lexer->start;
 	}
 	else if (lexer->terminated == false)
 	{
 		input->ok = false;
-		ft_dprintf(STDERR_FILENO, "input error: unclosed quotes\n");
+		ft_dprintf(STDERR_FILENO, "syntax error: unclosed quotes\n");
 		set_exit_status(2);
 	}
 }
@@ -133,18 +132,16 @@ void	update_lexer_state(t_Lexer *lexer)
 	}
 }
 
-void	set_word_flags(t_Token *token)
+void	check_for_assignment(t_Token *token)
 {
 	const char	*word;
 	const char	*eq;
 
-	word = token->lexeme;
+	word = token->lex->start;
 	if (ft_strchr(word, '='))
 	{
 		eq = ft_strchr(word, '=');
 		if (is_valid_name(word, eq))
 			token->type = ASSIGNMENT_WORD;
 	}
-	if (ft_strchr(word, '~') && ft_strlen(word) == 1)
-		token->word_flags |= W_TILDE_EXPANSION;
 }

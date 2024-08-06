@@ -99,10 +99,10 @@ static t_Node	*parse_command(t_Parser *parser)
 	{
 		if (cmd_name_set == false)
 		{
-			exec = exec_node(parser->consumed->lexeme, parser->envtab);
+			exec = exec_node(parser->consumed->lex->start, parser->envtab);
 			cmd_name_set = true;
 		}
-		add_exec_arguments(exec, parser->consumed->lexeme);
+		add_exec_arguments(exec, parser->consumed->lex->start);
 	}
 	return ((t_Node *) exec);
 }
@@ -128,9 +128,9 @@ static t_Node	*parse_command_suffix(t_Parser *parser, t_Node *prefix,
 		|| peek(parser) == WORD || is_io_redirect(parser))
 	{
 		if (accept(parser, WORD))
-			add_exec_arguments(exec_node, parser->consumed->lexeme);
+			add_exec_arguments(exec_node, parser->consumed->lex->start);
 		else if (accept(parser, ASSIGNMENT_WORD))
-			add_exec_arguments(exec_node, parser->consumed->lexeme);
+			add_exec_arguments(exec_node, parser->consumed->lex->start);
 		if (is_io_redirect(parser))
 		{
 			while (*curr != NULL)

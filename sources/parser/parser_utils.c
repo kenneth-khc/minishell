@@ -92,7 +92,7 @@ void	syntax_error(t_Parser *parser, const char *err_msg, t_Token *got)
 			if (got->type == END_OF_LINE)
 				symbol = "newline";
 			else
-				symbol = got->lexeme;
+				symbol = got->lex->start;
 			ft_dprintf(STDERR_FILENO, ", got `%s` instead", symbol);
 		}
 		ft_dprintf(STDERR_FILENO, "\n");

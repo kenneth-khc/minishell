@@ -12,7 +12,6 @@
 
 #include "env.h"
 #include "execution.h"
-#include "libft.h"
 #include <fcntl.h>
 #include <unistd.h>
 

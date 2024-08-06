@@ -16,7 +16,7 @@ minishell_objs := $(minishell_objs_dir)/*.o $(minishell_objs_dir)/*/*.o
 libft_dir := $(minishell_dir)/libft/
 
 LDFLAGS := -L $(minishell_dir)/$(READLINE_LIB_DIR) -L $(libft_dir)
-LDLIBS := -lreadline -lft
+LDLIBS := -lreadline -lncurses -lft
 
 includes := -I $(PWD) -I $(minishell_dir)/includes -I $(minishell_dir)/libft/includes -I $(READLINE_INC_DIR)
 

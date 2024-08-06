@@ -27,7 +27,7 @@ void	child_process(t_Exec_Node *node, t_entab *table)
 	default_sigs();
 	if (!ft_isbuiltin(node->command))
 	{
-		check_file(node->command, node->command);
+		check_file((char *)node->command, (char *)node->command);
 		if (access(node->command, F_OK) == 0
 			&& access(node->command, X_OK) == 0)
 			execve((char *)node->command, (char **)node->args,
