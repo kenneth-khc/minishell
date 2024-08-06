@@ -11,6 +11,10 @@
 /* ************************************************************************** */
 
 #include "expansions.h"
+#include "ft_string.h"
+
+static t_String
+*get_home(t_entab *env);
 
 /**
  * Expands the ~ character into the HOME environment variable
@@ -19,28 +23,32 @@ void	tilde_expansion(t_Expansion_List *expansions,
 		t_Token *token, t_entab *env)
 {
 	t_String	*expanded;
-	t_String	*new_lexeme;
 	t_Expansion	*expansion;
-	size_t		j;
-	size_t		i;
 
 	if (token->lex->start[0] != '~')
 		return ;
-	i = 0;
-	expanded = stringify((get_var("HOME", env)->val));
-	new_lexeme = string(expanded->len + token->lex->len + 1 - 1);
-	expansion = ft_calloc(1, sizeof(*expansion));
-	expansion->start = new_lexeme->start;
-	while (expanded->start[i])
-	{
-		new_lexeme->start[i] = expanded->start[i];
-		i++;
-	}
-	expansion->end = &new_lexeme->start[i - 1];
+	expanded = get_home(env);
+	expansion = create_expansion(stringify("~"), expanded, 0);
 	add_expansion(expansions, expansion);
-	j = 1;
-	while (j < token->lex->len)
-		new_lexeme->start[i++] = token->lex->start[j++];
-	string_free(token->lex);
-	token->lex = new_lexeme;
+	update_token_lexeme(token, expansions);
+}
+
+static t_String	*get_home(t_entab *env)
+{
+	t_envar		*home_var;
+	char		*val;
+	t_String	*value;
+
+	home_var = get_var("HOME", env);
+	val = ft_strdup(home_var->val);
+	if (val)
+	{
+		value = stringify(val);
+	}
+	else
+	{
+		value = stringify("");
+	}
+	free(val);
+	return (value);
 }

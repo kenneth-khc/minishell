@@ -37,6 +37,7 @@ static void	redir_delim(t_Redir_Node *node)
 		return ;
 	}
 	run_heredoc(node, next_heredoc);
+	free(next_heredoc);
 }
 
 bool	special_cmd(t_Redir_Node *node)

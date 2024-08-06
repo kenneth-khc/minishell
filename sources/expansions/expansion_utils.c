@@ -45,14 +45,16 @@ void	add_expansion(t_Expansion_List *expansions, t_Expansion *expansion)
 void	clear_expansion_list(t_Expansion_List *expansions)
 {
 	t_Expansion	*expansion;
+	void		*temp;
 
 	expansion = expansions->head;
 	while (expansion)
 	{
 		string_free(expansion->key);
 		string_free(expansion->value);
-		free(expansion);
+		temp = expansion;
 		expansion = expansion->next;
+		free(temp);
 	}
 	expansions->head = NULL;
 	expansions->tail = NULL;

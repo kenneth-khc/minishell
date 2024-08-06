@@ -30,6 +30,10 @@ void	expand_string(t_Expansion_List *expansions, t_Token *token,
 	q_end = ft_strchr(q_start + 1, *q_start);
 	key = string_extract(dollar, q_end);
 	value = string_extract(q_start + 1, q_end - 1);
+	if (value == NULL)
+	{
+		value = stringify("");
+	}
 	new_expansion = create_expansion(key, value, dollar - token->lex->start);
 	add_expansion(expansions, new_expansion);
 	update_token_lexeme(token, expansions);

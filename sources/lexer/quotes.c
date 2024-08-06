@@ -88,6 +88,7 @@ void	store_quotes(t_Quote_List *list, t_Quotes *quotes)
 		i++;
 	}
 	new[i] = quotes;
+	free(list->pairs);
 	list->pairs = new;
 }
 
@@ -124,7 +125,10 @@ void	free_quote_list(t_Quote_List *list)
 	while (i < list->pair_count)
 	{
 		free(list->pairs[i]);
+		list->pairs[i] = NULL;
 		i++;
 	}
 	free(list->pairs);
+	list->pairs = NULL;
+	list->pair_count = 0;
 }

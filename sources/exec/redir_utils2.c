@@ -60,6 +60,7 @@ static void	write_heredoc_loop(t_Redir_Node *node, int fd)
 		ft_dprintf(2, "delimited by end-of-file (wanted `%s')\n", node->delim);
 	}
 	free(line);
+	free(heredoc);
 }
 
 static void	write_heredoc_to_file(t_Heredoc *heredoc, int fd,

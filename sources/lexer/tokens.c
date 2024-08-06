@@ -51,7 +51,6 @@ void	free_tokens(t_Token_List *tokens)
 	{
 		token = curr;
 		curr = token->next;
-		free_quote_list(&token->quotes);
 		string_free(token->lex);
 		free(token);
 	}

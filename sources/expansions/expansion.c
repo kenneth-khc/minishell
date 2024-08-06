@@ -46,6 +46,7 @@ void	expand_tokens(t_Token_List *tokens, t_entab *env)
 			parameter_expansion(&expansions, token, env);
 			filename_expansion(token, tokens);
 			quote_removal(token);
+			free_quote_list(&token->quotes);
 			clear_expansion_list(&expansions);
 		}
 		token = token->next;

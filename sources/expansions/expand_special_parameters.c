@@ -20,21 +20,24 @@ void	expand_special_parameter(t_Expansion_List *expansions, t_Token *token,
 								char *dollar)
 {
 	t_String	*key;
-	t_String	*value;
 	t_Expansion	*new_expansion;
+	char		*value;
+	t_String	*value_str;
 
 	key = string_extract(dollar, dollar + 1);
 	value = NULL;
 	if (dollar[1] == '?')
-		value = stringify(ft_itoa(get_exit_status()));
+		value = ft_itoa(get_exit_status());
 	else if (dollar[1] == '0')
-		value = stringify(SHELL);
+		value = ft_strdup(SHELL);
 	else if (dollar[1] == '$')
-		value = stringify(ft_itoa(getpid()));
+		value = ft_itoa(getpid());
 	if (value)
 	{
-		new_expansion = create_expansion(key, value,
+		value_str = stringify(value);
+		new_expansion = create_expansion(key, value_str,
 				dollar - token->lex->start);
+		free(value);
 	}
 	else
 		new_expansion = create_expansion(key, stringify(""),

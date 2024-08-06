@@ -13,6 +13,7 @@
 #include <stddef.h>
 #include <unistd.h>
 #include "execution.h"
+#include "input.h"
 #include "libft.h"
 #include "ft_dprintf.h"
 #include "tokens.h"
@@ -52,6 +53,7 @@ void	match_word(t_Lexer *lexer, t_Token_List *tokens, t_Input *input)
 	else if (lexer->terminated == false)
 	{
 		input->ok = false;
+		add_input_to_history(input);
 		ft_dprintf(STDERR_FILENO, "syntax error: unclosed quotes\n");
 		set_exit_status(2);
 	}

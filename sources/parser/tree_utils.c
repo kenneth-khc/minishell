@@ -89,8 +89,9 @@ t_Node	*get_tail(t_Node *node)
 **/
 void	free_tree(t_Node *node)
 {
-	t_Node		*temp;
-	t_Exec_Node	*enode;
+	t_Node			*temp;
+	t_Exec_Node		*enode;
+	t_Redir_Node	*rnode;
 
 	temp = node;
 	if (node == NULL)
@@ -99,6 +100,12 @@ void	free_tree(t_Node *node)
 	{
 		enode = (t_Exec_Node *)node;
 		free(enode->args);
+	}
+	else if (node->type == REDIR_NODE)
+	{
+		rnode = (t_Redir_Node *)node;
+		if (rnode->heredoc)
+			free(rnode->delim);
 	}
 	free_tree(node->left);
 	free_tree(node->right);

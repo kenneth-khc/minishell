@@ -38,13 +38,9 @@ srcs := $(foreach dir, $(src_dirs), $(wildcard $(dir)/*.c))
 obj_dir := objects
 objs := $(srcs:$(src_dir)/%.c=$(obj_dir)/%.o)
 
-test: $(libft) all
-	@printf "$(green)Testing minishell...\n$(c_reset)"
-	./$(NAME)
-
-$(NAME): $(libft.a) $(READLINE_LIB) obj
+$(NAME): $(libft.a) $(READLINE_LIB) $(objs) | $(obj_dir)
 	@printf "$(green)Making minishell...\n$(c_reset)"
-	@$(CC) $(debug) $(objs) $(CFLAGS) $(LDFLAGS) $(LDLIBS) $(fsan) -o $@
+	@$(CC) $(objs) $(CFLAGS) $(LDFLAGS) $(LDLIBS) -o $@
 	@printf "$(green)Minishell compiled!\n$(c_reset)"
 
 all: $(NAME)
@@ -81,7 +77,7 @@ $(libft.a):
 	fi
 	@make -C $(libft_dir)
 
-obj: $(obj_dir) $(objs)
+obj : $(objs)
 
 $(obj_dir):
 	@printf "$(green)Making minishell objects...\n$(c_reset)"
@@ -89,7 +85,7 @@ $(obj_dir):
 
 $(obj_dir)/%.o: $(src_dir)/%.c
 	@mkdir -p $(dir $@)
-	@$(CC) $(CFLAGS) $(debug) $(includes) $< -c -o $@
+	@$(CC) $(CFLAGS) $(includes) $< -c -o $@
 	@printf "$(green)Built $@\n$(c_reset)"
  
 .PHONY: clean
@@ -103,6 +99,16 @@ fclean: clean
 	@rm -rf $(NAME)
 	@make fclean -C $(libft_dir)
 
+.PHONY: bonus
+bonus: all
+
 .PHONY: re
 re: fclean all
+
+debug: CFLAGS += $(fsan) $(debug)
+debug: test
+
+test: $(NAME)
+	@printf "$(green)Running minishell...\n$(c_reset)"
+	./$(NAME)
 
