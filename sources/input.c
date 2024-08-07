@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/09 21:04:33 by kecheong          #+#    #+#             */
-/*   Updated: 2024/08/06 00:26:26 by qang             ###   ########.fr       */
+/*   Updated: 2024/08/07 16:10:43 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	get_input(t_Input *input)
 	}
 	if (read == NULL)
 	{
-//		printf("exit\n");
+		printf("exit\n");
 		exit(get_exit_status());
 	}
 	input->ok = *read != '\0';
