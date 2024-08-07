@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_exec.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/13 00:48:55 by qang              #+#    #+#             */
-/*   Updated: 2024/08/05 16:29:10 by codespace        ###   ########.fr       */
+/*   Updated: 2024/08/07 15:19:11 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ void	child_process(t_Exec_Node *node, t_entab *table)
 	default_sigs();
 	if (!ft_isbuiltin(node->command))
 	{
-		check_file((char *)node->command, (char *)node->command);
+		check_file(node->command, node->command);
 		if (access(node->command, F_OK) == 0
 			&& access(node->command, X_OK) == 0)
 			execve((char *)node->command, (char **)node->args,

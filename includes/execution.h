@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execution.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/16 23:33:10 by qang              #+#    #+#             */
-/*   Updated: 2024/08/05 16:42:10 by codespace        ###   ########.fr       */
+/*   Updated: 2024/08/07 15:19:07 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int			get_exit_status(void);
 int			wait_for_child(int last_pid);
 void		set_exit_status(int status);
 void		execvepromax(char **args, t_entab *table, t_envar *path_node);
-void		check_file(char *ret, char *cmd);
+void		check_file(const char *ret, const char *cmd);
 int			forkpromax(void);
 int			ft_strcmp2(const char *s1, const char *s2);
 int			openpromax(char *file, int flags, mode_t mode);
