@@ -36,5 +36,5 @@ void	expand_string(t_Expansion_List *expansions, t_Token *token,
 	}
 	new_expansion = create_expansion(key, value, dollar - token->lex->start);
 	add_expansion(expansions, new_expansion);
-	update_token_lexeme(token, expansions);
+	update_token_lexeme(token, expansions, new_expansion);
 }

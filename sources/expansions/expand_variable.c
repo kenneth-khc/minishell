@@ -44,7 +44,7 @@ void	expand_variable(t_Expansion_List *expansions, t_Token *token,
 				dollar - token->lex->start);
 	}
 	add_expansion(expansions, new_expansion);
-	update_token_lexeme(token, expansions);
+	update_token_lexeme(token, expansions, new_expansion);
 }
 
 static t_String	*get_var_value(char *key_start, t_entab *env)

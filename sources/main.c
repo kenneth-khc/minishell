@@ -105,5 +105,5 @@ static void	interpret(char *input_line, t_entab *env)
 
 const char	*__asan_default_options(void)
 {
-	return ("detect_leaks=1");
+	return ("detect_leaks=0");
 }

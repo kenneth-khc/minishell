@@ -40,6 +40,8 @@ typedef struct s_Expansion_List
 
 bool		is_expansion(char *c, t_Quote_List *quotes);
 bool		in_expansions(t_Expansion_List *expansions, char *c);
+bool		special_parameter(char *dollar);
+bool		dollar_prefix_string(char *dollar, t_Quote_List *quote_list);
 void		expand_tokens(t_Token_List *tokens, t_entab *env);
 
 t_Expansion	*create_expansion(t_String *key, t_String *value, size_t offset);
@@ -61,7 +63,8 @@ void		expand_variable(t_Expansion_List *expansions, t_Token *token,
 void		expand_special_parameter(t_Expansion_List *expansions,
 				t_Token *token, char *dollar);
 
-void		update_token_lexeme(t_Token *token, t_Expansion_List *expansions);
+void		update_token_lexeme(t_Token *token, t_Expansion_List *expansions,
+				t_Expansion *new_expansion);
 
 /* Expanding asterisks into filenames */
 void		filename_expansion(t_Token *token, t_Token_List *tokens);

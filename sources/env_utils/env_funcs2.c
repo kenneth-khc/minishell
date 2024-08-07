@@ -66,6 +66,7 @@ void	del_var(char *key, t_entab *table)
 				free(node->pwd);
 			free(node->key);
 			free(node);
+			break ;
 		}
 		node = node->next;
 	}

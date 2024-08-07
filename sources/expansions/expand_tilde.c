@@ -30,7 +30,7 @@ void	tilde_expansion(t_Expansion_List *expansions,
 	expanded = get_home(env);
 	expansion = create_expansion(stringify("~"), expanded, 0);
 	add_expansion(expansions, expansion);
-	update_token_lexeme(token, expansions);
+	update_token_lexeme(token, expansions, expansion);
 }
 
 static t_String	*get_home(t_entab *env)

@@ -11,19 +11,48 @@
 /* ************************************************************************** */
 
 #include "expansions.h"
+#include "definitions.h"
 
 /**
- * Checks against the list of quotes to see if this is gonna expand
- * Expands in weak quotes " "
- * Do not expand in strong quotes ' '
- */
-bool	is_expansion(char *c, t_Quote_List *quotes)
+* These are the only special shell parameters implemented
+* $? gives the last exit status
+* $0 gives the name of the shell
+* $$ gives the current process ID
+**/
+bool	special_parameter(char *dollar)
+{
+	return (dollar[1] == '?'
+		|| dollar[1] == '0'
+		|| dollar[1] == '$');
+}
+
+/**
+ * Check if it is a quoted string next to the dollar sign
+ * If it is, we skip over the dollar and continue as usual because we do not
+ * implement the "ANSI-C Quoting" and "Locale-Specific Translation" features
+ **/
+bool	dollar_prefix_string(char *dollar, t_Quote_List *quote_list)
 {
 	int			i;
 	t_Quotes	*pair;
 
-	if (*c != '$' || c[1] == '\0')
-		return (false);
+	i = 0;
+	while (i < quote_list->pair_count)
+	{
+		pair = quote_list->pairs[i];
+		if (dollar + 1 == pair->start
+			&& pair->end > pair->start)
+			return (true);
+		i++;
+	}
+	return (false);
+}
+
+bool	strong_quoted(char *c, t_Quote_List *quotes)
+{
+	int			i;
+	t_Quotes	*pair;
+
 	i = 0;
 	while (i < quotes->pair_count)
 	{
@@ -32,13 +61,34 @@ bool	is_expansion(char *c, t_Quote_List *quotes)
 			&& c < pair->end)
 		{
 			if (pair->quote == STRONG)
-				return (false);
-			else if (pair->quote == WEAK)
 				return (true);
+			else if (pair->quote == WEAK)
+				return (false);
 		}
 		i++;
 	}
-	return (true);
+	return (false);
+}
+
+/**
+ * Checks against the list of quotes to see if this is gonna expand
+ * Expands in weak quotes " "
+ * Do not expand in strong quotes ' '
+ */
+bool	is_expansion(char *c, t_Quote_List *quotes)
+{
+	if (c == NULL)
+		return (false);
+	if (*c != '$')
+		return (false);
+	if (dollar_prefix_string(c, quotes))
+		return (true);
+	else if (special_parameter(c) && !strong_quoted(c, quotes))
+		return (true);
+	else if (is_identifier_start(c) && !strong_quoted(c, quotes))
+		return (true);
+	else
+		return (false);
 }
 
 /**
@@ -48,6 +98,8 @@ bool	in_expansions(t_Expansion_List *expansions, char *c)
 {
 	t_Expansion	*expansion;
 
+	if (expansions == NULL)
+		return (false);
 	expansion = expansions->head;
 	while (expansion)
 	{

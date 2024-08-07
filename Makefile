@@ -109,6 +109,7 @@ debug: CFLAGS += $(fsan) $(debug)
 debug: test
 
 test: $(NAME)
+	@printf "$(green)Testing with debugging on...\n$(c_reset)"
 	@printf "$(green)Running minishell...\n$(c_reset)"
 	./$(NAME)
 

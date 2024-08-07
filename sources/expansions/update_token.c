@@ -31,53 +31,44 @@ copy_old_to_new(char *dst, char *dst_end, char *src,
 static void
 copy_expansion_to_string(char *dst, t_Expansion *expansion, ssize_t *lex_i);
 
-static size_t
-calculate_unexpanded_len(t_Token *token, t_String *lexeme);
-
 t_Quote_List
 find_quoted_sections(t_Token *token, t_Expansion_List *expansions);
 
-void	update_token_lexeme(t_Token *token, t_Expansion_List *expansions)
+static size_t	calculate_new_len(t_Token *token, t_Expansion *expansion)
+{
+	char	*p;
+	ssize_t	i;
+	size_t	len;
+
+	len = 0;
+	i = 0;
+	p = token->lex->start;
+	while (&p[i] < token->lex->end)
+	{
+		if (i == expansion->offset)
+		{
+			len += expansion->value->len;
+			i += expansion->key->len;
+			continue ;
+		}
+		len++;
+		i++;
+	}
+	return (len);
+}
+
+void	update_token_lexeme(t_Token *token, t_Expansion_List *expansions,
+						t_Expansion *new_expansion)
 {
 	t_String	*new_lexeme;
 
-	new_lexeme = string(calculate_unexpanded_len(token, token->lex)
-			+ expansions->tail->value->len);
+	new_lexeme = string(calculate_new_len(token, new_expansion));
 	copy_old_to_new(new_lexeme->start, new_lexeme->end,
 		token->lex->start, expansions);
 	string_free(token->lex);
 	token->lex = new_lexeme;
 	free_quote_list(&token->quotes);
 	token->quotes = find_quoted_sections(token, expansions);
-}
-
-/**
- * Get the length of the unexpanded portion of the token
- **/
-static size_t	calculate_unexpanded_len(t_Token *token, t_String *lexeme)
-{
-	size_t	len;
-	char	*p;
-	bool	expansion_found;
-
-	len = 0;
-	p = lexeme->start;
-	expansion_found = false;
-	while (p < lexeme->end)
-	{
-		if (!expansion_found && is_expansion(p, &token->quotes))
-		{
-			expansion_found = true;
-			if (is_identifier_start(p))
-			{
-				p = ft_strpbrk(p + 1, is_not_identifier);
-				continue ;
-			}
-		}
-		len++;
-		p++;
-	}
-	return (len);
 }
 
 /**
