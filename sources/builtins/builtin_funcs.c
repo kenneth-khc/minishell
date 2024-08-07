@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 19:35:04 by qang              #+#    #+#             */
-/*   Updated: 2024/08/07 16:39:50 by qang             ###   ########.fr       */
+/*   Updated: 2024/08/07 17:01:26 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ int	run_builtin(const char **cav, t_entab *table)
 bool	ft_isbuiltin(const char *command)
 {
 	return (ft_strcmp2(command, "echo") == 0 || ft_strcmp2(command, "cd") == 0
-		|| ft_strcmp2(command, "pwd") == 0 || ft_strcmp2(command, "export") == 0
+		|| ft_strcmp2(command, "pwd") == 0 || ft_strcmp(command, "export") == 0
 		|| ft_strcmp2(command, "unset") == 0 || ft_strcmp2(command, "env") == 0
-		|| ft_strcmp2(command, "exit") == 0);
+		|| ft_strcmp(command, "exit") == 0);
 }
