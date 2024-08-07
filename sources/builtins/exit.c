@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 19:42:59 by qang              #+#    #+#             */
-/*   Updated: 2024/08/07 16:25:46 by qang             ###   ########.fr       */
+/*   Updated: 2024/08/07 16:41:39 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ int	exit_sh(char **arg, t_entab *table)
 
 	valid = true;
 	(void)table;
-	// ft_dprintf(2, "exit\n");
+	ft_dprintf(2, "exit\n");
 	if (length(arg) == 1)
 		exit(get_exit_status());
 	if (length(arg) == 2)
