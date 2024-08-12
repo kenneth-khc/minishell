@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/03 01:28:41 by qang              #+#    #+#             */
-/*   Updated: 2024/08/05 20:22:52 by qang             ###   ########.fr       */
+/*   Updated: 2024/08/12 23:26:11 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,6 +101,7 @@ void	write_heredoc(t_Redir_Node *node, char *next_heredoc)
 		ignore_sigs();
 		set_exit_status(wait_for_child(pid1));
 	}
+  init_signal();
 }
 
 void	run_heredoc(t_Redir_Node *node, char *next_heredoc)

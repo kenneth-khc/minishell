@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/26 00:30:17 by qang              #+#    #+#             */
-/*   Updated: 2024/07/20 22:45:33 by qang             ###   ########.fr       */
+/*   Updated: 2024/08/12 15:31:13 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,10 @@ static void	add_path(t_envar *path_node, char *arg)
 
 	if (ft_strcmp(arg, ".") != 0)
 	{
-		temp = ft_strjoin(path_node->val, "/");
+    if (ft_strcmp(path_node->val, "/") != 0)
+		  temp = ft_strjoin(path_node->val, "/");
+    else
+      temp = ft_strdup(path_node->val);
 		path_node->val = ft_strjoin(temp, arg);
 		free(temp);
 	}
@@ -59,7 +62,7 @@ static void	update_pwd_args_helper(t_envar *path_node, char *arg, char *curr)
 	{
 		if (ft_strchr(arg, '/') == NULL)
 			temp = ft_strdup(arg);
-		else
+    else
 			temp = ft_substr(arg, 0, ft_strchr(arg, '/') - arg);
 		if (ft_strcmp(temp, "..") == 0)
 			parse_prev_path(path_node);

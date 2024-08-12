@@ -11,7 +11,11 @@ READLINE_DIR := readline/$(ARCH)/
 READLINE_LIB_DIR := $(READLINE_DIR)/lib
 READLINE_LIB := $(READLINE_LIB_DIR)/libreadline.a
 READLINE_INC_DIR := $(READLINE_DIR)/include
+ifndef IN_DOCKER
 LDFLAGS := -L libft -L $(READLINE_LIB_DIR)
+else
+LDFLAGS := -L libft
+endif
 LDLIBS := -lreadline -lncurses -lft
 
 fsan := -fsanitize=address
@@ -23,7 +27,11 @@ c_reset := \e[0m
 libft_dir := libft
 libft := $(libft_dir)/libft.a
 libft.a := $(libft_dir)/libft.a
+ifndef IN_DOCKER
 includes ?= -I includes -I libft/includes -I $(READLINE_INC_DIR)
+else
+includes ?= -I includes -I libft/includes
+endif
 
 src_dir := sources
 src_dirs := $(src_dir) \
@@ -47,6 +55,7 @@ all: $(NAME)
 
 readline: $(READLINE_LIB)
 
+ifndef IN_DOCKER
 $(READLINE_LIB):
 		@printf "$(red)Readline not found.\n$(c_reset)" \
 		&& printf "$(green)Fetching readline...\n$(c_reset)" \
@@ -60,7 +69,11 @@ $(READLINE_LIB):
 		&& rm -rf $(READLINE_SRC_DIR) \
 		&& printf "#include <stdio.h>\n" > .tmp \
 		&& cat $(READLINE_INC_DIR)/readline/readline.h >> .tmp \
-		&& mv .tmp $(READLINE_INC_DIR)/readline/readline.h ; \
+		&& mv .tmp $(READLINE_INC_DIR)/readline/readline.h ;
+else
+$(READLINE_LIB):
+	@printf "$(green)Skipping installation of readline in docker...\n$(c_reset)"
+endif
 
 clean_readline:
 	@printf "$(red)Removing readline library...\n$(c_reset)"

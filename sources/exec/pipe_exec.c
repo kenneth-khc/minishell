@@ -6,12 +6,13 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/08/05 19:47:00 by qang              #+#    #+#             */
-/*   Updated: 2024/08/07 14:55:14 by qang             ###   ########.fr       */
+/*   Updated: 2024/08/12 23:27:56 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "execution.h"
 #include "tree.h"
+#include <signal.h>
 #include <unistd.h>
 
 static void	pipe_write(t_Pipe_Node *node, int fd[2])
@@ -38,6 +39,7 @@ void	paip(t_Pipe_Node *node)
 	int	pid1;
 	int	pid2;
 
+	ignore_sigs();
 	pipepromax(fd);
 	pid1 = forkpromax();
 	if (pid1 == 0)

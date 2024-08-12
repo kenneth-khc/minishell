@@ -1,4 +1,7 @@
 FROM ubuntu:20.04
+
+ENV IN_DOCKER true
+
 RUN apt-get update \
     && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
         build-essential \
@@ -13,7 +16,6 @@ COPY . .
 
 RUN git submodule init && git submodule update
 RUN make re -C libft
-RUN make re
+RUN make
 
-# Set the entrypoint command to run the minishell program
 CMD ["./minishell"]

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_ast.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: codespace <codespace@student.42.fr>        +#+  +:+       +#+        */
+/*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/06/27 22:15:03 by qang              #+#    #+#             */
-/*   Updated: 2024/08/05 12:24:58 by codespace        ###   ########.fr       */
+/*   Updated: 2024/08/12 16:45:43 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,6 @@ void	oror(t_Node *node)
 
 void	exec_ast(t_Node *node)
 {
-	init_signal();
 	if (node == NULL)
 		return ;
 	if (node->type == EXEC_NODE)

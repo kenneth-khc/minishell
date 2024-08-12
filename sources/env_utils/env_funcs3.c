@@ -6,7 +6,7 @@
 /*   By: qang <qang@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/07/07 00:11:02 by qang              #+#    #+#             */
-/*   Updated: 2024/07/20 16:50:20 by qang             ###   ########.fr       */
+/*   Updated: 2024/08/12 16:44:51 by qang             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ void	add_ass(char *str, t_entab *table)
 	else
 	{
 		add_var(str, table);
-		new->state = LOCAL;
+		get_var(new->key, table)->state = LOCAL;
 	}
 	free(new->key);
 	if (new->val)
